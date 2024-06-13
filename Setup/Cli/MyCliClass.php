@@ -14,6 +14,6 @@ class MyCliClass
 	{
 		$params = func_get_args();
 
-		var_dump($params[0], $params[1]);
+		dd($params[0], $params[1]);
 	}
 }

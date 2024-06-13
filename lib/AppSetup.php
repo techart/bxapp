@@ -92,13 +92,30 @@ class AppSetup
 		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', APP_CONFIGS_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Localization', APP_LOCALIZATION_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Logs', APP_LOGS_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Menu', APP_MENU_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Menu', APP_MENU_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', APP_MIDDLEWARE_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Models', APP_MODELS_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Modules', APP_MODULES_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Routes', APP_ROUTES_DIR);
-		recurseCopy(APP_CORE_SETUP_DIR.'/Services', APP_SERVICES_DIR);
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Menu', APP_MENU_DIR);
+		if (!is_dir(APP_MENU_DIR)) {
+			mkdir(APP_MENU_DIR);
+		}
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', APP_MIDDLEWARE_DIR);
+		if (!is_dir(APP_MIDDLEWARE_DIR)) {
+			mkdir(APP_MIDDLEWARE_DIR);
+		}
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Models', APP_MODELS_DIR);
+		if (!is_dir(APP_MODELS_DIR)) {
+			mkdir(APP_MODELS_DIR);
+		}
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Modules', APP_MODULES_DIR);
+		if (!is_dir(APP_MODULES_DIR)) {
+			mkdir(APP_MODULES_DIR);
+		}
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Routes', APP_ROUTES_DIR);
+		if (!is_dir(APP_ROUTES_DIR)) {
+			mkdir(APP_ROUTES_DIR);
+		}
+		// recurseCopy(APP_CORE_SETUP_DIR.'/Services', APP_SERVICES_DIR);
+		if (!is_dir(APP_SERVICES_DIR)) {
+			mkdir(APP_SERVICES_DIR);
+		}
 		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', APP_TRAITS_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Views', APP_VIEWS_DIR);
 
@@ -115,7 +132,7 @@ class AppSetup
 			copy(APP_CORE_SETUP_DIR.'/.env.example', PROJECT_ROOT_DIR.'/.env.example');
 		}
 		if (!file_exists(APP_ROOT_DIR.'/.gitignore')) {
-			copy(APP_CORE_SETUP_DIR.'/.gitignore', APP_ROOT_DIR.'/.gitignore');
+			copy(APP_CORE_SETUP_DIR.'/gitignore', APP_ROOT_DIR.'/.gitignore');
 		}
 	}
 
