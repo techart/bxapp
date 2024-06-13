@@ -1,0 +1,19 @@
+<?php
+namespace Site\Cli;
+
+/**
+ * Пример вызова метода класса через консоль (в папке php_interface):
+ *
+ * vphp cli.php MyCliClass_myMethod param1 param2
+ */
+
+
+class {{cli_name}}
+{
+	public function {{cli_method}}()
+	{
+		$params = func_get_args();
+
+		var_dump($params[0], $params[1]);
+	}
+}
