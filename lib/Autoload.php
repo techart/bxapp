@@ -31,8 +31,6 @@ class Autoload
 		'BaseForm' => '\Techart\BxApp\Base\Form\BaseForm',
 		'BaseIblockModel' => '\Techart\BxApp\Base\Model\BaseIblockModel',
 		'BaseHighloadModel' => '\Techart\BxApp\Base\Model\BaseHighloadModel',
-		'BaseBundle' => '\Techart\BxApp\Base\Bundle\BaseBundle',
-		'BaseBundleController' => '\Techart\BxApp\Base\Bundle\BaseBundleController',
 		'BaseRoutesController' => '\Techart\BxApp\Base\Routes\BaseRoutesController',
 		'BaseMenu' => '\Techart\BxApp\Base\Menu\BaseMenu',
 		//'BaseSeo' => '\Techart\BxApp\Base\Seo\BaseSeo',

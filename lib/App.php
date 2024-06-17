@@ -84,7 +84,6 @@ class App
 
 		Logger::setup();
 
-		include_once (APP_ROOT_DIR.'/Traits/BundleControllerTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		include_once (APP_ROOT_DIR.'/Configs/SiteGlobals.php');

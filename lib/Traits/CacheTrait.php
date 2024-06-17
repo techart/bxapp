@@ -18,7 +18,7 @@ namespace Techart\BxApp\Traits;
 		$this->endCache($data);
 	}
 
-	return $this->result('Тайтл ответа', 'текст сообщения', $data, $cacheID);
+	return $this->result('Тайтл ответа', 'текст сообщения', $data);
  *
  * ID кэша формируется на основе имени класса и имени метода в котором используется кэш
  *
