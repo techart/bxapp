@@ -395,7 +395,7 @@ class App
 		\Techart\BxApp\Cli::run($argv);
 	}
 
-	public static function getRouteData(string $param = '')
+	public static function getRoute(string $param = '')
 	{
 		if (empty($param)) {
 			return self::$currentRouteData;
@@ -403,12 +403,12 @@ class App
 			if (isset(self::$currentRouteData[$param])) {
 				return self::$currentRouteData[$param];
 			} else {
-				return [];
+				return '';
 			}
 		}
 	}
 
-	public static function setCurrentRouteData(array $routeData = []): void
+	public static function setRoute(array $routeData = []): void
 	{
 		self::$currentRouteData = $routeData;
 	}

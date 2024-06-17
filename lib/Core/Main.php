@@ -127,4 +127,17 @@ class Main
 
 		return $ip;
 	}
+
+	/**
+	 * - устанавливает заголовок application/json
+	 * - форматирует ответ в json_encode
+	 *
+	 * @param mixed $data
+	 * @return string
+	 */
+	public function jsonResponse($data)
+	{
+		header('Content-Type: application/json');
+		return json_encode($data);
+	}
 }

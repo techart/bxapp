@@ -10,6 +10,8 @@ class Cli
 		'app_createModel' => 'createModel',
 		'app_createCli' => 'createCli',
 		'app_createBundle' => 'createBundle',
+		'app_createMiddlewareAfter' => 'createMiddlewareAfter',
+		'app_createMiddlewareBefore' => 'createMiddlewareBefore',
 	);
 	static $action = '';
 	static $options = [];

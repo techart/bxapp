@@ -38,4 +38,18 @@ class CliActions
 
 		echo 'Создание бандла завершено!'.PHP_EOL;
 	}
+
+	public function createMiddlewareAfter()
+	{
+		AppSetup::createMiddlewareAfter(func_get_args());
+
+		echo 'Создание middleware завершено!'.PHP_EOL;
+	}
+
+	public function createMiddlewareBefore()
+	{
+		AppSetup::createMiddlewareBefore(func_get_args());
+
+		echo 'Создание middleware завершено!'.PHP_EOL;
+	}
 }

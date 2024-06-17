@@ -28,6 +28,8 @@ class Define
 		define("APP_LOGS_DIR", APP_ROOT_DIR.'/Logs');
 		define("APP_MENU_DIR", APP_ROOT_DIR.'/Menu');
 		define("APP_MIDDLEWARE_DIR", APP_ROOT_DIR.'/Middleware');
+		define("APP_MIDDLEWARE_BEFORE_DIR", APP_MIDDLEWARE_DIR.'/Before');
+		define("APP_MIDDLEWARE_AFTER_DIR", APP_MIDDLEWARE_DIR.'/After');
 		define("APP_MODELS_DIR", APP_ROOT_DIR.'/Models');
 		define("APP_MODULES_DIR", APP_ROOT_DIR.'/Modules');
 		define("APP_ROUTES_DIR", APP_ROOT_DIR.'/Routes');

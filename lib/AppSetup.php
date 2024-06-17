@@ -82,6 +82,52 @@ class AppSetup
 	}
 
 	/**
+	 * vphp cli.php app_app_createMiddlewareAfter MiddlewareName
+	 *
+	 * @param array $options
+	 * @return void
+	 */
+	public static function createMiddlewareAfter(array $options = [])
+	{
+		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
+
+		if (!file_exists(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php')) {
+			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareAfter.php', APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
+
+			$template = file_get_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
+			$template = str_replace(
+				['{{middleware_name}}'],
+				[$name],
+				$template
+			);
+			file_put_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php', $template);
+		}
+	}
+
+	/**
+	 * vphp cli.php app_createMiddlewareBefore MiddlewareName
+	 *
+	 * @param array $options
+	 * @return void
+	 */
+	public static function createMiddlewareBefore(array $options = [])
+	{
+		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
+
+		if (!file_exists(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php')) {
+			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareBefore.php', APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
+
+			$template = file_get_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
+			$template = str_replace(
+				['{{middleware_name}}'],
+				[$name],
+				$template
+			);
+			file_put_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php', $template);
+		}
+	}
+
+	/**
 	 * vphp cli.php app_setup
 	 *
 	 * @return void
@@ -96,10 +142,7 @@ class AppSetup
 		if (!is_dir(APP_MENU_DIR)) {
 			mkdir(APP_MENU_DIR);
 		}
-		// recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', APP_MIDDLEWARE_DIR);
-		if (!is_dir(APP_MIDDLEWARE_DIR)) {
-			mkdir(APP_MIDDLEWARE_DIR);
-		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', APP_MIDDLEWARE_DIR);
 		// recurseCopy(APP_CORE_SETUP_DIR.'/Models', APP_MODELS_DIR);
 		if (!is_dir(APP_MODELS_DIR)) {
 			mkdir(APP_MODELS_DIR);

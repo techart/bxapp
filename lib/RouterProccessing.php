@@ -33,7 +33,15 @@ if (Router::isActive()) { // роут включён
 				App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 			}
 
-			echo Router::doAction($routeData);
+			\App::setRoute($routeData);
+			\Techart\BxApp\Middleware::before();
+			\Techart\BxApp\Middleware::specialBefore();
+
+			$routeData = Router::doAction($routeData);
+			$routeData = \Techart\BxApp\Middleware::after($routeData);
+			$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+
+			echo \App::core('Main')->jsonResponse($routeData);
 		} else { // роута нет в кэше
 			Logger::info('роута нет в кэше');
 
@@ -54,8 +62,15 @@ if (Router::isActive()) { // роут включён
 							Logger::info('работает протектор');
 							App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 						}
+						\App::setRoute($routeData);
+						\Techart\BxApp\Middleware::before();
+						\Techart\BxApp\Middleware::specialBefore();
 
-						echo Router::doAction($routeData);
+						$routeData = Router::doAction($routeData);
+						$routeData = \Techart\BxApp\Middleware::after($routeData);
+						$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+
+						echo \App::core('Main')->jsonResponse($routeData);
 					} else { // роут не найден
 						Logger::info('роут не найден');
 						$do404 = true;
@@ -85,7 +100,16 @@ if (Router::isActive()) { // роут включён
 					App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 				}
 
-				echo Router::doAction($routeData);
+				\App::setRoute($routeData);
+				\Techart\BxApp\Middleware::before();
+				\Techart\BxApp\Middleware::specialBefore();
+
+				$routeData = Router::doAction($routeData);
+				$routeData = \Techart\BxApp\Middleware::after($routeData);
+				$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+
+				echo \App::core('Main')->jsonResponse($routeData);
+
 			} else { // роут не найден
 				Logger::info('роут не найден');
 				$do404 = true;

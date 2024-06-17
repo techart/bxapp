@@ -286,8 +286,6 @@ class Router
 						$controller = new $controllerClass();
 
 						if (method_exists($controller, $routeData['method'] )) {
-							App::setCurrentRouteData($routeData);
-
 							return call_user_func_array([$controller, 'baseAction'], []);
 						} else {
 							Logger::error('Router: в файле контроллера ('.$controllerFile.') не найден метод - '.$routeData['method']);

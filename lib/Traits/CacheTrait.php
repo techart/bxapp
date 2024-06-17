@@ -70,7 +70,7 @@ trait CacheTrait
 	 */
 	public function buildCacheID(array $params = []): string
 	{
-		$curCacheId = get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));;
+		$curCacheId = get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));
 
 		return $curCacheId;
 	}

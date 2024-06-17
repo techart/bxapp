@@ -46,16 +46,16 @@ class Helpers
 
 					return $svgContent;
 				} else {
-					var_dump('Файл "'.$svgPath.'" не является svg файлом!');
+					Logger::error('inlineSvg: Файл "'.$svgPath.'" не является svg файлом!');
 					return false;
 				}
 
 			} else {
-				var_dump('Файл "'.$svgPath.'" не может быть прочитан!');
+				Logger::error('inlineSvg: Файл "'.$svgPath.'" не может быть прочитан!');
 				return false;
 			}
 		} else {
-			var_dump('Файл "'.$svgPath.'" не найден!');
+			dLogger::error('inlineSvg: Файл "'.$svgPath.'" не найден!');
 			return false;
 		}
 	}

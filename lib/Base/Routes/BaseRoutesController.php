@@ -61,31 +61,6 @@ class BaseRoutesController
 	}
 
 	/**
-	 * Каждый экшн должен заканчиваться ретурном данных через этот метод.
-	 *
-	 * @param mixed $data
-	 * @return string
-	 */
-	public function return(mixed $data = []): string
-	{
-		return $this->jsonResponse($data);
-	}
-
-	/**
-	 * - устанавливает заголовок application/json
-	 * - форматирует ответ в json_encode
-	 *
-	 * @param mixed $data
-	 * @return string
-	 */
-	protected function jsonResponse($data)
-	{
-		header('Content-Type: application/json');
-		return json_encode($data);
-	}
-
-
-	/**
 	 * Метод для разруливания кастомных и дефолтных экшенов
 	 *
 	 * @param array $args
@@ -93,14 +68,16 @@ class BaseRoutesController
 	 */
 	public function baseAction()
 	{
-		$i = 1;
-		foreach (\App::getRouteData('where') as $name => $v) {
-			$this->args[$name] = \App::getRouteData('args')[$i];
-			$i++;
+		if (!empty(\App::getRoute('where'))) {
+			$i = 1;
+			foreach (\App::getRoute('where') as $name => $v) {
+				$this->args[$name] = \App::getRoute('args')[$i];
+				$i++;
+			}
 		}
 
 		$this->collectRequest();
 
-		return call_user_func_array(array($this, \App::getRouteData('method')), \App::getRouteData('args'));
+		return call_user_func_array(array($this, \App::getRoute('method')), \App::getRoute('args'));
 	}
 }
