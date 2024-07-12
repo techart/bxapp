@@ -1,6 +1,6 @@
 {
   "name": "techart/bxapp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Пакет для организации бэка битрикса",
   "license": "Apache-2.0",
   "authors": [
@@ -18,7 +18,8 @@
 	"vlucas/phpdotenv": "^5.6",
 	"dompdf/dompdf": "^2.0",
 	"iio/libmergepdf": "^4.0",
-	"phpoffice/phpspreadsheet": "^2.1"
+	"phpoffice/phpspreadsheet": "^2.1",
+	"ovidigital/js-object-to-json": ">=1.1"
   },
   "autoload": {
     "psr-4": {"Techart\\BxApp\\": "lib/"}

@@ -20,7 +20,7 @@ trait FormModelTrait
 
 	/**
 	 * Метод, который используется для обработки данных пришедших из формы
-	 * Именно он вызывается в бандле
+	 * Именно он вызывается в экшене роута
 	 * $props = $this->getValues();
 	 * $formProcess = \App::model('Forms/FormAskQuestion')->processForm($props);
 	 *

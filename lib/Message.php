@@ -65,7 +65,7 @@ namespace Techart\BxApp;
  *
  * \M::get('buttons.CALL_ME_TEXT', [], 0, 'en')
  *
- * В этом случае в Localization/Messages/Default/LANGUAGE_ID/messages.php вместо LANGUAGE_ID подставится указанный язык
+ * В этом случае ищется в Localization/Messages/Default/en/buttons.php
  *
  * _____________
  *
@@ -101,7 +101,7 @@ class Message
 	 * @param string $name
 	 * @return array
 	 */
-	private static function parseName(string $name = ''):array
+	private static function parseName(string $name = ''): array
 	{
 		$parse = [
 			'namespace' => 'Default',
@@ -179,7 +179,7 @@ class Message
 	 * @param string $locale
 	 * @return string
 	 */
-	public static function get(string $name = '', array $replace = [], int $number = 0, string $locale = ''):string
+	public static function get(string $name = '', array $replace = [], int $number = 0, string $locale = ''): string
 	{
 		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
 		$parse = self::parseName($name);

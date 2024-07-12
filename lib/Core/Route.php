@@ -10,10 +10,10 @@ namespace Techart\BxApp\Core;
  *
  * У роутера есть настройки в файле .env и в конфиге Router.php - в них есть комментарии что и как.
  *
- * Имя роута составляется так: APP_ROUTER_PREFIX + ИМЯ_ПАПКИ_БАНДЛА + ИМЯ_ГРУППЫ + УКАЗАННЫЙ_ПУТЬ
+ * Путь роута составляется так: APP_ROUTER_PREFIX + ИМЯ_ПАПКИ_БАНДЛА + ИМЯ_ГРУППЫ + УКАЗАННЫЙ_ПУТЬ
  *
  * ИМЯ_ГРУППЫ задаётся через метод group(), но его может не быть или имя группы может быть пустой.
- * Пустая группа может быть полезна для задания протекторов и мидлваеров нескольким роутам за раз.
+ * Пустая группа может быть полезна для задания протекторов.
  *
  * В файле Routes.php роуты задаются таким образом, например для бандла Catalog:
  *
@@ -22,7 +22,7 @@ namespace Techart\BxApp\Core;
  * При заходе на урл вида /siteapi/catalog/get-all/[a-zA-Z]+/[0-9]+/ в метод mainTestt() контроллера Actions.php и
  * бандла Catalog будут переданы две переменные с данными из соответствующих регулярок.
  *
- * Регулярки не обязательно каждый разписать руками, есть готовые подстановки, например:
+ * Регулярки не обязательно каждый раз писать руками, есть готовые подстановки, например:
  *
  * App::route()->get('/get-all/int/{id}/', 'Actions.mainTestt')->where(['name' => 'int']);
  * Нужная регулярка [0-9]+ подставится сама.
@@ -48,10 +48,9 @@ namespace Techart\BxApp\Core;
  * });
  *
  *
- * Отдельным роутам и группам можно задавать протектор и мидлваеры.
+ * Отдельным роутам и группам можно задавать протектор
  *
  * App::route()->get('/get-all/', 'Actions.mainTestt')->protector(['checkDomain', 'checkSession', 'checkAuth']);
- * App::route()->get('/get-all/', 'Actions.mainTestt')->after(['checkDomain'])->before(['checkDomain']);
  *
  * Заданное для группы плюсуется ко всем её роутам.Ниже группа без имени - для задания общего протектора
  *
@@ -60,9 +59,12 @@ namespace Techart\BxApp\Core;
  * 		$r->get('/update/', 'Actions.Test'); // протектор будет checkDomain
  * });
  *
- * Роуты задаются по методу запроса: get, post, delete, options для чего есть одноимённые методы.
+ * Роуты задаются по методу запроса: get, post, delete, put, options для чего есть одноимённые методы.
  * Вместо App::route()->get() можно написать App::route()->post() и т.д.
  * Таким образом может быть несколько одинаковых урлов.
+ *
+ * Роуту можно задать имя с помощью метода name().
+ * Имя роута используется для задания middleware, что делается в конфиге /Configs/Middleware.php
  */
 
 class Route
@@ -71,12 +73,21 @@ class Route
 	private $requestMethod = '';
 	private $bundle = '';
 	private $routeBundle = '';
+	private $routeProtector = [];
 	private $group = '';
 	private $groupProtector = [];
 	private $protector = [];
 
 
-	public function group($group = '', callable $method)
+	/**
+	 * Оборачивает несколько роутов в группу.
+	 * $group - может быть пустой строкой
+	 *
+	 * @param string $group
+	 * @param callable $method
+	 * @return void
+	 */
+	public function group($group = '', callable $method): void
 	{
 		$this->group = $group;
 
@@ -85,7 +96,12 @@ class Route
 		}
 	}
 
-	public function getCurrentUrl()
+	/**
+	 * Возвращает текущий разобранный урл или false
+	 *
+	 * @return mixed
+	 */
+	public function getCurrentUrl(): mixed
 	{
 		if (empty($this->group) && empty($this->url)) {
 			return false;
@@ -94,7 +110,17 @@ class Route
 		}
 	}
 
-	public function setRoute(string $requestMethod = '', string $url = '', string $classMethod = '')
+	/**
+	 * Основной метод.
+	 * Добавляет роут в массив роутов (роутер).
+	 * Работает через класс RouterConfigurator.
+	 *
+	 * @param string $requestMethod
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function setRoute(string $requestMethod = '', string $url = '', string $classMethod = ''): object
 	{
 		$classMethod = explode('.', $classMethod);
 
@@ -105,50 +131,122 @@ class Route
 			$this->requestMethod = mb_strtolower($requestMethod);
 			$this->bundle = mb_strtolower(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', ''));
 			$this->routeBundle = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', '');
-			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod); // 1
-			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle); // 2
-			\Techart\BxApp\RouterConfigurator::setRouteUrl($this->requestMethod, $this->bundle, $this->getCurrentUrl()); // 3
-			\Techart\BxApp\RouterConfigurator::setRouteRequestMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl()); // 3
-			\Techart\BxApp\RouterConfigurator::setRouteBundle($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeBundle); // 3
+			$this->routeProtector = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []);
+
+			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod);
+			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle);
+			\Techart\BxApp\RouterConfigurator::setRouteUrl($this->requestMethod, $this->bundle, $this->getCurrentUrl());
+			\Techart\BxApp\RouterConfigurator::setRouteRequestMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl());
+			\Techart\BxApp\RouterConfigurator::setRouteBundle($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeBundle);
 			\Techart\BxApp\RouterConfigurator::setRouteGroup($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->group);
 			\Techart\BxApp\RouterConfigurator::setRouteMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $classMethod[0], $classMethod[1]);
 
-			if (!empty($this->protector)) {
-				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->groupProtector);
+			if (!empty($this->routeProtector)) {
+				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeProtector);
+			}
+
+			if (!empty($this->groupProtector)) {
+				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeProtector, $this->groupProtector));
 			}
 		}
 		return $this;
 	}
 
-	public function get(string $url = '', string $classMethod = '')
+	/**
+	 * Создаёт роут с реквест методом get.
+	 *
+	 * $url - урл роута, можно использовать подстановки
+	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 *
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function get(string $url = '', string $classMethod = ''): object
 	{
 		$this->setRoute('get', $url, $classMethod);
 
 		return $this;
 	}
 
-	public function post(string $url = '', string $classMethod = '')
+	/**
+	 * Создаёт роут с реквест методом post.
+	 *
+	 * $url - урл роута, можно использовать подстановки
+	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 *
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function post(string $url = '', string $classMethod = ''): object
 	{
 		$this->setRoute('post', $url, $classMethod);
 
 		return $this;
 	}
 
-	public function delete(string $url = '', string $classMethod = '')
+	/**
+	 * Создаёт роут с реквест методом delete.
+	 *
+	 * $url - урл роута, можно использовать подстановки
+	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 *
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function delete(string $url = '', string $classMethod = ''): object
 	{
 		$this->setRoute('delete', $url, $classMethod);
 
 		return $this;
 	}
 
-	public function options(string $url = '', string $classMethod = '')
+	/**
+	 * Создаёт роут с реквест методом put.
+	 *
+	 * $url - урл роута, можно использовать подстановки
+	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 *
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function put(string $url = '', string $classMethod = ''): object
+	{
+		$this->setRoute('put', $url, $classMethod);
+
+		return $this;
+	}
+
+	/**
+	 * Создаёт роут с реквест методом options.
+	 *
+	 * $url - урл роута, можно использовать подстановки
+	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 *
+	 * @param string $url
+	 * @param string $classMethod
+	 * @return object
+	 */
+	public function options(string $url = '', string $classMethod = ''): object
 	{
 		$this->setRoute('options', $url, $classMethod);
 
 		return $this;
 	}
 
-	public function where(array $where = [])
+	/**
+	 * Задаёт роуту подстановки.
+	 * В роуте пишется в фигурных скобках имя подстановки.
+	 *
+	 * $where - массив, где ключ - имя подстановки, а значение - регулярное выражение, ключевое слово или массив вариантов
+	 *
+	 * @param array $where
+	 * @return object
+	 */
+	public function where(array $where = []): object
 	{
 		if ($this->getCurrentUrl() !== false) {
 			\Techart\BxApp\RouterConfigurator::setRouteWhere($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $where);
@@ -157,7 +255,14 @@ class Route
 		return $this;
 	}
 
-	public function name($name = '')
+	/**
+	 * Задаёт роуту имя. Имя нужно для обращения к конкретному роуту.
+	 * Например, используется для задания мидлваеров.
+	 *
+	 * @param string $name
+	 * @return object
+	 */
+	public function name($name = ''): object
 	{
 		if ($this->getCurrentUrl() !== false) {
 			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $name);
@@ -166,13 +271,22 @@ class Route
 		return $this;
 	}
 
-	public function protector($protector = [])
+	/**
+	 * Задаёт роуту протекторы.
+	 * Так же можно задать протекторы для группы (они будут ДОБАВЛЕНЫ ко всем роутам группы)
+	 * Перечисленные протекторы выполняются до всех прочих мидлваеров и действий.
+	 * Если хотя бы один протектор возвращает false, то урл роута отдаёт 404.
+	 *
+	 * @param array $protector
+	 * @return object
+	 */
+	public function protector($protector = []): object
 	{
 		if ($this->getCurrentUrl() === false) {
 			$this->groupProtector = $protector;
 		} else {
 			if (!empty($protector)) {
-				$this->protector = array_merge($this->groupProtector, $protector);
+				$this->protector = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []), $this->groupProtector, $protector);
 
 				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->protector);
 			}

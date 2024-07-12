@@ -9,7 +9,7 @@ class {{middleware_name}}
 	 * @param mixed $data
 	 * @return void
 	 */
-	function handle($data)
+	function handle($data): mixed
 	{
 		// В $data приходят данные возвращаемые акшеном контроллера роута
 		// Эти данные можно модифицировать, например:

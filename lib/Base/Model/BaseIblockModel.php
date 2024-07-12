@@ -293,7 +293,7 @@ class BaseIblockModel
 	 */
 	private function makeElementsGroup(mixed $group = false): mixed
 	{
-		$curGroup = (empty($group) or count($group) == 0) ? false : $group;
+		$curGroup = $group == '' ? false : $group;
 
 		return $curGroup;
 	}
@@ -458,9 +458,9 @@ class BaseIblockModel
 	 * @param array $order
 	 * @param array $limit
 	 * @param mixed $group
-	 * @return object
+	 * @return object|string
 	 */
-	public function getElements(array $select = [], array $filter = [], array $order = [], array $limit = [], mixed $group = false): object
+	public function getElements(array $select = [], array $filter = [], array $order = [], mixed $limit = [], mixed $group = false): object|string
 	{
 		$arFilter = $this->makeElementsFilter($filter);
 		$arSelect = $this->makeElementsSelect($select);

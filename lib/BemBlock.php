@@ -20,7 +20,7 @@ class BemBlock
 	}
 
 
-	public function elem(string $elemName = '')
+	public function elem(string $elemName = ''): object
 	{
 		return new BemElem($this->blockName, $elemName);
 	}

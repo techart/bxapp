@@ -13,9 +13,9 @@ class Assets
 	 * Возвращает код шрифтов для подключения в header.php
 	 * Код заполняется в Configs/Assets.php - APP_ASSETS_FONT_FACE_CODE
 	 *
-	 * @return void
+	 * @return string
 	 */
-	public function showFontFace()
+	public function showFontFace(): string
 	{
 		return \Config::get('Assets.APP_ASSETS_FONT_FACE_CODE', '');
 	}
@@ -28,47 +28,53 @@ class Assets
 	 */
 	public function getAssetUrl(string $name = ''): string
 	{
-		return '/local/templates/site/assets/'.$name;
+		return \Config::get('Assets.APP_ASSETS_DIR', '/local/templates/site/assets/').$name;
 	}
 
 	/**
 	 * Возвращает код шрифтов для подключения в header.php
 	 * Код заполняется в Configs/Assets.php - APP_ASSETS_FAVICON_CODE
 	 *
-	 * @return void
+	 * @return string
 	 */
-	public function showFaviconHtmlCode():string
+	public function showFaviconHtmlCode(): string
 	{
 		return \Config::get('Assets.APP_ASSETS_FAVICON_CODE', '');
 	}
 
 	/**
 	 * Возвращает массив с аттребутами для тега подключения ассетов (script, link)
+	 * Возвращает false, если нет файла сборки
 	 *
 	 * @param string $item
 	 * @param array $attrs
 	 * @param string $type
-	 * @return array
+	 * @return array|bool
 	 */
-	private function buildTagAttrs(string $item = '', array $attrs = [], string $type = ''): array
+	private function buildTagAttrs(string $item = '', array $attrs = [], string $type = ''): array|bool
 	{
 		$pathToAssets = SITE_ROOT_DIR.'/local/templates/site/frontend/assets/';
-		$pathToBuildJson = realpath($pathToAssets . '/' . \Glob::get('APP_ENV') . '.json');
-		$buildedJson = json_decode(file_get_contents($pathToBuildJson), true);
-		$pathToTag = $buildedJson[$item][$type];
+		$pathToBuildJson = realpath($pathToAssets . '/' . \Glob::get('APP_ENV', 'dev') . '.json');
 
-		$attrsString = '';
-		foreach ($attrs as $name => $value) {
-			if($value) {
-				$attrsString .= " {$name}=\"{$value}\"";
-			} else {
-				$attrsString .= " {$name}";
+		if ($pathToBuildJson === false) {
+			return false;
+		} else {
+			$buildedJson = json_decode(file_get_contents($pathToBuildJson), true);
+			$pathToTag = $buildedJson[$item][$type];
+
+			$attrsString = '';
+			foreach ($attrs as $name => $value) {
+				if($value) {
+					$attrsString .= " {$name}=\"{$value}\"";
+				} else {
+					$attrsString .= " {$name}";
+				}
 			}
+
+			$attrsString = trim($attrsString);
+
+			return [$pathToTag, $attrsString];
 		}
-
-		$attrsString = trim($attrsString);
-
-		return [$pathToTag, $attrsString];
 	}
 
 	/**
@@ -82,7 +88,7 @@ class Assets
 	{
 		$jsTag = $this->buildTagAttrs($item, $attrs, "js");
 
-		return '<script src="' . $jsTag[0] . '" ' . $jsTag[1] . ' ></script>';
+		return !$jsTag ? '' : '<script src="' . $jsTag[0] . '" ' . $jsTag[1] . ' ></script>';
 	}
 
 	/**
@@ -96,7 +102,7 @@ class Assets
 	{
 		$cssTag = $this->buildTagAttrs($item, $attrs, "css");
 
-		return '<link href="' . $cssTag[0] . '" ' . $cssTag[1] . ' media="screen" rel="stylesheet" >';
+		return !$cssTag ? '' : '<link href="' . $cssTag[0] . '" ' . $cssTag[1] . ' media="screen" rel="stylesheet" >';
 	}
 
 	/**
@@ -105,7 +111,7 @@ class Assets
 	 * @param string $entry
 	 * @return void
 	 */
-	public function setLibs(string $entry): void
+	private function setLibs(string $entry): void
 	{
 		$file = file_get_contents(SITE_ROOT_DIR.'/local/templates/site/frontend/user.settings.js');
 		$file_entry = stristr($file, $entry);
@@ -137,7 +143,7 @@ class Assets
 			Asset::getInstance()->addString($path);
 			Asset::getInstance()->addString($this->getCssTag($entry));
 		} else {
-			throw new LogicException("Точка входа ".$entry." не существует");
+			throw new \LogicException("Точка входа ".$entry." не существует");
 			exit();
 		}
 	}

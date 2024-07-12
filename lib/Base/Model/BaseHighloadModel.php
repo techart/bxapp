@@ -53,7 +53,7 @@ class BaseHighloadModel
 
 			$this->getHighloadBlock();
 		} else {
-			throw new LogicException('Модель "' . get_class($this) . '" должна содержать не пустую переменную $iblockCode!');
+			throw new \LogicException('Модель "' . get_class($this) . '" должна содержать не пустую переменную $iblockCode!');
 			exit();
 		}
 	}
@@ -73,7 +73,7 @@ class BaseHighloadModel
 			if($hlblock) {
 				$this->hblockData = $hlblock;
 			} else {
-				throw new LogicException('Модель "'.get_class($this).'" highload-блок "'.$this->table.'" указанный в переменной $table не существует!');
+				throw new \LogicException('Модель "'.get_class($this).'" highload-блок "'.$this->table.'" указанный в переменной $table не существует!');
 				exit();
 			}
 		}

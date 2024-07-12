@@ -6,6 +6,7 @@ class Actions
 	public function method()
 	{
 		// $this->args
+		// $props = $this->getValues();
 		$data = [];
 
 		return $this->return($this->result('', '', $data));

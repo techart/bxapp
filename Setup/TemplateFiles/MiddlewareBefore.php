@@ -6,10 +6,9 @@ class {{middleware_name}}
 	/**
 	 * Данный метод вызывается при использовании middleware
 	 *
-	 * @param mixed $data
 	 * @return void
 	 */
-	function handle()
+	function handle(): void
 	{
 		// Мидлваер before - ничего не принимает и ничего не возвращает
 		// Можно модифицировать данные текущего роута с помощью:

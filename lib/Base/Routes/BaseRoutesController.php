@@ -2,6 +2,19 @@
 namespace Techart\BxApp\Base\Routes;
 
 
+/**
+ * Все контроллеры роутов должны наследоватсья от этого класса.
+ *
+ * Подключаются трейты: ResultTrait, ErrorTrait и CacheTrait
+ *
+ * В переменной $this->request - текущий объект битрикс getRequest()
+ * В переменной $this->args - значения перменных роута
+ *
+ * Метод $this->getValues() - Возвращает переменные текущий тип запроса, но в $method можно указать конкретный
+ * Метод $this->getFiles() - возвращает объект битрикс загруженных через форму временных файлов - $_FILES
+ */
+
+
 use \Bitrix\Main\Application;
 
 
@@ -40,16 +53,18 @@ class BaseRoutesController
 	}
 
 	/**
-	 * Возвращает текущий post реквест
-	 * Или get, если $method = 'get'
+	 * Возвращает переменные текущего реквеста
+	 * По умолчанию выбирает текущий тип запроса, но в $method можно указать конкретный
+	 * Запросы типов put, delete, options должны быть в json формате.
 	 *
 	 * @param string $method
 	 * @return array
 	 */
-	public function getValues(string $method = 'post'): array
+	public function getValues(string $method = ''): array
 	{
 		$props = [];
-		$values = \App::core('Main')->getCurRequest($method);
+		$method = !empty($method) ? $method : strtolower($this->request->getRequestMethod());
+		$values = \App::core('Main')->getCurRequestValues($method);
 
 		if (count($values) > 0) {
 			foreach ($values as $k => $v) {
@@ -61,12 +76,11 @@ class BaseRoutesController
 	}
 
 	/**
-	 * Метод для разруливания кастомных и дефолтных экшенов
+	 * Вызывает у класса контроллера роута необходимый метод экшена
 	 *
-	 * @param array $args
 	 * @return mixed
 	 */
-	public function baseAction()
+	public function baseAction(): mixed
 	{
 		if (!empty(\App::getRoute('where'))) {
 			$i = 1;

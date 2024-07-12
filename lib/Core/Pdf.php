@@ -63,9 +63,9 @@ class Pdf
 	 * Возвращает инстанс Dompdf с загруженными опциями из Configs/Pdf.php смерженными с $pdfOptions
 	 *
 	 * @param array $pdfOptions
-	 * @return void
+	 * @return object
 	 */
-	public function getDompdf(array $pdfOptions = [])
+	public function getDompdf(array $pdfOptions = []): object
 	{
 		$curOptions = [];
 		$options = new Options();
@@ -90,9 +90,9 @@ class Pdf
 	 *
 	 * @param string $template
 	 * @param array $vars
-	 * @return string
+	 * @return mixed
 	 */
-	private function getTemplate(string $template = '', array $vars = []): string
+	private function getTemplate(string $template = '', array $vars = []): mixed
 	{
 		if (\Config::get('Pdf.APP_PDF_USE_BLADE', true)) {
 			$templatePath = APP_VIEWS_PDF_DIR.'/'.$template.'.blade.php';
@@ -126,9 +126,9 @@ class Pdf
 	 * @param string $template
 	 * @param array $vars
 	 * @param array $options
-	 * @return void
+	 * @return object
 	 */
-	public function getView(string $template = '', array $vars = [], array $options = [])
+	public function getView(string $template = '', array $vars = [], array $options = []): object
 	{
 		$dompdf = $this->getDompdf($options);
 		$dompdf->loadHtml($this->getTemplate($template, $vars));

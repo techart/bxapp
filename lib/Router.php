@@ -25,11 +25,11 @@ class Router
 	}
 
 	/**
-	 * Возвращает true, если API роутер работает
+	 * Возвращает true, если API роутер работает или false в обратном случае
 	 *
 	 * @return boolean
 	 */
-	public static function isActive()
+	public static function isActive(): bool
 	{
 		if (Glob::get('APP_SETUP_API_ROUTER_ACTIVE', true)) {
 			if (
@@ -52,7 +52,14 @@ class Router
 		}
 	}
 
-	public static function isCacheActive()
+	/**
+	 * Проверяет true, если кэш роутов активен на сайте
+	 * Проверяет в .env файле параметр APP_ROUTER_CACHE_ACTIVE
+	 *
+	 *
+	 * @return boolean
+	 */
+	public static function isCacheActive(): bool
 	{
 		// у роута включёно кэширование? в файле .env - APP_ROUTER_CACHE_ACTIVE
 		return Glob::get('APP_SETUP_API_ROUTER_CACHE_ACTIVE', true);
@@ -63,7 +70,7 @@ class Router
 	 *
 	 * @return boolean
 	 */
-	public static function isCacheAlive()
+	public static function isCacheAlive(): bool
 	{
 		// файл кэша присутствует?
 		if (file_exists(APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile)) {
@@ -73,7 +80,12 @@ class Router
 		}
 	}
 
-	public static function build()
+	/**
+	 * Строит роутер
+	 *
+	 * @return boolean
+	 */
+	public static function build(): bool
 	{
 		$bundles = Config::get('Router.APP_ROUTER_BUNDLES', []);
 
@@ -81,6 +93,7 @@ class Router
 			foreach ($bundles as $bundle) {
 				if (file_exists(APP_ROUTES_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
+					App::setBundleProtector([]);
 					require_once(APP_ROUTES_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
@@ -94,7 +107,13 @@ class Router
 		}
 	}
 
-	public static function explodeUrl(string $url = '')
+	/**
+	 * Разбирает урл на составляющие
+	 *
+	 * @param string $url
+	 * @return array
+	 */
+	public static function explodeUrl(string $url = ''): array
 	{
 		$match = array_filter(explode('/', $url));
 		$stat = [];
@@ -114,7 +133,14 @@ class Router
 		];
 	}
 
-	private static function buildPattern(string $template = '', array $routParams = [])
+	/**
+	 * Составляет итоговый паттерн для поиска роута (с учётом подстановок)
+	 *
+	 * @param string $template
+	 * @param array $routParams
+	 * @return string
+	 */
+	private static function buildPattern(string $template = '', array $routParams = []): string
 	{
 		if (isset($routParams['where'])) {
 			foreach ($routParams['where'] as $var => $pattern) {
@@ -142,7 +168,13 @@ class Router
 		return $template;
 	}
 
-	public static function findCurrentRoute(array $routerData = [])
+	/**
+	 * Ищет роут на основе $routerData
+	 *
+	 * @param array $routerData
+	 * @return mixed
+	 */
+	public static function findCurrentRoute(array $routerData = []): mixed
 	{
 		$currentUri = self::getCurrentUrl();
 		$currentRequestMethod = mb_strtolower(Application::getInstance()->getContext()->getRequest()->getRequestMethod());
@@ -167,7 +199,13 @@ class Router
 		return false;
 	}
 
-	public static function getRouteFromDataByUrl(string $url = '')
+	/**
+	 * Ищет роут на основе его урла $url в данных конфигуратора
+	 *
+	 * @param string $url
+	 * @return mixed
+	 */
+	public static function getRouteFromDataByUrl(string $url = ''): mixed
 	{
 		$routerData = RouterConfigurator::get();
 
@@ -186,7 +224,14 @@ class Router
 		return false;
 	}
 
-	public static function toPageCache(string $url = '', array $pageRouteData = [])
+	/**
+	 * Записывает данные роута $pageRouteData для страницы $url в кэш
+	 *
+	 * @param string $url
+	 * @param array $pageRouteData
+	 * @return void
+	 */
+	public static function toPageCache(string $url = '', array $pageRouteData = []): void
 	{
 		$curMethod = Application::getInstance()->getContext()->getRequest()->getRequestMethod();
 		checkCreateDir(APP_CACHE_ROUTER_PAGES_DIR);
@@ -198,7 +243,13 @@ class Router
 		}
 	}
 
-	public static function getRouteFromPageCacheByUrl(string $url = '')
+	/**
+	 * Ищет роут на основе его урла $url в данных кэша страницы
+	 *
+	 * @param string $url
+	 * @return mixed
+	 */
+	public static function getRouteFromPageCacheByUrl(string $url = ''): mixed
 	{
 		$curMethod = Application::getInstance()->getContext()->getRequest()->getRequestMethod();
 		$pageCacheData = file_get_contents(APP_CACHE_ROUTER_PAGES_DIR.'/'.md5($url.'_'.$curMethod).'.txt');
@@ -218,7 +269,13 @@ class Router
 		return false;
 	}
 
-	public static function getRouteFromCacheByUrl(string $url = '')
+	/**
+	 * Ищет роут на основе его урла $url в данных кэша роутера
+	 *
+	 * @param string $url
+	 * @return mixed
+	 */
+	public static function getRouteFromCacheByUrl(string $url = ''): mixed
 	{
 		if (self::isCacheAlive()) {
 			$curUrl = self::getCurrentUrl($url);
@@ -261,7 +318,12 @@ class Router
 		return false;
 	}
 
-	public static function toCache()
+	/**
+	 * Записывает кэш роутера
+	 *
+	 * @return void
+	 */
+	public static function toCache(): void
 	{
 		checkCreateDir(APP_CACHE_ROUTER_DIR);
 
@@ -272,7 +334,13 @@ class Router
 		}
 	}
 
-	public static function doAction($routeData = [])
+	/**
+	 * Выполняет экшен роута на основе данных $routeData
+	 *
+	 * @param array $routeData
+	 * @return mixed
+	 */
+	public static function doAction($routeData = []): mixed
 	{
 		if (!empty($routeData)) {
 			if (isset($routeData['controller']) && isset($routeData['method'])) {
@@ -304,5 +372,16 @@ class Router
 		}
 
 		App::core('Main')->do404();
+	}
+
+	/**
+	 * Очищает кэш роутера
+	 *
+	 * @return void
+	 */
+	public static function clearCache(): void
+	{
+		array_map('unlink', array_filter((array) glob(APP_CACHE_ROUTER_DIR."/*")));
+		array_map('unlink', array_filter((array) glob(APP_CACHE_ROUTER_PAGES_DIR."/*")));
 	}
 }

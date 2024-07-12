@@ -15,7 +15,7 @@ register_shutdown_function(function () {
 
 class Shutdown
 {
-	static function run()
+	static function run(): void
 	{
 		// обработка всего переданного в логер: отправка почты, запись в файл и т.д.
 		\Logger::final(); // всегда последний

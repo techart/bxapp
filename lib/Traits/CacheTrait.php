@@ -156,10 +156,14 @@ trait CacheTrait
 	 */
 	public function startCache(string $cacheID = ''): bool
 	{
-		$id = $this->getCacheID($cacheID);
-		$cache = $this->getCacheObject($id);
+		if ($this->isActiveCache()) {
+			$id = $this->getCacheID($cacheID);
+			$cache = $this->getCacheObject($id);
 
-		return $cache->startDataCache();
+			return $cache->startDataCache();
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -172,15 +176,17 @@ trait CacheTrait
 	 *
 	 * @param mixed $var
 	 * @param string $cacheID
-	 * @return boolean
+	 * @return void
 	 */
-	public function endCache(mixed $var = false, string $cacheID = '')
+	public function endCache(mixed $var = false, string $cacheID = ''): void
 	{
-		$id = $this->getCacheID($cacheID);
-		$cache = $this->getCacheObject($id);
-		$this->CacheTraitFromCache[$id] = false;
+		if ($this->isActiveCache()) {
+			$id = $this->getCacheID($cacheID);
+			$cache = $this->getCacheObject($id);
+			$this->CacheTraitFromCache[$id] = false;
 
-		return $cache->endDataCache($var);
+			$cache->endDataCache($var);
+		}
 	}
 
 	/**
@@ -194,11 +200,15 @@ trait CacheTrait
 	 */
 	public function getCache(string $cacheID = ''): mixed
 	{
-		$id = $this->getCacheID($cacheID);
-		$cache = $this->getCacheObject($id);
-		$this->CacheTraitFromCache[$id] = true;
+		if ($this->isActiveCache()) {
+			$id = $this->getCacheID($cacheID);
+			$cache = $this->getCacheObject($id);
+			$this->CacheTraitFromCache[$id] = true;
 
-		return $cache->getVars();
+			return $cache->getVars();
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -212,10 +222,12 @@ trait CacheTrait
 	 */
 	public function abortCache(string $cacheID = ''): void
 	{
-		$id = $this->getCacheID($cacheID);
-		$cache = $this->getCacheObject($id);
+		if ($this->isActiveCache()) {
+			$id = $this->getCacheID($cacheID);
+			$cache = $this->getCacheObject($id);
 
-		$cache->abortDataCache();
+			$cache->abortDataCache();
+		}
 	}
 
 	/**
@@ -223,11 +235,13 @@ trait CacheTrait
 	 *
 	 * @return void
 	 */
-	public function cleanCache(string $table = '')
+	public function cleanCache(string $table = ''): void
 	{
-		$cache = Cache::createInstance();
-		$curTable = !empty($table) ? $table : $this->table;
+		if ($this->isActiveCache()) {
+			$cache = Cache::createInstance();
+			$curTable = !empty($table) ? $table : $this->table;
 
-		return $cache->CleanDir($curTable);
+			$cache->CleanDir($curTable);
+		}
 	}
 }

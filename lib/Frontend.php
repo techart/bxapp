@@ -2,7 +2,7 @@
 namespace Techart\BxApp;
 
 /**
- * TODO: переделать переменную block на класс new Block, как в ТАО
+ * Класс для работы с фронтендом.
  */
 
 class Frontend
@@ -11,7 +11,14 @@ class Frontend
 	private $blockName = '';
 
 
-	private function bladeBlockDefaultVars()
+	/**
+	 * Возвращает массив с предустановленными переменными для передачи во фронтенд блок:
+	 * block - инстанс BemBlock
+	 * renderer - инстанс текущего класса
+	 *
+	 * @return void
+	 */
+	private function bladeBlockDefaultVars(): array
 	{
 		return [
 			'block' => App::frontend()->block($this->bladeBlockName),
@@ -19,7 +26,14 @@ class Frontend
 		];
 	}
 
-	public function renderBlock(string $block = '', array $vars = [])
+	/**
+	 * Рендерит фронтенд блок $block с переданными переменными $vars
+	 *
+	 * @param string $block
+	 * @param array $vars
+	 * @return string
+	 */
+	public function renderBlock(string $block = '', array $vars = []): string
 	{
 		$blockPath = explode('/', trim($block, '/'));
 		$this->bladeBlockName = end($blockPath);
@@ -29,7 +43,14 @@ class Frontend
 		return \BladeTemplate::getBlade()->run($block, $vars);
 	}
 
-	public function block(string $blockName = '')
+	/**
+	 * Возвращает инстанс BemBlock.
+	 * Для формирования классов блока по BEM.
+	 *
+	 * @param string $blockName
+	 * @return object
+	 */
+	public function block(string $blockName = ''): object
 	{
 		return new BemBlock($blockName);
 	}

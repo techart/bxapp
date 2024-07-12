@@ -76,14 +76,14 @@ class Protector
 	}
 
 	/**
-	 * Проверяет совпадает ли домен запроса с доменом сервера
+	 * Смотрит пройдена ли проверка рекапчи checkV2()
 	 *
 	 * @param bool $reverse
 	 * @return object
 	 */
 	public function checkRecaptchaV2(bool $reverse = false): object
 	{
-		$values = \App::core('Main')->getCurRequest();
+		$values = \App::core('Main')->getCurRequestValues();
 		$check = \App::core('Recaptcha')->checkV3($values['g-recaptcha-response']);
 
 		$this->setFriendship($check, $reverse);
@@ -92,14 +92,14 @@ class Protector
 	}
 
 	/**
-	 * Проверяет совпадает ли домен запроса с доменом сервера
+	 * Смотрит пройдена ли проверка рекапчи checkV3()
 	 *
 	 * @param bool $reverse
 	 * @return object
 	 */
 	public function checkRecaptchaV3(bool $reverse = false): object
 	{
-		$values = \App::core('Main')->getCurRequest();
+		$values = \App::core('Main')->getCurRequestValues();
 		$check = \App::core('Recaptcha')->checkV3($values['g-recaptcha-response']);
 
 		$this->setFriendship($check, $reverse);
@@ -123,6 +123,28 @@ class Protector
 	}
 
 	/**
+	 * Проверяет совпадает ли домен запроса с доменом сервера
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkSpam(bool $reverse = false): object
+	{
+		$curRoute = \App::getRoute();
+		$code = 'protector-check-spam';
+
+		if (!empty($curRoute)) {
+			$code = 'route-'.$curRoute['bundle'].(isset($curRoute['name']) ? '-'.$curRoute['name'] : '');
+		}
+
+		$check = \App::core('StopSpam')->checkAndBan(strtolower($code));
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
 	 * Проверяет есть ли активная сессия или нет
 	 *
 	 * @param bool $reverse
@@ -138,14 +160,14 @@ class Protector
 	}
 
 	/**
-	 * Проверяет есть активная bitrix_sessid
+	 * Проверяет есть активная bitrix_sessid или нет
 	 *
 	 * @param bool $reverse
 	 * @return object
 	 */
-	public function checkBitrixSession(bool $reverse = false): object
+	public function checkBitrixSessid(bool $reverse = false): object
 	{
-		$check = \App::core('Session')->checkBitrixSession();
+		$check = \App::core('Session')->checkBitrixSessid();
 
 		$this->setFriendship($check, $reverse);
 
@@ -160,14 +182,7 @@ class Protector
 	 */
 	public function checkActive(bool $reverse = false): object
 	{
-		$isActive = \App::core('Auth')->checkActive()['ACTIVE'];
-
-		if($isActive === 'Y') {
-			$check = true;
-		}
-		else {
-			$check = false;
-		}
+		$check = \App::core('Auth')->checkActive();
 
 		$this->setFriendship($check, $reverse);
 
@@ -273,7 +288,7 @@ class Protector
 	}
 
 	/**
-	 * Если $doRedirect = true то при провале проверок происходит битрикс LocalRedirect
+	 * Если $doRedirect = true то при провале проверок происходит битрикс process404 на указанный файл
 	 *
 	 * @param boolean $doRedirect
 	 * @param boolean $url
@@ -315,9 +330,9 @@ class Protector
 	 * Если установлены call404, do404, doRefresh, doRedirect или callFile то запускаются они
 	 * А иначе возвращается false
 	 *
-	 * @return boolean|void
+	 * @return mixed
 	 */
-	public function go()
+	public function go(): mixed
 	{
 		if ($this->rules !== null) {
 			if (!empty($this->rules)) {
@@ -374,7 +389,7 @@ class Protector
 	 *
 	 * @return void
 	 */
-	protected function checkRules()
+	protected function checkRules(): void
 	{
 		$curMethod = '';
 		$reverse = false;

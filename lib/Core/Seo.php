@@ -1,6 +1,8 @@
 <?
 namespace Techart\BxApp\Core;
 
+\Bitrix\Main\Loader::includeModule('iblock');
+
 /**
 * Методы, необходимые для установки Мета тегов и в будущем, возможно, для новых фич,
 * которые связаны с SEO
@@ -15,12 +17,20 @@ class Seo
 	public $iblockId = ''; // id инфоблока
 
 
-	public function setMetas(string $iblock_code)
+	/**
+	 * Устанавливает для текущей страницы метатеги взятые из инфоблока указанного
+	 * в SEO_IBLOCK_CODE компонента page.content
+	 *
+	 * @param string $iblockСode
+	 * @param string $entryPoint
+	 * @return void
+	 */
+	public function setMetas(string $iblockСode = '', string $entryPoint = ''): void
 	{
 		global $APPLICATION;
 
-		$this->getInfoblock($iblock_code);
-		$this->getPageCode();
+		$this->getInfoblock($iblockСode);
+		$this->getPageCode($entryPoint);
 
 		$metas = $this->getMetas();
 
@@ -32,17 +42,17 @@ class Seo
 
 	/**
 	 * Получает code, к которому относится текущий компонент
-	 * Для главной - это main
+	 * Для entryPoint = mainPage или error404 - это одноимённый код
 	 * Для остальных страниц - это последний элемент из url path
 	 *
 	 * @return string
 	 */
-	private function getPageCode(): void
+	private function getPageCode(string $entryPoint = ''): void
 	{
 		$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-		if($url == '/') {
-			$this->code = 'main';
+		if($entryPoint == 'mainPage' || $entryPoint == 'error404') {
+			$this->code = $entryPoint;
 		} else {
 			$this->code = array_pop(explode('/', trim($url, '/')));
 		}
@@ -51,17 +61,17 @@ class Seo
 	/**
 	 * Возвращает информацию об инфоблоке
 	 *
-	 * @param string $iblock_code
+	 * @param string $iblockСode
 	 *
 	 * @return array
 	 */
-	private function getInfoblock(string $iblock_code): bool
+	private function getInfoblock(string $iblockСode): bool
 	{
-		$infoblock = CIBlock::GetList(
+		$infoblock = \CIBlock::GetList(
 			[],
 			[
 				'SITE_ID' => SITE_ID,
-				"CODE" => $iblock_code
+				"CODE" => $iblockСode
 			],
 			false
 		);
@@ -69,7 +79,7 @@ class Seo
 		if ($infoblock->result->num_rows > 0) {
 			$this->iblockId = $infoblock->Fetch()['ID'];
 		} else {
-			throw new LogicException("Инфоблок ".$iblock_code." не существует");
+			throw new \LogicException("Инфоблок ".$iblockСode." не существует");
 			exit();
 		}
 
@@ -85,7 +95,7 @@ class Seo
 	{
 		$metas = [];
 
-		$items = CIBlockElement::GetList(
+		$items = \CIBlockElement::GetList(
 			['SORT' => 'ASC'],
 			[
 				'IBLOCK_ID' => $this->iblockId,

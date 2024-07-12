@@ -4,11 +4,13 @@
  *
  * APP_ASSETS_FONT_FACE_CODE - вставляет код  шрифтов в хэд через <?=App::core('Assets')->showFontFace()?>
  * APP_ASSETS_FAVICON_CODE - вставляет код фавиконов в хэд через <?=App::core('Assets')->showFaviconHtmlCode()?>
+ * APP_ASSETS_DIR - для указания папки хранения ассетов, например, используется в App::core('Assets')->getAssetUrl();
  *
  * Файлы фавиконов хранить в /local/favicon-files/
  */
 
 return [
+	'APP_ASSETS_DIR' => '/local/templates/site/assets/',
 	'APP_ASSETS_FONT_FACE_CODE' => '
 		<style>
 			@font-face {

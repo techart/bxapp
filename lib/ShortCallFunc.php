@@ -11,7 +11,8 @@ if (!function_exists('dd')) {
 	 *
 	 * @return void
 	 */
-	function dd() {
+	function dd(): void
+	{
 		$arguments = func_get_args();
 		$lastCall = debug_backtrace()[0];
 
@@ -34,7 +35,8 @@ if (!function_exists('dumpV')) {
 	 *
 	 * @return void
 	 */
-	function dumpV() {
+	function dumpV(): void
+	{
 		$arguments = func_get_args();
 		$lastCall = debug_backtrace()[0];
 
@@ -57,7 +59,8 @@ if (!function_exists('dumpP')) {
 	 *
 	 * @return void
 	 */
-	function dumpP() {
+	function dumpP(): void
+	{
 		$arguments = func_get_args();
 		$lastCall = debug_backtrace()[0];
 
@@ -80,7 +83,8 @@ if (!function_exists('dumpE')) {
 	 *
 	 * @return void
 	 */
-	function dumpE() {
+	function dumpE(): void
+	{
 		$arguments = func_get_args();
 		$lastCall = debug_backtrace()[0];
 
@@ -103,7 +107,8 @@ if (!function_exists('dumpD')) {
 	 *
 	 * @return void
 	 */
-	function dumpD() {
+	function dumpD(): void
+	{
 		$arguments = func_get_args();
 		$lastCall = debug_backtrace()[0];
 
@@ -183,9 +188,9 @@ if (!function_exists('explodePathString')) {
 	 * А в ключе dirs - массив всех остальных
 	 *
 	 * @param string $path
-	 * @return void
+	 * @return array
 	 */
-	function explodePathString(string $path = '')
+	function explodePathString(string $path = ''): array
 	{
 		$path = explode('/', trim($path, '/'));
 		$dirs = array_slice($path, 0, -1);
@@ -206,7 +211,7 @@ if (!function_exists('createDirsChaine')) {
 	 * @param array $dirs
 	 * @return void
 	 */
-	function createDirsChaine(string $mainDir = '', array $dirs = [])
+	function createDirsChaine(string $mainDir = '', array $dirs = []): void
 	{
 		if (count($dirs) > 0 && !empty($mainDir)) {
 			$curDir = $mainDir;
@@ -233,12 +238,39 @@ if (!function_exists('checkCreateDir')) {
 	 * @param string $dir
 	 * @return void
 	 */
-	function checkCreateDir(string $dir = '')
+	function checkCreateDir(string $dir = ''): void
 	{
 		if (!empty($dir)) {
 			if (!is_dir($dir)) {
 				mkdir($dir);
 			}
 		}
+	}
+}
+
+if (!function_exists('getIblockId')) {
+	/**
+	 * Функция обертка для CIBlock::GetList возвращает ID инфоблока по коду $code
+	 * Возвращает false в случае ошибки
+	 *
+	 * @param string $code
+	 * @return int|bool
+	 */
+	function getIblockId(string $code = ""): int|bool
+	{
+		$result = false;
+
+		if (!empty($code)) {
+			$res = CIBlock::GetList(
+				array(),
+				array('SITE_ID' => SITE_ID, 'ACTIVE' => 'Y', "CODE" => $code)
+			);
+
+			if ($arRes = $res->Fetch()) {
+				$result = intval($arRes["ID"]);
+			}
+		}
+
+		return $result;
 	}
 }

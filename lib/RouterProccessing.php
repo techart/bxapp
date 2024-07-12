@@ -27,13 +27,13 @@ if (Router::isActive()) { // роут включён
 
 		if ($routeData !== false) { // роут взят из кэша
 			Logger::info('роут взят из кэша');
+			\App::setRoute($routeData);
 
 			if (isset($routeData['protector']) && count($routeData['protector']) > 0) {
 				Logger::info('работает протектор');
 				App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 			}
 
-			\App::setRoute($routeData);
 			\Techart\BxApp\Middleware::before();
 			\Techart\BxApp\Middleware::specialBefore();
 
@@ -57,12 +57,13 @@ if (Router::isActive()) { // роут включён
 
 					if ($routeData !== false) { // роут взят
 						Logger::info('роут взят');
+						\App::setRoute($routeData);
 
 						if (isset($routeData['protector']) && count($routeData['protector']) > 0) {
 							Logger::info('работает протектор');
 							App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 						}
-						\App::setRoute($routeData);
+
 						\Techart\BxApp\Middleware::before();
 						\Techart\BxApp\Middleware::specialBefore();
 
@@ -94,13 +95,13 @@ if (Router::isActive()) { // роут включён
 
 			if ($routeData !== false) { // роут взят
 				Logger::info('роут взят');
+				\App::setRoute($routeData);
 
 				if (isset($routeData['protector']) && count($routeData['protector']) > 0) {
 					Logger::info('работает протектор');
 					App::core('Protector')->setRules($routeData['protector'])->do404(true)->go();
 				}
 
-				\App::setRoute($routeData);
 				\Techart\BxApp\Middleware::before();
 				\Techart\BxApp\Middleware::specialBefore();
 

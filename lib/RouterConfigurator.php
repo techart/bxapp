@@ -2,7 +2,7 @@
 namespace Techart\BxApp;
 
 /**
- * Класс формирует массив $RouterData где и хранятся все данные всех роутов
+ * Класс формирует массив $RouterData где хранятся все данные всех роутов
  */
 
 class RouterConfigurator
@@ -21,12 +21,12 @@ class RouterConfigurator
 	}
 
 	/**
-	 * Undocumented function
+	 * Возвращает роут найденный по $url
 	 *
 	 * @param string $url
-	 * @return void
+	 * @return mixed
 	 */
-	public static function getRouteByUrl(string $url = '')
+	public static function getRouteByUrl(string $url = ''): mixed
 	{
 		if (isset(self::$RouterData[$url])) {
 			return self::$RouterData[$url];
@@ -35,14 +35,27 @@ class RouterConfigurator
 		}
 	}
 
-	public static function setRequestMethod(string $requestMethod = '')
+	/**
+	 * Назначает роуту $requestMethod
+	 *
+	 * @param string $requestMethod
+	 * @return void
+	 */
+	public static function setRequestMethod(string $requestMethod = ''): void
 	{
 		if (!isset(self::$RouterData[$requestMethod])) {
 			self::$RouterData[$requestMethod] = [];
 		}
 	}
 
-	public static function setBundle(string $requestMethod = '', string $bundle = '')
+	/**
+	 * Назначает роуту $bundle
+	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
+	 * @return void
+	 */
+	public static function setBundle(string $requestMethod = '', string $bundle = ''): void
 	{
 		if (!isset(self::$RouterData[$requestMethod][$bundle])) {
 			self::$RouterData[$requestMethod][$bundle] = [];
@@ -50,14 +63,14 @@ class RouterConfigurator
 	}
 
 	/**
-	 *
+	 * Назначает роуту $url
 	 *
 	 * @param string $requestMethod
 	 * @param string $bundle
 	 * @param string $url
 	 * @return void
 	 */
-	public static function setRouteUrl(string $requestMethod = '', string $bundle = '', string $url = '')
+	public static function setRouteUrl(string $requestMethod = '', string $bundle = '', string $url = ''): void
 	{
 		if (!isset(self::$RouterData[$requestMethod][$bundle][$url])) {
 			self::$RouterData[$requestMethod][$bundle][$url] = [];
@@ -65,89 +78,100 @@ class RouterConfigurator
 	}
 
 	/**
-	 *
+	 * Назначает роуту $requestMethod
 	 *
 	 * @param string $requestMethod
 	 * @param string $bundle
 	 * @param string $url
 	 * @return void
 	 */
-	public static function setRouteRequestMethod(string $requestMethod = '', string $bundle = '', string $url = '')
+	public static function setRouteRequestMethod(string $requestMethod = '', string $bundle = '', string $url = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['requestMethod'] = $requestMethod;
 	}
 
 	/**
-	 *
+	 * Назначает роуту $routeBundle
 	 *
 	 * @param string $requestMethod
 	 * @param string $bundle
 	 * @param string $url
+	 * @param string $routeBundle
 	 * @return void
 	 */
-	public static function setRouteBundle(string $requestMethod = '', string $bundle = '', string $url = '', string $routeBundle = '')
+	public static function setRouteBundle(string $requestMethod = '', string $bundle = '', string $url = '', string $routeBundle = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['bundle'] = $routeBundle;
 	}
 
 	/**
+	 * Назначает роуту $group
 	 *
-	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
 	 * @param string $url
 	 * @param string $group
 	 * @return void
 	 */
-	public static function setRouteGroup(string $requestMethod = '', string $bundle = '', string $url = '', string $group = '')
+	public static function setRouteGroup(string $requestMethod = '', string $bundle = '', string $url = '', string $group = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['group'] = $group;
 	}
 
 	/**
+	 * Назначает роуту $controller и $method
 	 *
-	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
 	 * @param string $url
 	 * @param string $controller
 	 * @param string $method
 	 * @return void
 	 */
-	public static function setRouteMethod(string $requestMethod = '', string $bundle = '', string $url = '', string $controller = '', string $method = '')
+	public static function setRouteMethod(string $requestMethod = '', string $bundle = '', string $url = '', string $controller = '', string $method = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['controller'] = $controller;
 		self::$RouterData[$requestMethod][$bundle][$url]['method'] = $method;
 	}
 
 	/**
+	 * Назначает роуту $where
 	 *
-	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
 	 * @param string $url
 	 * @param array $where
 	 * @return void
 	 */
-	public static function setRouteWhere(string $requestMethod = '', string $bundle = '', string $url = '', array $where = [])
+	public static function setRouteWhere(string $requestMethod = '', string $bundle = '', string $url = '', array $where = []): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['where'] = $where;
 	}
 
 	/**
+	 * Назначает роуту $name
 	 *
-	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
 	 * @param string $url
 	 * @param string $name
 	 * @return void
 	 */
-	public static function setRouteName(string $requestMethod = '', string $bundle = '', string $url = '', string $name = '')
+	public static function setRouteName(string $requestMethod = '', string $bundle = '', string $url = '', string $name = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['name'] = $name;
 	}
 
 	/**
+	 *Назначает роуту $protector
 	 *
-	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
 	 * @param string $url
 	 * @param array $protector
 	 * @return void
 	 */
-	public static function setRouteProtector(string $requestMethod = '', string $bundle = '', string $url = '', array $protector = [])
+	public static function setRouteProtector(string $requestMethod = '', string $bundle = '', string $url = '', array $protector = []): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['protector'] = $protector;
 	}

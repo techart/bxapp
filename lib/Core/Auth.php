@@ -6,9 +6,9 @@ class Auth
 	/**
 	 * Метод получения объекта пользователя
 	 *
-	 * @return object
+	 * @return \CUser
 	 */
-	public function getUser()
+	public function getUser(): \CUser
 	{
 		global $USER;
 
@@ -20,7 +20,7 @@ class Auth
 	 *
 	 * @return boolean
 	 */
-	public function isAuthorized()
+	public function isAuthorized(): bool
 	{
 		return $this->getUser()->isAuthorized();
 	}
@@ -30,7 +30,7 @@ class Auth
 	 *
 	 * @return boolean
 	 */
-	public function isAdmin()
+	public function isAdmin(): bool
 	{
 		return $this->getUser()->IsAdmin();
 	}
@@ -40,7 +40,7 @@ class Auth
 	 *
 	 * @return boolean
 	 */
-	public function isDeveloper()
+	public function isDeveloper(): bool
 	{
 		$return = false;
 		$developerGroupCode = 'developer';
@@ -61,35 +61,13 @@ class Auth
 	}
 
 	/**
-	 * Метод проверки на существование сессии с определённым id
-	 *
-	 * @param string $sessID
-	 *
-	 * @return string
-	 */
-	public function checkBitrixSesID($sessID = '')
-	{
-		if (self::isAuthorized()) {
-			$session = \Bitrix\Main\Application::getInstance()->getSession();
-			if ($sessID === $session['fixed_session_id'])
-				$result = 'ID Сессии совпадает';
-			else
-				$result = 'ID Сессии не совпадают';
-		} else {
-			$result = 'Пользователь не авторизован';
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Метод получения полей юзера по его Login'у
 	 *
 	 * @param string $login
 	 *
-	 * @return array
+	 * @return array|bool
 	 */
-	public function getByLogin($login)
+	public function getByLogin(string $login = ''): array|bool
 	{
 		return $this->getUser()->getByLogin($login)->fetch();
 	}
@@ -99,17 +77,21 @@ class Auth
 	 *
 	 * @param string $email
 	 *
-	 * @return array
+	 * @return array|bool
 	 */
-	public function getByEmail($email)
+	public function getByEmail(string $email = ''): array|bool
 	{
 		return $this->getUser()->GetList([], [], ['EMAIL' => $email])->fetch();
 	}
 
 	/**
+	 * Метод получения полей юзера по его id
 	 *
+	 * @param int $id
+	 *
+	 * @return array|bool
 	 */
-	public function getByID($ID)
+	public function getByID(int $ID = 0): array|bool
 	{
 		return $this->getUser()->GetList([], [], ['ID' => $ID], ['SELECT' => ['UF_*']])->fetch();
 	}
@@ -117,23 +99,22 @@ class Auth
 	/**
 	 * Метод получения ID текущего пользователя
 	 *
-	 * @return object
+	 * @return int
 	 */
-	public function getUserId()
+	public function getUserId(): int
 	{
-		return $this->getUser()->GetId();
+		return intval($this->getUser()->GetId());
 	}
 
 	/**
 	 * Метод проверки активности текущего пользователя
 	 *
-	 * @return array
+	 * @return bool
 	 */
-	public function checkActive()
+	public function checkActive(): bool
 	{
-		$user = $this->getUser();
-		$userId = $this->getUserId();
+		$curUser = $this->getUser()->GetById($this->getUserId())->fetch();
 
-		return $user->GetById($userId)->fetch();
+		return $curUser === false || $curUser['ACTIVE'] !== 'Y' ? false : true;
 	}
 }

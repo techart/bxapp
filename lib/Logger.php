@@ -53,7 +53,7 @@ class Logger
 	 *
 	 * @return void
 	 */
-	public static function setup()
+	public static function setup(): void
 	{
 		self::$showLoggerBar = \Glob::get('APP_SETUP_LOG_BAR', true);
 		self::$sendEmail = \Glob::get('APP_SETUP_LOG_TO_EMAIL', true);
@@ -86,7 +86,9 @@ class Logger
 		}
 
 		$date = new \DateTime();
-		self::$messages[$type][] = [
+		self::$messages[] = [
+			'typeID' => array_search($type, self::$types),
+			'type' => $type,
 			'date' => $date->format ( 'd.m.Y H:i:s:u' ),
 			'file' => $file,
 			'line' => $line,
@@ -317,18 +319,12 @@ class Logger
 	protected static function buildLogText(string $type = 'debug', string $lineBreak = "\r\n"): string
 	{
 		$text = '';
+		$typeID = array_search($type, self::$types);
 
 		if (count(self::$messages) > 0) {
-			foreach (self::$types as $curType) {
-				if (isset(self::$messages[$curType])) {
-					foreach (self::$messages[$curType] as $v) {
-						$text .= $v['date']." - ".strtoupper($curType).": ".var_export($v['message'], true)." (".$v['file']." строчка ".$v['line'].")".$lineBreak;
-
-					}
-				}
-				// сообщения, у которых тип ниже чем $type, игнорируем
-				if ($curType == $type) {
-					break;
+			foreach (self::$messages as $v) {
+				if ($v['typeID'] <= $typeID) {
+					$text .= $v['date']." - ".strtoupper($v['type']).": ".var_export($v['message'], true)." (".$v['file']." строчка ".$v['line'].")".$lineBreak;
 				}
 			}
 		}

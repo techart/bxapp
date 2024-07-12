@@ -13,9 +13,9 @@ class BladeTemplate
 	/**
 	 * Возвращает блейд инстанс
 	 *
-	 * @return void
+	 * @return object
 	 */
-	public static function getBlade()
+	public static function getBlade(): object
 	{
 		if (!self::$blade) {
 			$frontendBlocksPath = SITE_ROOT_DIR.'/'.trim($GLOBALS['APPLICATION']->GetTemplatePath('frontend'), '/').'/src/block/';

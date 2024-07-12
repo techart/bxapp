@@ -1,13 +1,22 @@
 <?php
 namespace Techart\BxApp;
 
+/**
+ * Класс реализует посредников для роутера
+ */
 
 use \Bitrix\Main\Application;
 
 
 class Middleware
 {
-	public static function before()
+	/**
+	 * На основе данных ключа "before" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function before(): void
 	{
 		$curBeforeArray = Config::get('Middleware.before', []);
 
@@ -42,7 +51,13 @@ class Middleware
 		}
 	}
 
-	public static function specialBefore()
+	/**
+	 * На основе данных ключа "specialBefore" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function specialBefore(): void
 	{
 		$curMiddleware = Config::get('Middleware.specialBefore', []);
 		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
@@ -74,11 +89,18 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware before');
+			Logger::info('Для роута нет назначенных Middleware specialBefore');
 		}
 	}
 
-	public static function after(array $actionData = [])
+	/**
+	 * На основе данных ключа "after" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ПОСЛЕ выпонения экшена роута
+	 *
+	 * @param array $actionData
+	 * @return mixed
+	 */
+	public static function after(array $actionData = []): mixed
 	{
 		$curMiddleware = Config::get('Middleware.after', []);
 
@@ -109,11 +131,19 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware before');
+			Logger::info('Для роута нет назначенных Middleware after');
+			return $actionData;
 		}
 	}
 
-	public static function specialAfter(array $actionData = [])
+	/**
+	 * На основе данных ключа "specialAfter" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ПОСЛЕ выпонения экшена роута
+	 *
+	 * @param array $actionData
+	 * @return mixed
+	 */
+	public static function specialAfter(array $actionData = []): mixed
 	{
 		$curMiddleware = Config::get('Middleware.specialAfter', []);
 		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
@@ -145,7 +175,8 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware before');
+			Logger::info('Для роута нет назначенных Middleware specialAfter');
+			return $actionData;
 		}
 	}
 }

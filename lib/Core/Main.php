@@ -14,7 +14,7 @@ class Main
 	 *
 	 * @return boolean
 	 */
-	public function checkDomain():bool
+	public function checkDomain(): bool
 	{
 		return $_SERVER['HTTP_HOST'] == $_SERVER['SERVER_NAME'] ? true : false;
 	}
@@ -24,7 +24,7 @@ class Main
 	 *
 	 * @return void
 	 */
-	public function doRefresh()
+	public function doRefresh(): void
 	{
 		header('Location: '.$_SERVER['REQUEST_URI']);
 		exit();
@@ -35,7 +35,7 @@ class Main
 	 *
 	 * @return void
 	 */
-	public function do404()
+	public function do404(): void
 	{
 		header('HTTP/1.0 404 not found');
 		exit();
@@ -47,7 +47,7 @@ class Main
 	 *
 	 * @return void
 	 */
-	public function call404()
+	public function call404(): void
 	{
 		\Bitrix\Iblock\Component\Tools::process404('', true, true, true, false);
 		exit();
@@ -60,7 +60,7 @@ class Main
 	 * @param string $callableFile
 	 * @return void
 	 */
-	public function callFile(string $callableFile = '')
+	public function callFile(string $callableFile = ''): void
 	{
 		\Bitrix\Iblock\Component\Tools::process404('', false, false, true, $callableFile);
 		exit();
@@ -75,32 +75,38 @@ class Main
 	 * @param string $redirectStatus
 	 * @return void
 	 */
-	public function doRedirect(string $redirectUrl = '', bool $redirectSkipSecurityCheck = false, string $redirectStatus = '302 Found')
+	public function doRedirect(string $redirectUrl = '', bool $redirectSkipSecurityCheck = false, string $redirectStatus = '302 Found'): void
 	{
 		LocalRedirect($redirectUrl, $redirectSkipSecurityCheck, $redirectStatus);
 		exit();
 	}
 
 	/**
-	 * Возвращает из реквеста объект с самыми подходящими параметрами
-	 * В $method можно конкретно указать откуда брать пременные
+	 * Возвращает из реквеста массив переменных для post запроса
+	 * В $method можно указать конкретный тип запроса
+	 * Запросы типов put, delete, options должны быть в json формате.
 	 *
 	 * @param string $method
-	 * @return void
+	 * @return array
 	 */
-	public function getCurRequest(string $method = 'post')
+	public function getCurRequestValues(string $method = 'post'): array
 	{
 		$request = Application::getInstance()->getContext()->getRequest();
+		$method = strtolower($method);
 		$values = [];
 
 		if ($method == 'post') {
 			if ($request->isJson()) {
-				$values = $request->getJsonList();
+				$values = $request->getJsonList()->toArray();
 			} else {
-				$values = $request->getPostList();
+				$values = $request->getPostList()->toArray();
 			}
-		} else {
-			$values = $request->getQueryList();
+		}
+		if ($method == 'get') {
+			$values = $request->getQueryList()->toArray();
+		}
+		if ($request->isJson() ?? ($method == 'delete' || $method == 'put' || $method == 'options')) {
+			$values = json_decode(file_get_contents('php://input'), true);
 		}
 
 		return $values;
@@ -135,9 +141,9 @@ class Main
 	 * @param mixed $data
 	 * @return string
 	 */
-	public function jsonResponse($data)
+	public function jsonResponse(mixed $data = ''): string
 	{
-		header('Content-Type: application/json');
+		// header('Content-Type: application/json');
 		return json_encode($data);
 	}
 }

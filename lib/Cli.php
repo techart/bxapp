@@ -1,12 +1,21 @@
 <?php
 namespace Techart\BxApp;
 
+/**
+ * Класс для обработки cli команд.
+ *
+ * Если команда из списка готовых - перечислены в $defaultActions, то запускает соответствующий метод класса CliActions
+ *
+ * Если команда самописная, то ищёт её класс в lib/Cli.
+ */
 
 class Cli
 {
 	static $defaultActions = array(
 		'app_setup' => 'setup',
 		'app_setupTemplate' => 'setupTemplate',
+		'app_setupD5' => 'setupD5',
+		'app_clearCacheRouter' => 'clearCacheRouter',
 		'app_createModel' => 'createModel',
 		'app_createCli' => 'createCli',
 		'app_createBundle' => 'createBundle',
@@ -17,7 +26,13 @@ class Cli
 	static $options = [];
 
 
-	public static function run($argv = [])
+	/**
+	 * Разбирает cli команды на дефолтные и кастомные
+	 *
+	 * @param array $argv
+	 * @return void
+	 */
+	public static function run($argv = []): void
 	{
 		self::$action = $argv[1];
 		self::$options = array_slice($argv, 2);

@@ -29,7 +29,7 @@ namespace Techart\BxApp\Core\Validator;
  * - проверка рекапчи (правила: recaptchav2 и recaptchav3)
  * - проверки мобильного телефона (правило phone_number) - смотри описание тут в customRules()
  *
- * Доступные правила проверок по дефолту: https://laravel.com/docs/10.x/validation#available-validation-rules
+ * Доступные правила проверок по дефолту: https://laravel.com/docs/11.x/validation#available-validation-rules
  *
  * В папке lang можно задать переводы для: ошибок, имён атрибутов, а также конкретных ошибок конкретного атрибута
  *
@@ -83,7 +83,7 @@ class Validator
 	 * @param Illuminate\Validation\Factory $validator
 	 * @return void
 	 */
-	protected function customRules(\Illuminate\Validation\Factory $validator):void
+	protected function customRules(\Illuminate\Validation\Factory $validator): void
 	{
 		$validator->extend('recaptchav2', function($attribute, $value, $parameters)
 		{
@@ -111,7 +111,7 @@ class Validator
 			} else {
 				return  strlen($value) >= 10 && preg_match('%^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$%i', $value);
 			}
-		}, 'Значение поля '.$attribute.' должно быть корректным номером телефона!');
+		}, 'Значение поля :attribute должно быть корректным номером телефона!');
 	}
 
 	/**

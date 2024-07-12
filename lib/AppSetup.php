@@ -1,16 +1,20 @@
 <?php
 namespace Techart\BxApp;
 
+/**
+ * Класс содержит методы для выполнения cli команд по сетапу проекта
+ */
 
 class AppSetup
 {
 	/**
+	 * Создаёт файл модели
 	 * vphp cli.php app_createModel Test/Test/Test
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createModel(array $options = [])
+	public static function createModel(array $options = []): void
 	{
 		$path = str_replace('\\', '/', $options[0]);
 		$explodePath = explodePathString($path);
@@ -31,12 +35,13 @@ class AppSetup
 	}
 
 	/**
-	 * vphp cli.php app_createCli CliDir/CliClass method
+	 * Создаёт класс для CLI команды
+	 * vphp cli.php app_createCli CliClass method
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createCli(array $options = [])
+	public static function createCli(array $options = []): void
 	{
 		$path = str_replace('\\', '/', $options[0]);
 		$method = $options[1] ?? 'cliMethod';
@@ -59,12 +64,13 @@ class AppSetup
 	}
 
 	/**
+	 * Создаёт бандл
 	 * vphp cli.php app_createBundle Catalog
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createBundle(array $options = [])
+	public static function createBundle(array $options = []): void
 	{
 		$bundleName = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
@@ -82,12 +88,13 @@ class AppSetup
 	}
 
 	/**
+	 * Создаёт файл паосредника After
 	 * vphp cli.php app_app_createMiddlewareAfter MiddlewareName
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createMiddlewareAfter(array $options = [])
+	public static function createMiddlewareAfter(array $options = []): void
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
@@ -105,12 +112,13 @@ class AppSetup
 	}
 
 	/**
+	 * Создаёт файл паосредника Before
 	 * vphp cli.php app_createMiddlewareBefore MiddlewareName
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createMiddlewareBefore(array $options = [])
+	public static function createMiddlewareBefore(array $options = []): void
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
@@ -128,11 +136,13 @@ class AppSetup
 	}
 
 	/**
+	 * Создаёт BxApp структуру файлов в проекте
+	 *
 	 * vphp cli.php app_setup
 	 *
 	 * @return void
 	 */
-	public static function setup()
+	public static function setup(): void
 	{
 		recurseCopy(APP_CORE_SETUP_DIR.'/Cli', APP_CLI_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', APP_CONFIGS_DIR);
@@ -180,17 +190,35 @@ class AppSetup
 	}
 
 	/**
+	 * Создаёт файлы для BxApp лейаута
+	 *
 	 * vphp cli.php app_setupTemplate
 	 *
 	 * @return void
 	 */
-	public static function setupTemplate()
+	public static function setupTemplate(): void
 	{
 		$templateHeader = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/header.php');
 		$templateFooter = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/footer.php');
 
 		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
 		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
+	}
 
+	/**
+	 * Создаёт файлы для D5 шаблонов
+	 * vphp cli.php app_setupD5
+	 *
+	 * @return void
+	 */
+	public static function setupD5(): void
+	{
+		recurseCopy(APP_CORE_SETUP_DIR.'/TemplateFiles/components/bitrix', SITE_ROOT_DIR.'/local/components/bitrix');
+
+		$templateIndex = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/index.php');
+		$template404 = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/404.php');
+
+		file_put_contents(SITE_ROOT_DIR.'/index.php', $templateIndex);
+		file_put_contents(SITE_ROOT_DIR.'/404.php', $template404);
 	}
 }

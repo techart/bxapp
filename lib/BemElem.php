@@ -45,7 +45,7 @@ class BemElem
 	 * @param mixed $value = true - значение модификатора (опционально)
 	 * @return $this
 	 */
-	public function mod($name, $value = true)
+	public function mod($name, $value = true): object
 	{
 		if (empty($name)) {
 			return $this;
@@ -77,7 +77,8 @@ class BemElem
 		return $this;
 	}
 
-	protected function is_assoc($arr) {
+	protected function is_assoc($arr): mixed
+	{
 		if (!is_array($arr) || array() === $arr) {
 			return false;
 		}

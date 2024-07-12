@@ -8,6 +8,7 @@ namespace Techart\BxApp;
  * если искомого конфига нет, то возвращает $defValue
  * если ключ не указан, то возвращает все данные конфига
  * если ключа нет в конфиге, то возвращает $defValue
+ * если ключа нет в конфиге и не указан $defValue, то вернёт null
  * если ключ есть в конфиге, то возвращает его значение
  *
  * Имя задаётся по принципу: ИмяФайла.ИмяКлюча
@@ -28,9 +29,9 @@ class Config
 	 * Прочесть данные из файла конфига (на прямую из файла)
 	 *
 	 * @param string $name
-	 * @return array
+	 * @return mixed
 	 */
-	private static function read(string $name = '')
+	private static function read(string $name = ''): mixed
 	{
 		if (!empty($name)) {
 			$configFile = APP_CONFIGS_DIR.'/'.$name.'.php';
@@ -60,6 +61,7 @@ class Config
 	 * если искомого конфига нет, то возвращает $defValue
 	 * если ключ не указан, то возвращает все данные конфига
 	 * если ключа нет в конфиге, то возвращает $defValue
+	 * если ключа нет в конфиге и не указан $defValue, то вернёт null
 	 * если ключ есть в конфиге, то возвращает его значение
 	 *
 	 * Имя задаётся по принципу: ИмяФайла.ИмяКлюча
@@ -69,7 +71,7 @@ class Config
 	 * @param mixed $defValue
 	 * @return array
 	 */
-	public static function get(string $name = '', mixed $defValue = null):mixed
+	public static function get(string $name = '', mixed $defValue = null): mixed
 	{
 		if (empty($name)) {
 			// если имя конфига не передано, то возвращает все уже сохранённые конфиги

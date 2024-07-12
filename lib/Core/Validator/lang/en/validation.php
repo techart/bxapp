@@ -160,7 +160,7 @@ return [
 	// Тут добавочные App тексты
 	'recaptchav2' => 'Take the reCaptcha test !',
 	'recaptchav3' => 'Take the reCaptcha test !',
-	'phone_number' => 'The :attribute field must be a valid phone number.',
+	'phone_number' => 'The :attribute field must be a valid mobile phone number.',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -198,5 +198,6 @@ return [
 		'password' => 'Password',
 		'confirm_password' => 'Confirm password',
 		'g-recaptcha-response' => 'reCaptcha',
+		'phone' => 'Phone',
 	],
 ];

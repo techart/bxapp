@@ -15,7 +15,7 @@ namespace Techart\BxApp;
  * Файлы ядра ищутся в php_interface/lib/App/Core/{$file}.php
  *
  * App::menu()
- * Файлы мееню ищутся в php_interface/lib/Menu/{$file}.php
+ * Файлы меню ищутся в php_interface/lib/Menu/{$file}.php
  * Одноимённый класс модели надо наследовать от BaseMenu
  *
  * App::model()
@@ -71,7 +71,13 @@ class App
 	]; // массив с экземплярами всех вызванных типов
 
 
-	public static function init(string $initPath = '')
+	/**
+	 * Запускатор BxApp
+	 *
+	 * @param string $initPath
+	 * @return void
+	 */
+	public static function init(string $initPath = ''): void
 	{
 		Define::setDefine($initPath);
 
@@ -92,7 +98,12 @@ class App
 		EventsModel::setEvents();
 	}
 
-	public static function route()
+	/**
+	 * Является обёрткой для core класса Route
+	 *
+	 * @return object
+	 */
+	public static function route(): object
 	{
 		return self::core('Route', false);
 	}
@@ -380,7 +391,12 @@ class App
 		echo $stat;
 	}
 
-	public static function frontend()
+	/**
+	 * Обёртка для класса Frontend.
+	 *
+	 * @return object
+	 */
+	public static function frontend(): object
 	{
 		if (self::$frontendInstance === false) {
 			self::$frontendInstance = new Frontend();
@@ -389,12 +405,28 @@ class App
 		return self::$frontendInstance;
 	}
 
-	public static function cli($argv = [])
+	/**
+	 * Запускает обработку cli команд.
+	 * Используется класс Cli.
+	 *
+	 * @param array $argv
+	 * @return void
+	 */
+	public static function cli($argv = []): void
 	{
 		\Techart\BxApp\Cli::run($argv);
 	}
 
-	public static function getRoute(string $param = '')
+	/**
+	 * Возвращает данные текущего роута
+	 * Если указать $param, то возвратит не общий массив данных, а конкретный ключ
+	 *
+	 * Вернёт пустую строку при ошибке.
+	 *
+	 * @param string $param
+	 * @return array|string
+	 */
+	public static function getRoute(string $param = ''): array|string
 	{
 		if (empty($param)) {
 			return self::$currentRouteData;
@@ -407,8 +439,25 @@ class App
 		}
 	}
 
+	/**
+	 * Устанавливает данные текущего роута
+	 *
+	 * @param array $routeData
+	 * @return void
+	 */
 	public static function setRoute(array $routeData = []): void
 	{
 		self::$currentRouteData = $routeData;
+	}
+
+	/**
+	 * Назначает текущему бандлу протекторы
+	 *
+	 * @param array $protector
+	 * @return void
+	 */
+	public static function setBundleProtector(array $protector = []): void
+	{
+		Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', $protector);
 	}
 }
