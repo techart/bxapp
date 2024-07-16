@@ -175,6 +175,12 @@ class AppSetup
 		if (!is_dir(APP_FAVICON_FILES_DIR)) {
 			mkdir(APP_FAVICON_FILES_DIR);
 		}
+		if (!is_dir(APP_CACHE_DIR)) {
+			mkdir(APP_CACHE_DIR);
+		}
+		if (!is_dir(APP_CACHE_DIR.'/blade')) {
+			mkdir(APP_CACHE_DIR.'/blade');
+		}
 		if (!is_dir(APP_CACHE_ROUTER_DIR)) {
 			mkdir(APP_CACHE_ROUTER_DIR);
 		}
