@@ -220,5 +220,11 @@ class AppSetup
 
 		file_put_contents(SITE_ROOT_DIR.'/index.php', $templateIndex);
 		file_put_contents(SITE_ROOT_DIR.'/404.php', $template404);
+
+		$templateHeader = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/header_d5.php');
+		$templateFooter = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/footer_d5.php');
+
+		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
+		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
 	}
 }

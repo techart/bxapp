@@ -19,6 +19,16 @@ class BemBlock
 		return $this->blockName;
 	}
 
+	/**
+	 * @param string $name - имя модификатора
+	 * @param mixed $value = true - значение модификатора (опционально)
+	 * @return $this
+	 */
+	public function mod($name, $value = true): object
+	{
+		$be = new BemElem($this->blockName, '');
+		return $be->mod($name, $value);
+	}
 
 	public function elem(string $elemName = ''): object
 	{

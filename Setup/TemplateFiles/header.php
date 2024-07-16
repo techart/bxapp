@@ -18,3 +18,5 @@ $block = App::frontend()->block('layout');
 
 <div class="<?= $block ?> <?= $block ?>--<?= $APPLICATION->ShowProperty('page_class', 'default') ?>">
 	<main class="<?= $block->elem('content')  ?>">
+		<!-- если pageProperty WITHOUT_CONTAINER не задан или равен false, то добавляет открывающий тег div с классом b-layout__page-container -->
+		<?php $APPLICATION->AddBufferContent(array('H', 'addPageContainerIfNecessary')); ?>

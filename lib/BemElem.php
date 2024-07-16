@@ -5,7 +5,7 @@ namespace Techart\BxApp;
 class BemElem
 {
 	const MOD_DIVIDER = '--';
-	const VALUE_DIVIDER = '_';
+	const VALUE_DIVIDER = '__';
 	private $blockName = '';
 	private $elemName = '';
 	private $mods = [];
@@ -20,7 +20,7 @@ class BemElem
 
 	public function __toString()
 	{
-		$bemSelector = $this->blockName.self::VALUE_DIVIDER.$this->elemName;
+		$bemSelector = $this->blockName.(!empty($this->elemName) ? self::VALUE_DIVIDER.$this->elemName : '');
 
 		foreach ($this->mods as $modName => $modValue) {
 			$mod = null;

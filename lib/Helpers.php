@@ -207,6 +207,23 @@ class Helpers
 		return in_array(\Glob::get('APP_ENV'), ['dev', 'hot']);
 	}
 
+	public static function addPageContainerIfNecessary()
+	{
+		global $APPLICATION;
+		if (!self::isMain() && !$APPLICATION->GetProperty("WITHOUT_CONTAINER")) {
+			$block = \App::frontend()->block('layout');
+			return '<div class="' . $block->elem('page-container') . '">';
+		}
+	}
+
+	public static function closePageContainerIfNecessary()
+	{
+		global $APPLICATION;
+		if(!self::isMain() && !$APPLICATION->GetProperty("WITHOUT_CONTAINER")) {
+			return '</div>';
+		}
+	}
+
 	/**
 	 * Возвращает код svg картинки по пути $svgPathInfFrontend
 	 *
