@@ -144,6 +144,9 @@ class AppSetup
 	 */
 	public static function setup(): void
 	{
+		if (!is_dir(APP_ROOT_DIR)) {
+			mkdir(APP_ROOT_DIR);
+		}
 		recurseCopy(APP_CORE_SETUP_DIR.'/Cli', APP_CLI_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', APP_CONFIGS_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Localization', APP_LOCALIZATION_DIR);
@@ -171,7 +174,6 @@ class AppSetup
 		}
 		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', APP_TRAITS_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Views', APP_VIEWS_DIR);
-
 		if (!is_dir(APP_FAVICON_FILES_DIR)) {
 			mkdir(APP_FAVICON_FILES_DIR);
 		}
