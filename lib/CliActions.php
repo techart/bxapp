@@ -32,18 +32,6 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_setupD5
-	 *
-	 * @return void
-	 */
-	public function setupD5(): void
-	{
-		AppSetup::setupD5();
-
-		echo 'Создание файлов завершено!'.PHP_EOL;
-	}
-
-	/**
 	 * vphp cli.php app_createModel Test/Test/Test
 	 *
 	 * @return void

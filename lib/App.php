@@ -81,21 +81,20 @@ class App
 	{
 		Define::setDefine($initPath);
 
-		include_once ('Autoload.php');
-		include_once ('Shutdown.php');
+		Autoload::register();
+		Shutdown::register();
 
 		AppGlobals::setGlobals();
+		Logger::setup();
 
 		include_once ('ShortCallFunc.php');
 
-		Logger::setup();
-
 		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
-		include_once (APP_ROOT_DIR.'/Configs/SiteGlobals.php');
-
+		Glob::setSiteGlobals();
 
 		EventsModel::setEvents();
+		ExtraAuth::setup();
 	}
 
 	/**

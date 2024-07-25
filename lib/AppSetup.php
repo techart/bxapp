@@ -212,27 +212,4 @@ class AppSetup
 		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
 		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
 	}
-
-	/**
-	 * Создаёт файлы для D5 шаблонов
-	 * vphp cli.php app_setupD5
-	 *
-	 * @return void
-	 */
-	public static function setupD5(): void
-	{
-		recurseCopy(APP_CORE_SETUP_DIR.'/TemplateFiles/components/bitrix', SITE_ROOT_DIR.'/local/components/bitrix');
-
-		$templateIndex = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/index.php');
-		$template404 = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/404.php');
-
-		file_put_contents(SITE_ROOT_DIR.'/index.php', $templateIndex);
-		file_put_contents(SITE_ROOT_DIR.'/404.php', $template404);
-
-		$templateHeader = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/header_d5.php');
-		$templateFooter = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/footer_d5.php');
-
-		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
-		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
-	}
 }

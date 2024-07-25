@@ -4,13 +4,13 @@
  *
  * APP_ASSETS_FONT_FACE_CODE - вставляет код  шрифтов в хэд через <?=App::core('Assets')->showFontFace()?>
  * APP_ASSETS_FAVICON_CODE - вставляет код фавиконов в хэд через <?=App::core('Assets')->showFaviconHtmlCode()?>
- * APP_ASSETS_DIR - для указания папки хранения ассетов, например, используется в App::core('Assets')->getAssetUrl();
+ * APP_ASSETS_DIR - для указания папки хранения ассетов, например, используется в App::core('Assets')->getAssetUrl(); если не указана, то ищется в текущем битрикс шаблоне (для редких случаев | при мультисайтовости с несколькими шаблонами вообще не трогать!!!)
  *
  * Файлы фавиконов хранить в /local/favicon-files/
  */
 
 return [
-	'APP_ASSETS_DIR' => '/local/templates/site/assets/',
+	'APP_ASSETS_DIR' => $GLOBALS['APPLICATION']->GetTemplatePath('assets/'),
 	'APP_ASSETS_FONT_FACE_CODE' => '
 		<style>
 			@font-face {

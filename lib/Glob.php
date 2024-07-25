@@ -12,6 +12,11 @@ class Glob
 	protected static $values = []; // массив запомненных значений
 
 
+	public static function setSiteGlobals(): void
+	{
+		include_once (APP_ROOT_DIR.'/Configs/SiteGlobals.php');
+	}
+
 	/**
 	 * Возвращает true если переменная с именем $name существует, а иначе возвращает false
 	 *

@@ -2,13 +2,6 @@
 namespace Techart\BxApp;
 
 
-spl_autoload_register(function($className) {
-	if (class_exists('Techart\BxApp\Autoload')) {
-		Autoload::Run($className);
-	}
-}, true, true);
-
-
 class Autoload
 {
 	protected static $aliases = [
@@ -36,6 +29,15 @@ class Autoload
 		//'BaseSeo' => '\Techart\BxApp\Base\Seo\BaseSeo',
 	];
 
+
+	public static function register(): void
+	{
+		spl_autoload_register(function($className) {
+			if (class_exists('Techart\BxApp\Autoload')) {
+				Autoload::Run($className);
+			}
+		}, true, true);
+	}
 
 	public static function Run(string $className = '')
 	{

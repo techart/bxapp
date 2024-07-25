@@ -11,53 +11,18 @@ class Helpers
 	/**
 	 * Вставляет svg файл инлайном на страницу
 	 *
-	 * $svgPath - путь к свг файлу
-	 * $class - строка, которая будет добавлена в параметр class тега svg
+	 * Короткий синоним для App::core('Assets')->inlineSvg()
 	 *
-	 * \H::inlineSvg('/upload/test/bottom-text__img.svg')
+	 * H::inlineSvg(H::getAssetUrl('/svg/bottom-text__img.svg'))
+	 * H::inlineSvg('/upload/test/bottom-text__img.svg')
 	 *
 	 * @param string $svgPath
-	 * @param string $class
+	 * @param array $params
 	 * @return string|bool
 	 */
-	public static function inlineSvg(string $svgPath = '', string $class = ''): string | bool
+	public static function inlineSvg(string $svgPath = '', array $params = []): string | bool
 	{
-		$base64Decode = false;
-
-		if (strpos($svgPath, 'data:image') !== false) {
-			$base64Decode = base64_decode(str_replace('data:image/svg+xml;base64,', '', $svgPath));
-		} else {
-			$svgPath = realpath(SITE_ROOT_DIR.'/'.$svgPath);
-
-			if (strpos($svgPath, '/www/frontend/')) {
-				$svgPath = str_replace('/www/frontend/', '/frontend/', $svgPath);
-			}
-		}
-
-		if(file_exists($svgPath) or $base64Decode !== false) {
-			$fileContent = ($base64Decode !== false ? $base64Decode : file_get_contents($svgPath));
-
-			if ($fileContent !== FALSE) {
-				preg_match('|(<svg.*?\</svg>)|s', $fileContent, $match);
-
-				if (count($match) > 0) {
-					$curClass = $class!=''?' class="'.$class.'"':'';
-					$svgContent = str_replace('<svg', '<svg'.$curClass.'', $match[1]);
-
-					return $svgContent;
-				} else {
-					Logger::error('inlineSvg: Файл "'.$svgPath.'" не является svg файлом!');
-					return false;
-				}
-
-			} else {
-				Logger::error('inlineSvg: Файл "'.$svgPath.'" не может быть прочитан!');
-				return false;
-			}
-		} else {
-			dLogger::error('inlineSvg: Файл "'.$svgPath.'" не найден!');
-			return false;
-		}
+		return App::core('Assets')->inlineSvg($svgPath, $params);
 	}
 
 	/**
@@ -222,19 +187,6 @@ class Helpers
 		if(!self::isMain() && !$APPLICATION->GetProperty("WITHOUT_CONTAINER")) {
 			return '</div>';
 		}
-	}
-
-	/**
-	 * Возвращает код svg картинки по пути $svgPathInfFrontend
-	 *
-	 * @param string $svgPathInfFrontend
-	 * @return string
-	 */
-	public static function putSvgImageFromFrontend(string $svgPathInfFrontend): string
-	{
-		return file_get_contents(
-			SITE_ROOT_DIR.rtrim($GLOBALS['APPLICATION']->GetTemplatePath('frontend'), '/').'/'.ltrim($svgPathInfFrontend, '/')
-		);
 	}
 
 	/**

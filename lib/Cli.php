@@ -14,7 +14,6 @@ class Cli
 	static $defaultActions = array(
 		'app_setup' => 'setup',
 		'app_setupTemplate' => 'setupTemplate',
-		'app_setupD5' => 'setupD5',
 		'app_clearCacheRouter' => 'clearCacheRouter',
 		'app_createModel' => 'createModel',
 		'app_createCli' => 'createCli',
@@ -65,19 +64,34 @@ class Cli
 							if (method_exists($curClass, $methodName)) {
 								call_user_func_array([$curClass, $methodName], $methodArgs);
 							} else {
-								echo 'В классе '.$className.' не найден метод: '.$methodName.PHP_EOL;
+								// echo 'В классе '.$className.' не найден метод: '.$methodName.PHP_EOL;
+								Logger::warning('В классе '.$className.' не найден метод: '.$methodName);
+								throw new \LogicException('В классе '.$className.' не найден метод: '.$methodName);
+								exit();
 							}
 						} else {
-							echo 'Не найден класс: '.$className.PHP_EOL;
+							// echo 'Не найден класс: '.$className.PHP_EOL;
+							Logger::warning('Не найден класс: '.$className);
+							throw new \LogicException('Не найден класс: '.$className);
+							exit();
 						}
 					} else {
-						echo 'Не найден файл: '.$classFile.PHP_EOL;
+						// echo 'Не найден файл: '.$classFile.PHP_EOL;
+						Logger::warning('Не найден файл: '.$classFile);
+						throw new \LogicException('Не найден файл: '.$classFile);
+						exit();
 					}
 				} else {
-					echo 'Нужно передать имя файла и метод в нём'.PHP_EOL;
+					// echo 'Нужно передать имя файла и метод в нём'.PHP_EOL;
+					Logger::warning('Нужно передать имя файла и метод в нём');
+					throw new \LogicException('Нужно передать имя файла и метод в нём');
+					exit();
 				}
 			} else {
-				echo 'Нужно передать имя файла и метод в нём'.PHP_EOL;
+				// echo 'Нужно передать имя файла и метод в нём'.PHP_EOL;
+				Logger::warning('Нужно передать имя файла и метод в нём');
+				throw new \LogicException('Нужно передать имя файла и метод в нём');
+				exit();
 			}
 		}
 	}
