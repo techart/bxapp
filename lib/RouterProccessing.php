@@ -48,6 +48,7 @@ if (Router::isActive()) { // роут включён
 			if (Config::get('Router.APP_ROUTER_CACHE_REBUILD', false)) {
 				Logger::info('ребилд роутера включён');
 
+				Router::buildDefault();
 
 				if (Router::build() === true) { // роутер построен
 					Logger::info('роутер построен');
@@ -87,6 +88,8 @@ if (Router::isActive()) { // роут включён
 		}
 	} else { // роутер работает без кэша
 		Logger::info('роутер работает без кэша');
+
+		Router::buildDefault();
 
 		if (Router::build() === true) { // роутер построен
 			Logger::info('роутер построен');

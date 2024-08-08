@@ -9,7 +9,6 @@ class RouterConfigurator
 {
 	private static $RouterData = [];
 
-
 	/**
 	 * Возвращает массив даных протектора
 	 *

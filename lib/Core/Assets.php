@@ -6,9 +6,38 @@ namespace Techart\BxApp\Core;
  */
 
 use \Bitrix\Main\Page\Asset;
+use \Bitrix\Main\Page\AssetLocation;
 
 class Assets
 {
+	/**
+	 * Добавляет в тег <head> страницы до подключения скриптов и стилей строку для прелоада каритнки по пути $path
+	 *
+	 * @param string $string
+	 * @return void
+	 */
+	public function addPreloadImage(string $path = ''): void
+	{
+		if (!empty($path)) {
+			$ext = pathinfo($path, PATHINFO_EXTENSION);
+
+			Asset::getInstance()->addString('<link rel="preload" as="image" href="'.$path.'" type="image/'.$ext.'"/>', true, AssetLocation::BEFORE_CSS);
+		}
+	}
+
+	/**
+	 * Добавляет произвольную строку кода $string в тег <head> страницы после подключения скриптов и стилей
+	 *
+	 * @param string $string
+	 * @return void
+	 */
+	public function addHeadString(string $string = ''): void
+	{
+		if (!empty($string)) {
+			Asset::getInstance()->addString($string, true, AssetLocation::BODY_END);
+		}
+	}
+
 	/**
 	 * Возвращает код шрифтов для подключения в header.php
 	 * Код заполняется в Configs/Assets.php - APP_ASSETS_FONT_FACE_CODE
@@ -46,6 +75,9 @@ class Assets
 	 * Возвращает массив с аттребутами для тега подключения ассетов (script, link)
 	 * Возвращает false, если нет файла сборки
 	 *
+	 * Метод проверяет, если SITE_TEMPLATE_ID == '.default', то принудительно смотрит в шаблоне "site",
+	 * в противном случае текущий GetTemplatePath()
+	 *
 	 * @param string $item
 	 * @param array $attrs
 	 * @param string $type
@@ -53,7 +85,7 @@ class Assets
 	 */
 	private function buildTagAttrs(string $item = '', array $attrs = [], string $type = ''): array|bool
 	{
-		$pathToAssets = SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend/assets/');
+		$pathToAssets = SITE_TEMPLATE_ID == '.default' ? SITE_ROOT_DIR.'/local/templates/site/frontend/assets/' : SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend/assets/');
 		$pathToBuildJson = realpath($pathToAssets . '/' . \Glob::get('APP_ENV', 'dev') . '.json');
 
 		if ($pathToBuildJson === false) {
@@ -108,12 +140,15 @@ class Assets
 	/**
 	 * Подключает js библиотеки указанные в user.settings для переданной точки входа
 	 *
+	 * Метод проверяет, если SITE_TEMPLATE_ID == '.default', то принудительно смотрит в шаблоне "site",
+	 * в противном случае текущий GetTemplatePath()
+	 *
 	 * @param string $entry
 	 * @return void
 	 */
 	private function setLibs(string $entry): void
 	{
-		$file = file_get_contents(SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend').'/user.settings.js');
+		$file = SITE_TEMPLATE_ID == '.default' ? file_get_contents(SITE_ROOT_DIR.'/local/templates/site/frontend/user.settings.js') : file_get_contents(SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend').'/user.settings.js');
 		$file_entry = stristr($file, $entry);
 		$file_entry = stristr($file_entry, '{');
 		$file_entry = stristr($file_entry, '}', true).'}';

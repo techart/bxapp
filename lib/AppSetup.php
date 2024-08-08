@@ -176,9 +176,14 @@ class AppSetup
 		recurseCopy(APP_CORE_SETUP_DIR.'/Views', APP_VIEWS_DIR);
 		if (!is_dir(APP_FAVICON_FILES_DIR)) {
 			mkdir(APP_FAVICON_FILES_DIR);
+			copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');
 		}
 		if (!is_dir(APP_CACHE_DIR)) {
 			mkdir(APP_CACHE_DIR);
+		}
+		if (!is_dir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets')) {
+			mkdir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets');
+			copy(APP_CORE_SETUP_DIR.'/gitkeep', SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets/.gitkeep');
 		}
 		if (!is_dir(APP_CACHE_DIR.'/blade')) {
 			mkdir(APP_CACHE_DIR.'/blade');

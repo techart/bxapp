@@ -28,7 +28,8 @@ class Log
 	public static function write(string $fileName = '', string $text = '', bool $append = true): bool|int
 	{
 		$fileName = APP_LOGS_DIR.'/'.$fileName.'.txt';
+		$date = new \DateTime();
 
-		return file_put_contents($fileName, $text.PHP_EOL, $append ? FILE_APPEND : 0);
+		return file_put_contents($fileName, $date->format ( 'd.m.Y H:i:s:u' ).' - '.$text.PHP_EOL, $append ? FILE_APPEND : 0);
 	}
 }

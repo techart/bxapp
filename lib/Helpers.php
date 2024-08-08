@@ -148,7 +148,7 @@ class Helpers
 	}
 
 	/**
-	 * Возвращает true если личный комп или titan
+	 * Возвращает true если intranet или titan
 	 * Возвращает false в противном случае
 	 *
 	 * @return boolean
@@ -163,11 +163,42 @@ class Helpers
 	}
 
 	/**
-	 * Возвращает true, если локальная сеть и false в противном случае
+	 * Возвращает true если сайт открыт на titan
+	 * Возвращает false в противном случае
+	 *
+	 * @return boolean
+	 */
+	public static function isTitan(): bool
+	{
+		if (strpos($_SERVER['HTTP_HOST'], '.projects.') === false) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Возвращает true, если intranet
+	 * Возвращает false в противном случае
 	 *
 	 * @return boolean
 	 */
 	public static function isLocal(): bool
+	{
+		if (strpos($_SERVER['HTTP_HOST'], 'intranet') === false) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Возвращает true, если APP_ENV равен dev или hot
+	 * Возвращает false в противном случае
+	 *
+	 * @return boolean
+	 */
+	public static function isDev(): bool
 	{
 		return in_array(\Glob::get('APP_ENV'), ['dev', 'hot']);
 	}

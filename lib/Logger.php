@@ -35,10 +35,12 @@ class Logger
 	protected static $sendEmail; // отправлять на почту?
 	protected static $writeToFile; // записывать в файл лога?
 	protected static $emails; // получатели через запятую
-	protected static $logFile = 'Logger'; // имя лог файла в папке Logs
+	protected static $pathToLogFile = '/Logger'; // путь к файлу лога от www
 	protected static $typesForEmail; // с какого типа сообщений отправлять почту
 	protected static $typesForFile; // с какого типа сообщений писать в файл
+	protected static $curTypeID = 999;
 	protected static $types = [
+		'frontendError',
 		'critical',
 		'error',
 		'warning',
@@ -73,9 +75,12 @@ class Logger
 	 */
 	protected static function write(string $type = 'info', mixed $message = ''): void
 	{
+		$typeID = array_search($type, self::$types);
 		$trace = debug_backtrace();
 		$file = '';
 		$line = '';
+
+		self::$curTypeID = self::$curTypeID < $typeID ? self::$curTypeID : $typeID;
 
 		if (strpos($trace[1]['file'], 'ErrorTrait') !== false) {
 			$file = $trace[2]['file'];
@@ -87,7 +92,7 @@ class Logger
 
 		$date = new \DateTime();
 		self::$messages[] = [
-			'typeID' => array_search($type, self::$types),
+			'typeID' => $typeID,
 			'type' => $type,
 			'date' => $date->format ( 'd.m.Y H:i:s:u' ),
 			'file' => $file,
@@ -95,6 +100,25 @@ class Logger
 			'message' => $message,
 		];
 		self::$count++;
+	}
+
+	static function frontendError(array $params = []): void
+	{
+		if (Glob::get('APP_SETUP_LOG_FRONTEND_TO_EMAIL', false) || Glob::get('APP_SETUP_LOG_FRONTEND_TO_FILE', false)) {
+			$typeID = array_search('frontendError', self::$types);
+			$date = new \DateTime();
+
+			self::$curTypeID = self::$curTypeID < $typeID ? self::$curTypeID : $typeID;
+			self::$messages[] = [
+				'typeID' => $typeID,
+				'type' => 'frontendError',
+				'date' => $date->format ( 'd.m.Y H:i:s:u' ),
+				'message' => $params,
+			];
+			self::$sendEmail = Glob::get('APP_SETUP_LOG_FRONTEND_TO_EMAIL', false);
+			self::$writeToFile = Glob::get('APP_SETUP_LOG_FRONTEND_TO_FILE', false);
+			self::$pathToLogFile = '/LoggerFrontend';
+		}
 	}
 
 	/**
@@ -324,8 +348,13 @@ class Logger
 		if (count(self::$messages) > 0) {
 			foreach (self::$messages as $v) {
 				if ($v['typeID'] <= $typeID) {
-					$text .= $v['date']." - ".strtoupper($v['type']).": ".var_export($v['message'], true)." (".$v['file']." строчка ".$v['line'].")".$lineBreak;
+						if ($v['typeID'] == array_search('frontendError', self::$types)) {
+							$text .= $v['date']." - ".strtoupper($v['type']).": ".var_export($v['message'], true).$lineBreak;
+						} else {
+							$text .= $v['date']." - ".strtoupper($v['type']).": ".var_export($v['message'], true)." (".$v['file']." строчка ".$v['line'].")".$lineBreak;
+						}
 				}
+
 			}
 		}
 
@@ -333,17 +362,18 @@ class Logger
 	}
 
 	/**
-	 * Записывает в файл self::$logFile установленные ошибки с учётом типа self::$typesForFile
+	 * Записывает в файл self::$pathToLogFile установленные ошибки с учётом типа self::$typesForFile
 	 *
 	 * @return void
 	 */
 	protected static function writeToFile(): void
 	{
 		if (self::$writeToFile && count(self::$messages) > 0) {
+			$fileName = self::$pathToLogFile;
 			$text = self::buildLogText(self::$typesForFile);
 
 			if (!empty($text)) {
-				\Log::write(self::$logFile, $text);
+				\Log::write($fileName, $text);
 			}
 		}
 	}
@@ -360,11 +390,14 @@ class Logger
 
 			if (!empty($text) && !empty(self::$emails)) {
 				$type = 'WARNING';
-				if (isset(self::$messages['error'])) {
+				if (self::$curTypeID == 2) {
 					$type = 'ERROR';
 				}
-				if (isset(self::$messages['critical'])) {
+				if (self::$curTypeID == 1) {
 					$type = 'CRITICAL';
+				}
+				if (self::$curTypeID == 0) {
+					$type = 'FRONTEND_ERROR';
 				}
 
 				mail(self::$emails, $type.'! - ошибки с сайта '.$_SERVER['HTTP_HOST'], $text, 'Content-Type: text/plain; charset=utf-8' . "\r\n");

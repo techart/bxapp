@@ -80,6 +80,28 @@ class Router
 		}
 	}
 
+	public static function buildDefault(): bool
+	{
+		$bundles = ['BxappDefault' ];
+
+		if (count($bundles) > 0) {
+			foreach ($bundles as $bundle) {
+				if (file_exists(APP_CORE_ROUTES_DIR.'/'.$bundle.'/Routes.php')) {
+					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
+					App::setBundleProtector([]);
+					require_once(APP_CORE_ROUTES_DIR.'/'.$bundle.'/Routes.php');
+				} else {
+					Logger::error('Router: нет файла группы роутов '.$bundle);
+				}
+			}
+			return true;
+		} else {
+			Logger::error('Router: не указано ни одной группы роутов в APP_ROUTER_BUNDLES');
+
+			return false;
+		}
+	}
+
 	/**
 	 * Строит роутер
 	 *
@@ -344,8 +366,15 @@ class Router
 	{
 		if (!empty($routeData)) {
 			if (isset($routeData['controller']) && isset($routeData['method'])) {
-				$controllerFile = realpath(APP_ROUTES_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php');
-
+				if ($routeData['bundle'] == 'BxappDefault') {
+					// dump(11);
+					$controllerFile = APP_CORE_ROUTES_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php';
+					// dump(APP_CORE_ROUTES_DIR);
+				} else {
+					// dump(22);
+					$controllerFile = realpath(APP_ROUTES_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php');
+				}
+				// dd($controllerFile);
 				if (file_exists($controllerFile)) {
 					require_once($controllerFile);
 					$controllerClass = 'Routes\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];

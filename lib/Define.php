@@ -19,6 +19,7 @@ class Define
 		define("APP_SELF_DIR", APP_VENDOR_DIR.'/lib');
 		define("APP_CORE_DIR", APP_SELF_DIR.'/Core');
 		define("APP_CORE_BASE_DIR", APP_SELF_DIR.'/Base');
+		define("APP_CORE_ROUTES_DIR", APP_SELF_DIR.'/Routes');
 		define("APP_CORE_TRAITS_DIR", APP_SELF_DIR.'/Traits');
 
 		// Пути app на сайте: php_interface/lib

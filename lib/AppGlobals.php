@@ -22,6 +22,10 @@ class AppGlobals
 		\Glob::set('APP_SETUP_LOG_LEVEL_EMAIL', strval(\Env::get('APP_LOG_LEVEL_EMAIL', 'warning')));
 		// с какого уровня сообщений писать в файл лога
 		\Glob::set('APP_SETUP_LOG_LEVEL_FILE', strval(\Env::get('APP_LOG_LEVEL_FILE', 'debug')));
+		// отправлять лог фронтенда на почту?
+		Glob::set('APP_SETUP_LOG_FRONTEND_TO_EMAIL', boolval(Env::get('APP_LOG_FRONTEND_TO_EMAIL', false)));
+		// записывать ошибки фронтенда в файл лога?
+		Glob::set('APP_SETUP_LOG_FRONTEND_TO_FILE', boolval(Env::get('APP_LOG_FRONTEND_TO_FILE', false)));
 		// почта для отправки лога
 		\Glob::set('APP_SETUP_LOG_EMAILS', strval(\Env::get('APP_LOG_SEND_TO', '')));
 		// если true, то рекапча локально всегда правильная (не проверяется)
