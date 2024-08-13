@@ -214,9 +214,9 @@ class Assets
 				preg_match('|(<svg.*?\</svg>)|s', $fileContent, $match);
 
 				if (count($match) > 0) {
-					$svg = new DOMDocument();
+					$svg = new \DOMDocument();
 
-					if ($svg->loadHTML($fileContent)) {
+					if ($svg->load($svgRealPath)) {
 						$svgElem = $svg->getElementsByTagName('svg');
 
 						foreach ($currentParams as $attr => $value) {
@@ -227,20 +227,20 @@ class Assets
 
 						return $svg->saveHTML();
 					} else {
-						Logger::error('Файл "'.$svgPath.'" не удалось загрузить loadHTML()!');
+						\Logger::error('Файл "'.$svgPath.'" не удалось загрузить loadHTML()!');
 						return false;
 					}
 				} else {
-					Logger::error('Файл "'.$svgPath.'" не является svg файлом!');
+					\Logger::error('Файл "'.$svgPath.'" не является svg файлом!');
 					return false;
 				}
 
 			} else {
-				Logger::error('Файл "'.$svgPath.'" не может быть прочитан!');
+				\Logger::error('Файл "'.$svgPath.'" не может быть прочитан!');
 				return false;
 			}
 		} else {
-			Logger::error('Файл "'.$svgPath.'" не найден!');
+			\Logger::error('Файл "'.$svgPath.'" не найден!');
 			return false;
 		}
 	}

@@ -81,6 +81,8 @@ class App
 	{
 		Define::setDefine($initPath);
 
+		self::setup();
+
 		Autoload::register();
 		Shutdown::register();
 
@@ -95,6 +97,21 @@ class App
 
 		EventsModel::setEvents();
 		ExtraAuth::setup();
+	}
+
+	/**
+	 * Базовая настройка
+	 *
+	 * @return void
+	 */
+	protected static function setup(): void
+	{
+		if (!is_dir(APP_CACHE_DIR)) {
+			mkdir(APP_CACHE_DIR);
+		}
+		if (!is_dir(APP_CACHE_DIR.'/blade')) {
+			mkdir(APP_CACHE_DIR.'/blade');
+		}
 	}
 
 	/**
