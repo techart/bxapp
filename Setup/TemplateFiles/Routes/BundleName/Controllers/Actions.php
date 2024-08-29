@@ -1,7 +1,7 @@
 <?php
 namespace Routes\{{BundleName}}\Controllers;
 
-class Actions
+class Actions extends \BaseRoutesController
 {
 	public function method()
 	{
@@ -9,6 +9,6 @@ class Actions
 		// $props = $this->getValues();
 		$data = [];
 
-		return $this->return($this->result('', '', $data));
+		return $this->result('', '', $data);
 	}
 }

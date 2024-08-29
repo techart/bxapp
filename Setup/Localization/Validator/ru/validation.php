@@ -11,22 +11,6 @@
  */
 
 return [
-
-	// 'accepted' => 'Вы должны принять :attribute.',
-
-	'custom' => [
-		'attribute-name' => [
-			'rule-name' => 'custom-message',
-		],
-	],
-
-	'attributes' => [
-	],
-];
-
-
-return [
-
 	// 'accepted' => 'Вы должны принять :attribute.',
 
 	'custom' => [

@@ -200,6 +200,9 @@ class AppSetup
 		if (!file_exists(APP_ROOT_DIR.'/.gitignore')) {
 			copy(APP_CORE_SETUP_DIR.'/gitignore', APP_ROOT_DIR.'/.gitignore');
 		}
+		if (file_exists(SITE_ROOT_DIR.'/local/.config.php')) {
+			unlink(SITE_ROOT_DIR.'/local/.config.php');
+		}
 	}
 
 	/**
