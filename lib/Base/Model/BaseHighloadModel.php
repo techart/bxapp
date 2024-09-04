@@ -12,17 +12,19 @@ namespace Techart\BxApp\Base\Model;
  *
  */
 
+\CModule::IncludeModule('highloadblock');
+
 use Bitrix\Highloadblock as HL;
-use Bitrix\Highloadblock\HighloadBlockTable;
-use Bitrix\Main\Loader;
+// use Bitrix\Highloadblock\HighloadBlockTable;
+// use Bitrix\Main\Loader;
 
 
 class BaseHighloadModel
 {
-	use ResultTrait;
-	use BuildResultTrait;
-	use CacheTrait;
-	use ErrorTrait;
+	use \ResultTrait;
+	use \BuildResultTrait;
+	use \CacheTrait;
+	use \ErrorTrait;
 
 
 	public $table = ''; // код highload блока
@@ -66,7 +68,7 @@ class BaseHighloadModel
 	public function getHighloadBlock(): array
 	{
 		if(count($this->hblockData) == 0) {
-			$hlblock = HighloadBlockTable::getList([
+			$hlblock = HL\HighloadBlockTable::getList([
 				'filter' => ['=NAME' => $this->table]
 			])->fetch();
 
