@@ -10,7 +10,7 @@
  */
 
 return [
-	'APP_ASSETS_DIR' => $GLOBALS['APPLICATION']->GetTemplatePath('assets/'),
+	'APP_ASSETS_DIR' => App::getCurrentTemplatePath('assets/'),
 	'APP_ASSETS_FONT_FACE_CODE' => '
 		<style>
 			@font-face {

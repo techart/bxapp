@@ -115,6 +115,29 @@ class App
 	}
 
 	/**
+	 * Аналог битриксового метода GetTemplatePath()
+	 * Но, в отличии от битрикс метода, данный работает со старта init.php
+	 * Если битрикс SITE_TEMPLATE_ID доступен, то работает GetTemplatePath(), а если нет, то формируется отдельно
+	 *
+	 * Битрикс метод, так же как и битрикс константа SITE_TEMPLATE_PATH, назначаются где-то после SITE_ID, а не вместе
+	 *
+	 * @param string $path
+	 * @return string|boolean
+	 */
+	public static function getCurrentTemplatePath(string $path = ''): string|bool
+	{
+		if (defined('SITE_TEMPLATE_ID')) {
+			return $GLOBALS['APPLICATION']->GetTemplatePath($path);
+		} else {
+			$curTemplatePath = '/local/templates/'.\CSite::GetCurTemplate().'/assets/';
+
+			if (realpath(SITE_ROOT_DIR.$curTemplatePath)) {
+				return $curTemplatePath;
+			}
+		}
+	}
+
+	/**
 	 * Является обёрткой для core класса Route
 	 *
 	 * @return object
@@ -211,12 +234,12 @@ class App
 						return new $className($locale);
 					}
 				} else {
-					\Logger::error('В файле "'.$classFile.'" не найден класс "'.$className.'"!');
+					Logger::error('В файле "'.$classFile.'" не найден класс "'.$className.'"!');
 					throw new \LogicException('В файле "'.$classFile.'" не найден класс "'.$className.'"!');
 					exit();
 				}
 			} else {
-				\Logger::error('Файл "'.$path.'/'.$file.'" не найден!');
+				Logger::error('Файл "'.$path.'/'.$file.'" не найден!');
 				throw new \LogicException('Файл "'.$path.'/'.$file.'" не найден!');
 				exit();
 			}
@@ -266,9 +289,9 @@ class App
 		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
 
 		// если режим локализации моделей указан как "file"
-		if (\Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'file') == 'file') {
+		if (Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'file') == 'file') {
 			// если дефолтный язык не равен переданному
-			if (\Config::get('App.APP_LANG', 'ru') !== $curLang) {
+			if (Config::get('App.APP_LANG', 'ru') !== $curLang) {
 				$dir .= '/_Lang/'.$curLang;
 			}
 		}
@@ -344,9 +367,9 @@ class App
 	{
 		$stat = [];
 		$text = '';
-		$iterator = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(APP_MODELS_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
-			RecursiveIteratorIterator::SELF_FIRST
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator(APP_MODELS_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::SELF_FIRST
 		);
 		$iterator->setMaxDepth(5);
 
