@@ -615,11 +615,74 @@ class BaseIblockModel
 		return $result;
 	}
 
-	public function getSeoFields($element_id): array
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока new \Bitrix\Iblock\InheritedProperty\IblockValues
+	 *
+	 * @return object
+	 */
+	public function iblockValues(): object
 	{
-		$result = new Bitrix\Iblock\InheritedProperty\ElementValues($this->iblockData['ID'], $element_id);
+		return new \Bitrix\Iblock\InheritedProperty\IblockValues($this->iblockData['ID']);
+	}
 
-		return $result->getValues();
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока getValues() от \Bitrix\Iblock\InheritedProperty\IblockValues
+	 *
+	 * @return array
+	 */
+	public function getIblockValues(): array
+	{
+		return $this->iblockValues()->getValues();
+	}
+
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока Bitrix\Iblock\InheritedProperty\SectionValues
+	 *
+	 * @param integer $sectionId
+	 * @return object
+	 */
+	public function sectionValues(int $sectionId = 0): object
+	{
+		return new \Bitrix\Iblock\InheritedProperty\SectionValues($this->iblockData['ID'], $sectionId);
+	}
+
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока getValues() от \Bitrix\Iblock\InheritedProperty\SectionValues
+	 *
+	 * @param integer $sectionId
+	 * @return array
+	 */
+	public function getSectionValues(int $sectionId = 0): array
+	{
+		return $this->sectionValues($sectionId)->getValues();
+	}
+
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока Bitrix\Iblock\InheritedProperty\ElementValues
+	 *
+	 * @param integer $elementId
+	 * @return object
+	 */
+	public function elementValues(int $elementId = 0): object
+	{
+		return new \Bitrix\Iblock\InheritedProperty\ElementValues($this->iblockData['ID'], $elementId);
+	}
+
+	/**
+	 * SEO
+	 * Возвращает для текущего инфоблока getValues() от \Bitrix\Iblock\InheritedProperty\ElementValues
+	 *
+	 * @param integer $elementId
+	 * @return array
+	 */
+	public function getElementValues(int $elementId = 0): array
+	{
+		return $this->elementValues($elementId)->getValues();
 	}
 
 	/**

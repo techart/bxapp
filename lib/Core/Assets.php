@@ -28,13 +28,46 @@ class Assets
 	/**
 	 * Добавляет произвольную строку кода $string в тег <head> страницы после подключения скриптов и стилей
 	 *
+	 * Работает через Asset::getInstance()->addString()
+	 *
 	 * @param string $string
+	 * @param string $location
 	 * @return void
 	 */
-	public function addHeadString(string $string = ''): void
+	public function addHeadString(string $string = '', string $location = AssetLocation::BODY_END): void
 	{
 		if (!empty($string)) {
-			Asset::getInstance()->addString($string, true, AssetLocation::BODY_END);
+			Asset::getInstance()->addString($string, true, $location);
+		}
+	}
+
+	/**
+	 * Добавляет ссылку $path на скрипт в тег <head> страницы после подключения скриптов и стилей
+	 *
+	 * Работает через Asset::getInstance()->addJs()
+	 *
+	 * @param string $path
+	 * @return void
+	 */
+	public function addHeadJs(string $path = ''): void
+	{
+		if (!empty($path)) {
+			Asset::getInstance()->addJs($path, false);
+		}
+	}
+
+	/**
+	 * Добавляет ссылку $path на стиль в тег <head> страницы после подключения скриптов и стилей
+	 *
+	 * Работает через Asset::getInstance()->addCss()
+	 *
+	 * @param string $path
+	 * @return void
+	 */
+	public function addHeadCss(string $path = ''): void
+	{
+		if (!empty($path)) {
+			Asset::getInstance()->addCss($path, false);
 		}
 	}
 

@@ -261,4 +261,27 @@ class Helpers
 
 		return $result;
 	}
+
+	/**
+	 * Возвращает текущий IP пользователя.
+	 * Перебирает самые ожидаемые места для универсального определения "правильного" ip.
+	 * Хотя многое зависит от настроек хостинга/прокси. Возможно, для конкретного сайта нужно писать свой вариант.
+	 *
+	 * Работает без сторонних сервисов, в отличии, например, от \Bitrix\Main\Service\GeoIp
+	 *
+	 * @return boolean|string
+	 */
+	public static function getRealIp(): bool|string
+	{
+		$ip = false;
+
+		foreach (['HTTP_CLIENT_IP', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key) {
+			if (isset($_SERVER[$key]) && filter_var($_SERVER[$key], FILTER_VALIDATE_IP) !== false) {
+				$ip = $_SERVER[$key];
+				break;
+			}
+		}
+
+		return $ip;
+	}
 }
