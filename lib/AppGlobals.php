@@ -28,8 +28,8 @@ class AppGlobals
 		Glob::set('APP_SETUP_LOG_FRONTEND_TO_FILE', boolval(Env::get('APP_LOG_FRONTEND_TO_FILE', false)));
 		// почта для отправки лога
 		\Glob::set('APP_SETUP_LOG_EMAILS', strval(\Env::get('APP_LOG_SEND_TO', '')));
-		// если true, то рекапча локально всегда правильная (не проверяется)
-		\Glob::set('APP_RECAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_RECAPTCHA_CHECK_LOCAL', true)));
+		// если true, то капчи локально всегда правильные (не проверяется)
+		\Glob::set('APP_CAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_CAPTCHA_CHECK_LOCAL', true)));
 		// роутер для API активны или нет?
 		\Glob::set('APP_SETUP_API_ROUTER_ACTIVE', boolval(\Env::get('APP_ROUTER_ACTIVE', true)));
 		// роуту надо делать кэш или нет?

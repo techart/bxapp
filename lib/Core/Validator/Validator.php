@@ -95,6 +95,11 @@ class Validator
 			return \App::core('Recaptcha')->checkV3($value);
 		}, 'Пройдите тест reCaptcha!');
 
+		$validator->extend('smartCaptcha', function($attribute, $value, $parameters)
+		{
+			return \App::core('SmartCaptcha')->checkSmart($value);
+		}, 'Пройдите тест smartCaptcha!');
+
 		/**
 		 * Распознаёт разные варианты мобильного номера:
 		 *

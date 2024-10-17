@@ -160,6 +160,7 @@ return [
 	// Тут добавочные App тексты
 	'recaptchav2' => 'Take the reCaptcha test !',
 	'recaptchav3' => 'Take the reCaptcha test !',
+	'smartCaptcha' => 'Take the smartCaptcha test !',
 	'phone_number' => 'The :attribute field must be a valid mobile phone number.',
 
 	/*

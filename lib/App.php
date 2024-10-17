@@ -12,24 +12,24 @@ namespace Techart\BxApp;
  * Для обращения к разным сущностям есть свои методы:
  *
  * App::core()
- * Файлы ядра ищутся в php_interface/lib/App/Core/{$file}.php
+ * Файлы ядра ищутся в php_interface/BxApp/App/Core/{$file}.php
  *
  * App::menu()
- * Файлы меню ищутся в php_interface/lib/Menu/{$file}.php
+ * Файлы меню ищутся в php_interface/BxApp/Menu/{$file}.php
  * Одноимённый класс модели надо наследовать от BaseMenu
  *
  * App::model()
- * Файлы моделей ищутся в php_interface/lib/Models/{$file}.php
+ * Файлы моделей ищутся в php_interface/BxApp/Models/{$file}.php
  * Одноимённый класс модели надо наследовать от BaseIblockModel
  *
  * App::module()
- * Файлы модулей ищутся в php_interface/lib/Modules/{$file}.php
+ * Файлы модулей ищутся в php_interface/BxApp/Modules/{$file}.php
  *
  * App::service()
- * Файлы моделей ищутся в php_interface/lib/Services/{$file}.php
+ * Файлы моделей ищутся в php_interface/BxApp/Services/{$file}.php
  *
  * App::form()
- * Файлы битрикс форм ищутся в php_interface/lib/Forms/{$file}.php
+ * Файлы битрикс форм ищутся в php_interface/BxApp/Forms/{$file}.php
  *
  * Можно вызвать App::instances() и получить список всех сохранённых экземпляров
  *

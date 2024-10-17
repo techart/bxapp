@@ -161,6 +161,7 @@ return [
 	// Тут добавочные App тексты
 	'recaptchav2' => 'Пройдите тест reCaptcha!',
 	'recaptchav3' => 'Пройдите тест reCaptcha!',
+	'smartCaptcha' => 'Пройдите тест smartCaptcha !',
 	'phone_number' => 'Значение поля :attribute должно быть корректным номером мобильного телефона!',
 
 	/*

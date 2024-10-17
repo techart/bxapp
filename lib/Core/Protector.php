@@ -84,7 +84,7 @@ class Protector
 	public function checkRecaptchaV2(bool $reverse = false): object
 	{
 		$values = \App::core('Main')->getCurRequestValues();
-		$check = \App::core('Recaptcha')->checkV3($values['g-recaptcha-response']);
+		$check = \App::core('Recaptcha')->checkV2($values['g-recaptcha-response']);
 
 		$this->setFriendship($check, $reverse);
 
@@ -101,6 +101,22 @@ class Protector
 	{
 		$values = \App::core('Main')->getCurRequestValues();
 		$check = \App::core('Recaptcha')->checkV3($values['g-recaptcha-response']);
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Смотрит пройдена ли проверка капчи checkSmart()
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkSmartCaptcha(bool $reverse = false): object
+	{
+		$values = App::core('Main')->getCurRequestValues();
+		$check = App::core('SmartCaptcha')->checkSmart($values['token']);
 
 		$this->setFriendship($check, $reverse);
 
@@ -415,5 +431,25 @@ class Protector
 				}
 			}
 		}
+	}
+
+	/**
+	 * Проверяет является ли входящий ip один из Yookassa Notification IP
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkYookassaNotificationIP(bool $reverse = false): object
+	{
+		if (\App::service('YooKassa')->isNotificationIPTrusted()) {
+			$check = true;
+		}
+		else {
+			$check = false;
+		}
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
 	}
 }

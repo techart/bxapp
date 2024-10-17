@@ -11,7 +11,7 @@ class Define
 		define("SITE_UPLOAD_DIR", SITE_ROOT_DIR.'/upload');
 		define("APP_CACHE_DIR", SITE_ROOT_DIR.'/local/cache');
 		define("APP_FAVICON_FILES_DIR", SITE_ROOT_DIR.'/local/favicon-files');
-		define("APP_ROOT_DIR", SITE_ROOT_DIR.'/local/php_interface/lib');
+		define("APP_ROOT_DIR", SITE_ROOT_DIR.'/local/php_interface/BxApp');
 
 		// Пути vendor
 		define("APP_VENDOR_DIR", SITE_ROOT_DIR.'/local/vendor/techart/bxapp');
@@ -22,7 +22,7 @@ class Define
 		define("APP_CORE_ROUTES_DIR", APP_SELF_DIR.'/Routes');
 		define("APP_CORE_TRAITS_DIR", APP_SELF_DIR.'/Traits');
 
-		// Пути app на сайте: php_interface/lib
+		// Пути app на сайте: php_interface/BxApp
 		define("APP_CLI_DIR", APP_ROOT_DIR.'/Cli');
 		define("APP_CONFIGS_DIR", APP_ROOT_DIR.'/Configs');
 		define("APP_LOCALIZATION_DIR", APP_ROOT_DIR.'/Localization');

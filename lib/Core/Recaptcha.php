@@ -6,9 +6,9 @@ namespace Techart\BxApp\Core;
  *
  * Для начала, как всё настроить:
  *
- * 1) В конфиге www/local/php_interface/lib/Configs/Recaptcha.php надо заполнить поля:
+ * 1) В .env файле надо заполнить поля:
  * APP_RECAPTCHA_SECRET_KEY, APP_RECAPTCHA_SITE_KEY и APP_RECAPTCHA_SCORE (для проверки v3)
- *
+ * 
  * 2) ВАЖНО - инпут в форме, куда будет записываться значение капчи, должен называться ВСЕГДА g-recaptcha-response !!!!
  *
  *
@@ -75,7 +75,7 @@ namespace Techart\BxApp\Core;
 	Локализация.
 
 	Если не нравится сообщение, которое выскакивает при ошибке, то можно его поменять в
-	www/local/php_interface/lib/Localization/Validator/ru/validation.php, пишем свой текст так:
+	www/local/php_interface/BxApp/Localization/Validator/ru/validation.php, пишем свой текст так:
 
 	'recaptchav2' => 'Пройдите очень важный тест reCaptcha!',
 	'recaptchav3' => 'Пройдите очень важный тест reCaptcha!',
@@ -86,7 +86,7 @@ class Recaptcha
 {
 
 	/**
-	 * возвращает true если включена проверка - APP_RECAPTCHA_CHECK_LOCAL в .env
+	 * возвращает true если включена проверка - APP_CAPTCHA_CHECK_LOCAL в .env
 	 * и если при этом текущий запрос с локалки (techart)
 	 *
 	 * @return boolean
@@ -95,7 +95,7 @@ class Recaptcha
 	{
 		$return = false;
 
-		if (\Glob::get('APP_RECAPTCHA_CHECK_LOCAL', true)) {
+		if (\Glob::get('APP_CAPTCHA_CHECK_LOCAL', true)) {
 			$host = explode('.', $_SERVER['HTTP_HOST']);
 
 			if (strpos($_SERVER['SERVER_NAME'], '.techart.') !== false) {
@@ -109,7 +109,7 @@ class Recaptcha
 	private function check(string $token = ''): array
 	{
 		$data = array(
-			'secret' => \Config::get('Recaptcha.APP_RECAPTCHA_SECRET_KEY', ''),
+			'secret' => \Env::get('APP_RECAPTCHA_SECRET_KEY'),
 			'response' => $token
 		);
 

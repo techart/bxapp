@@ -284,4 +284,27 @@ class Helpers
 
 		return $ip;
 	}
+
+	/**
+	 * Парсит GET-параметры URL
+	 * Собирает в массив GET-параметры из переданного URL
+	 * При одинаковых названиях параметра, складывает всё в массив под одним ключём
+	 * 
+	 * @param string $url
+	 * @return array
+	 */
+	public static function parseUrlParams(string $url): array
+	{
+		$params = [];
+
+		$url = explode('&', parse_url($url)['query']);
+
+		foreach($url as $param)
+		{
+			$param = explode('=', $param);
+			$params[$param[0]][] = $param[1];
+		}
+
+		return $params;
+	}
 }
