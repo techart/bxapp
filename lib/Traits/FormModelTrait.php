@@ -75,7 +75,8 @@ trait FormModelTrait
 	}
 
 	/**
-	 * Тригерит эвент формы и перадёт туда данные филдов.
+	 * На основе Event::send()
+	 * Тригерит эвент формы и перадёт туда данные.
 	 * Имя эвента должно быть указано в public $eventName = ''; модели
 	 *
 	 * $fields = [
@@ -86,14 +87,33 @@ trait FormModelTrait
 		]
 	 *
 	 * @param array $fields
+	 * @param array $file
+	 * @param int|string $messageId
+	 * @param string $languageId
 	 * @return void
 	 */
-	public function sendFormToEvent(array $fields = []): void
+	public function sendFormToEvent(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = ''): void
 	{
 		Event::send([
 			"EVENT_NAME" => $this->eventName,
 			"LID" => SITE_ID,
 			"C_FIELDS" => $fields,
+			'FILE' => $file,
+			'MESSAGE_ID' => $messageId,
+			'LANGUAGE_ID' => $languageId,
 		]);
+	}
+
+	// ждёт что в file объект new UploadedFile
+	public function saveUploadedFile(object $file, string $savePath = 'formFiles'): mixed
+	{
+		$arrFile = [
+			"name" => $file->getClientOriginalName(),
+			"size" => $file->getSize(),
+			"tmp_name" => $file->getRealPath(),
+			"type" => $file->getMimeType()
+		];
+
+		return \CFile::SaveFile($arrFile, $savePath);
 	}
 }

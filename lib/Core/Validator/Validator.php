@@ -166,11 +166,21 @@ class Validator
 
 		if($check->fails()) {
 			$validatorErrors = $check->errors();
-
 			foreach($formData as $k => $v){
 				if ($validatorErrors->has($k)) {
 					foreach ($validatorErrors->get($k) as $message) {
 						$errors[$k][] = $message;
+					}
+				} else {
+					if (is_array($v)) {
+						foreach ($v as $key => $val) {
+							if ($validatorErrors->has($k.'.'.$key)) {
+								foreach ($validatorErrors->get($k.'.'.$key) as $message) {
+									$errors[$k][] = $message;
+								}
+								$errors[$k] = array_unique($errors[$k]);
+							}
+						}
 					}
 				}
 			}

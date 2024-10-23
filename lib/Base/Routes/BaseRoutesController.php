@@ -16,7 +16,7 @@ namespace Techart\BxApp\Base\Routes;
 
 
 use \Bitrix\Main\Application;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BaseRoutesController
 {
@@ -53,6 +53,37 @@ class BaseRoutesController
 	}
 
 	/**
+	 * Возвращает массив загруженных через форму временных файлов - $_FILES
+	 * Массив форматируется для проверки файлов через кор сервис Validator
+	 *
+	 * Ключ - имя поля, значение - объект Symfony\Component\HttpFoundation\File\UploadedFile
+	 *
+	 * @return array
+	 */
+	public function getUploadedFiles(): array
+	{
+		$uploadedFiles = [];
+		$curFiles = $this->request->getFileList();
+
+		if (count($curFiles) > 0) {
+			foreach ($curFiles as $k => $v) {
+				if (is_array($v['name'])) {
+					foreach ($v['name'] as $key => $val) {
+						if (isset($v['tmp_name'][$key]) && !empty($v['tmp_name'][$key])) {
+							$uploadedFiles[$k][$key] = new UploadedFile($v['tmp_name'][$key], $v['name'][$key], $v['type'][$key]);
+						}
+					}
+				} else {
+					if (isset($v['tmp_name']) && !empty($v['tmp_name'])) {
+						$uploadedFiles[$k] = new UploadedFile($v['tmp_name'], $v['name'], $v['type']);
+					}
+				}
+			}
+		}
+		return $uploadedFiles;
+	}
+
+	/**
 	 * Возвращает переменные текущего реквеста
 	 * По умолчанию выбирает текущий тип запроса, но в $method можно указать конкретный
 	 * Запросы типов put, delete, options должны быть в json формате.
@@ -73,6 +104,21 @@ class BaseRoutesController
 		}
 
 		return $props;
+	}
+
+	/**
+	 * Возвращает массив ВСЕХ переменных текущего реквеста (включая файлы из $_FILES)
+	 * Делает array_merge для $this->getValues() и $this->getUploadedFiles()
+	 *
+	 * По умолчанию выбирает текущий тип запроса, но в $method можно указать конкретный
+	 * Запросы типов put, delete, options должны быть в json формате.
+	 *
+	 * @param string $method
+	 * @return array
+	 */
+	public function getFullValues(string $method = ''): array
+	{
+		return array_merge($this->getValues($method), $this->getUploadedFiles());
 	}
 
 	/**
