@@ -104,7 +104,18 @@ trait FormModelTrait
 		]);
 	}
 
-	// ждёт что в file объект new UploadedFile
+
+	/**
+	 * Сохраняет файл по пути upload/$savePath и регистрирует его в таблице битрикса
+	 * Ждёт в $file объект типа Symfony\Component\HttpFoundation\File\UploadedFile
+	 * Возвращает ID сохранённого файла
+	 *
+	 * Работает через CFile::SaveFile
+	 *
+	 * @param object $file
+	 * @param string $savePath
+	 * @return mixed
+	 */
 	public function saveUploadedFile(object $file, string $savePath = 'formFiles'): mixed
 	{
 		$arrFile = [

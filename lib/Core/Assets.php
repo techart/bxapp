@@ -10,6 +10,8 @@ use \Bitrix\Main\Page\AssetLocation;
 
 class Assets
 {
+	private $currentEntryPoints = [];
+
 	/**
 	 * Добавляет в тег <head> страницы до подключения скриптов и стилей строку для прелоада каритнки по пути $path
 	 *
@@ -196,6 +198,16 @@ class Assets
 	}
 
 	/**
+	 * Возвращает массив с именами добавленных точек входа
+	 *
+	 * @return array
+	 */
+	public function getCurrentEntryPoints(): array
+	{
+		return $this->currentEntryPoints;
+	}
+
+	/**
 	 * Подключает ассеты по переданной точке входа
 	 *
 	 * @param string $entry
@@ -205,7 +217,8 @@ class Assets
 	{
 		$path = $this->getJsTag($entry, ['defer' => '']);
 
-		if($path) {
+		if ($path) {
+			$this->currentEntryPoints[] = $entry;
 			$this->setLibs($entry);
 
 			Asset::getInstance()->addString($path);

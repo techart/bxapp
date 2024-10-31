@@ -686,6 +686,126 @@ class BaseIblockModel
 	}
 
 	/**
+	 * Возвращает массив-дерево всех секций инфоблока.
+	 * Вложенные секции лежат в ключе "sections"
+	 *
+	 * $select - по дефолту берёт из $iblockSectionsSelect модели
+	 *
+	 * @param array $select
+	 * @param array $filter
+	 * @param array $order
+	 * @return array
+	 */
+	public function getTree(array $select = [], array $filter = [], array $order = []): array
+	{
+		$arFilter = $this->makeSectionsFilter($filter);
+		$arSelect = array_merge($this->makeSectionsSelect($select), ['ID', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL']);
+		$arOrder = $this->makeSectionsOrder($order);
+		$tree = \CIBlockSection::GetList(["left_margin" => "asc"], $arFilter, false, $arSelect, false);
+
+		$arSectionList = [];
+		$arDepthLavel = [];
+
+		while($section = $tree->GetNext()) {
+			$arSectionList[$section['ID']] = $section;
+			$arDepthLavel[] = $section['DEPTH_LEVEL'];
+		}
+
+		$arDepthLavel = array_unique($arDepthLavel);
+		rsort($arDepthLavel);
+		$maxDepthLevel = $arDepthLavel[0];
+
+		for( $i = $maxDepthLevel; $i > 1; $i-- ) {
+			foreach ( $arSectionList as $sectionID => $value ) {
+				if( $value['DEPTH_LEVEL'] == $i ) {
+					$arSectionList[$value['IBLOCK_SECTION_ID']]['sections'][] = $value;
+					unset( $arSectionList[$sectionID] );
+				}
+			}
+		}
+
+		usort($arSectionList, function ($a, $b) {
+			if ($a['SORT'] == $b['SORT']) {
+				return 0;
+			}
+			return ($a['SORT'] < $b['SORT']) ? -1 : 1;
+		});
+
+		return $arSectionList;
+	}
+
+	/**
+	/**
+	 * Возвращает массив-дерево всех секций инфоблока и их элементов.
+	 * Вложенные секции лежат в ключе "sections"
+	 * Вложенные элементы лежат в ключе "elements"
+	 *
+	 * $select - по дефолту берёт из $iblockSectionsSelect модели
+	 * $selectElement - по дефолту берёт из $iblockElementsSelect модели
+	 *
+	 * @param array $select
+	 * @param array $filter
+	 * @param array $order
+	 * @param array $selectElement
+	 * @param array $filterElement
+	 * @param array $orderElement
+	 * @return array
+	 */
+	public function getTreeWithElements(array $select = [], array $filter = [], array $order = [], array $selectElement = [], array $filterElement = [], array $orderElement = []): array
+	{
+		$arFilter = $this->makeSectionsFilter($filter);
+		$arSelect = array_merge($this->makeSectionsSelect($select), ['ID', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL']);
+		$arOrder = $this->makeSectionsOrder($order);
+		$tree = \CIBlockSection::GetList(["left_margin" => "asc"], $arFilter, false, $arSelect, false);
+
+		$arSectionList = [];
+		$arDepthLavel = [];
+
+		while($section = $tree->GetNext()) {
+			$arSectionList[$section['ID']] = $section;
+			$arDepthLavel[] = $section['DEPTH_LEVEL'];
+
+			$arElemFilter = array_merge($this->makeElementsFilter($filterElement), ["IBLOCK_SECTION_ID" => $section['ID']]);
+			$arElemSelect = $this->makeElementsSelect($selectElement);
+			$arElemOrder = $this->makeElementsOrder($orderElement);
+			$res = \CIBlockElement::GetList(
+				$arElemOrder,
+				$arElemFilter,
+				false,
+				[],
+				$arElemSelect
+			);
+			while($el = $res->GetNextElement())
+			{
+				$arFields = $el->GetFields();
+				$arSectionList[$section['ID']]['elements'][] = $arFields;
+			}
+		}
+
+		$arDepthLavel = array_unique($arDepthLavel);
+		rsort($arDepthLavel);
+		$maxDepthLevel = $arDepthLavel[0];
+
+		for( $i = $maxDepthLevel; $i > 1; $i-- ) {
+			foreach ( $arSectionList as $sectionID => $value ) {
+				if( $value['DEPTH_LEVEL'] == $i ) {
+					$arSectionList[$value['IBLOCK_SECTION_ID']]['sections'][] = $value;
+					unset( $arSectionList[$sectionID] );
+				}
+			}
+		}
+
+		usort($arSectionList, function ($a, $b) {
+			if ($a['SORT'] == $b['SORT']) {
+				return 0;
+			}
+			return ($a['SORT'] < $b['SORT']) ? -1 : 1;
+		});
+
+		return $arSectionList;
+	}
+
+	/**
 	 * Представляет собой обработку данных пришедших из $this->getElements().
 	 * Чтобы сформировать из них готовый массив для передачи во фронтенд блок.
 	 *
