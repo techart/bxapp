@@ -55,6 +55,7 @@ class YooKassa
 
 	/**
 	 * Проверяет является ли входящий ip один из Yookassa Notification IP
+	 * Если $ip = '', то берётся Helpers::getRealIp()
 	 *
 	 * @param string $ip
 	 * @return boolean

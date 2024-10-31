@@ -47,15 +47,16 @@ trait CacheTrait
 
 	/**
 	 * Возвращает ID текущего кэша.
-	 * Это или переданная строка $cacheID (очень нежелательно).
-	 * Или по умолчанию строка состоящая из имени класса модели и метода, где вызывается функция кэша.
+	 * Это или переданная строка $cacheID.
+	 * Или по умолчанию строка состоящая из:
+	 * SITE_ID, LANGUAGE_ID, имени класса модели и имени метода, где вызывается функция кэша.
 	 *
 	 * @param string $cacheID
 	 * @return string
 	 */
 	private function getCacheID(string $cacheID = ''): string
 	{
-		return !empty($cacheID) ? $cacheID : get_called_class().'_'.debug_backtrace()[2]['function'];
+		return !empty($cacheID) ? $cacheID : SITE_ID.'_'.LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[2]['function'];
 	}
 
 	/**
@@ -64,13 +65,14 @@ trait CacheTrait
 	 * $cacheID = $this->buildCacheID($params);
 	 * $this->hasCache($cacheID)
 	 * и т.д.
+	 * а так же трейты зависящие от кэша: ResultTrait и ErrorTrait.
 	 *
 	 * @param array $params
 	 * @return string
 	 */
 	public function buildCacheID(array $params = []): string
 	{
-		$curCacheId = get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));
+		$curCacheId = SITE_ID.'_'.LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));
 
 		return $curCacheId;
 	}
