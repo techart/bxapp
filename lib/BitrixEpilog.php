@@ -10,7 +10,7 @@ class BitrixEpilog
 {
 	public static function setup()
 	{
-		AddEventHandler("main", "OnEpilog", ['Techart\BxApp\BitrixEpilog', 'OnEpilog'], 999999);
+		// AddEventHandler("main", "OnEpilog", ['Techart\BxApp\BitrixEpilog', 'OnEpilog'], 999999);
 	}
 
 	public static function OnEpilog()

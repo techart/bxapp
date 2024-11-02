@@ -89,6 +89,8 @@ class App
 		AppGlobals::setGlobals();
 		Logger::setup();
 
+		BitrixPageStart::setup();
+
 		include_once ('ShortCallFunc.php');
 
 		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
@@ -97,7 +99,7 @@ class App
 
 		EventsModel::setEvents();
 		ExtraAuth::setup();
-		// BitrixEpilog::setup();
+		BitrixEpilog::setup();
 	}
 
 	/**

@@ -42,11 +42,11 @@ class Config
 				if(is_array($configContent)) {
 					return $configContent;
 				} else {
-					\Logger::warning('Файл лога "'.$configFile.'" имеет неправильный формат');
+					\Logger::warning('Файл конфига "'.$configFile.'" имеет неправильный формат');
 					return false;
 				}
 			} else {
-				\Logger::warning('Файл лога "'.$configFile.'" не найден');
+				\Logger::warning('Файл конфига "'.$configFile.'" не найден');
 				return false;
 			}
 		} else {
