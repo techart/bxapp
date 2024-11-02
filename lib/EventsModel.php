@@ -12,8 +12,7 @@ namespace Techart\BxApp;
  *
  * AddEventHandler('', 'WebinarOptionsOnAfterAdd', 'OnAfterAdd'); //где "WebinarOptions" название highload блока
  *
- * Так как в хайлоадблоках обычно небольшие списки. То было решено не городить что-то надмозговое.
- * По умолчанию у хайлоадблоков нету кэша. Если где-то он понадобится, то написать тут по примеру.
+ * поэтому назначаем для тех, которые перечислены в конфиге App - в ключе APP_HIGHLOAD_BLOCKS_LIST
  */
 
 use Bitrix\Main\Data\Cache;
@@ -30,6 +29,28 @@ class EventsModel
 			AddEventHandler("iblock", "OnAfterIBlockElementAdd", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
 			AddEventHandler("iblock", "OnAfterIBlockElementUpdate", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
 			AddEventHandler("iblock", "OnAfterIBlockElementDelete", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
+
+			// У хайлоадблоков нету общих эвентов, поэтому назначаем только для тех, которые перечислены в конфиге App
+			// в ключе APP_HIGHLOAD_BLOCKS_LIST
+			if (count(\Config::get('App.APP_HIGHLOAD_BLOCKS_LIST', [])) > 0 ) {
+				$eventManager = \Bitrix\Main\EventManager::getInstance();
+
+				foreach (Config::get('App.APP_HIGHLOAD_BLOCKS_LIST') as $v) {
+					$eventManager->AddEventHandler("", $v."OnAfterDelete", ["\Techart\BxApp\EventsModel", "hbChanged"]);
+					$eventManager->AddEventHandler("", $v."OnAfterAdd", ["\Techart\BxApp\EventsModel", "hbChanged"]);
+					$eventManager->AddEventHandler("", $v."OnAfterUpdate", ["\Techart\BxApp\EventsModel", "hbChanged"]);
+				}
+			}
+		}
+	}
+
+	public static function hbChanged(\Bitrix\Main\Entity\Event $event): void
+	{
+		$name = $event->getEntity()->getName();
+
+		if (isset($name) && !empty($name)) {
+			$cache = Cache::createInstance();
+			$cache->CleanDir($name);
 		}
 	}
 

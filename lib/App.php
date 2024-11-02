@@ -97,6 +97,7 @@ class App
 
 		EventsModel::setEvents();
 		ExtraAuth::setup();
+		// BitrixEpilog::setup();
 	}
 
 	/**
