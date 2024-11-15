@@ -84,12 +84,12 @@ class App
 		self::setup();
 
 		Autoload::register();
-		Shutdown::register();
+		\Techart\BxApp\Events\Shutdown::register();
 
 		AppGlobals::setGlobals();
-		Logger::setup();
+		Log::setup();
 
-		BitrixPageStart::setup();
+		\Techart\BxApp\Events\BitrixPageStart::setup();
 
 		include_once ('ShortCallFunc.php');
 
@@ -97,9 +97,9 @@ class App
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
 
-		EventsModel::setEvents();
+		\Techart\BxApp\Events\EventsModel::setEvents();
 		ExtraAuth::setup();
-		BitrixEpilog::setup();
+		\Techart\BxApp\Events\BitrixEpilog::setup();
 	}
 
 	/**

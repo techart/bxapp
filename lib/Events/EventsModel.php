@@ -1,5 +1,5 @@
 <?php
-namespace Techart\BxApp;
+namespace Techart\BxApp\Events;
 
 /**
  * Назначает на эвенты изменения инфоблоков и хайлоадблоков очистку всего связанного кэша.
@@ -23,22 +23,22 @@ class EventsModel
 	{
 		// назначать эвенты, если кэш включён
 		if (\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && strpos($_SERVER['HTTP_HOST'], 'intranet') === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true) {
-			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", ["\Techart\BxApp\EventsModel", "ibSectionDelete"]);//id удалённого раздела
-			AddEventHandler("iblock", "OnAfterIBlockElementAdd", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockElementUpdate", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockElementDelete", ["\Techart\BxApp\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", ["\Techart\BxApp\Events\EventsModel", "ibSectionDelete"]);//id удалённого раздела
+			AddEventHandler("iblock", "OnAfterIBlockElementAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnAfterIBlockElementUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnAfterIBlockElementDelete", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
 
 			// У хайлоадблоков нету общих эвентов, поэтому назначаем только для тех, которые перечислены в конфиге App
 			// в ключе APP_HIGHLOAD_BLOCKS_LIST
 			if (count(\Config::get('App.APP_HIGHLOAD_BLOCKS_LIST', [])) > 0 ) {
 				$eventManager = \Bitrix\Main\EventManager::getInstance();
 
-				foreach (Config::get('App.APP_HIGHLOAD_BLOCKS_LIST') as $v) {
-					$eventManager->AddEventHandler("", $v."OnAfterDelete", ["\Techart\BxApp\EventsModel", "hbChanged"]);
-					$eventManager->AddEventHandler("", $v."OnAfterAdd", ["\Techart\BxApp\EventsModel", "hbChanged"]);
-					$eventManager->AddEventHandler("", $v."OnAfterUpdate", ["\Techart\BxApp\EventsModel", "hbChanged"]);
+				foreach (\Config::get('App.APP_HIGHLOAD_BLOCKS_LIST') as $v) {
+					$eventManager->AddEventHandler("", $v."OnAfterDelete", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+					$eventManager->AddEventHandler("", $v."OnAfterAdd", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+					$eventManager->AddEventHandler("", $v."OnAfterUpdate", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
 				}
 			}
 		}

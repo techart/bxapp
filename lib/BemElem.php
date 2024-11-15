@@ -58,7 +58,7 @@ class BemElem
 		}
 
 		if (is_array($name)) {
-			if ($this->is_assoc($name)) {
+			if ($this->isAssoc($name)) {
 				foreach ($name as $modName => $modValue) {
 					$this->mod($modName, $modValue);
 				}
@@ -77,7 +77,7 @@ class BemElem
 		return $this;
 	}
 
-	protected function is_assoc($arr): mixed
+	protected function isAssoc($arr): mixed
 	{
 		if (!is_array($arr) || array() === $arr) {
 			return false;

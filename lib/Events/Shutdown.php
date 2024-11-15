@@ -1,5 +1,5 @@
 <?
-namespace Techart\BxApp;
+namespace Techart\BxApp\Events;
 
 
 /**
@@ -12,8 +12,8 @@ class Shutdown
 	static function register(): void
 	{
 		register_shutdown_function(function () {
-			if (class_exists('Techart\BxApp\Shutdown')) {
-				Shutdown::run();
+			if (class_exists('\Techart\BxApp\Events\Shutdown')) {
+				\Techart\BxApp\Events\Shutdown::run();
 			}
 		});
 	}
@@ -21,6 +21,6 @@ class Shutdown
 	static function run(): void
 	{
 		// обработка всего переданного в логер: отправка почты, запись в файл и т.д.
-		\Logger::final(); // всегда последний
+		\Log::final(); // всегда последний
 	}
 }

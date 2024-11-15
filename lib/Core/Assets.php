@@ -15,15 +15,19 @@ class Assets
 	/**
 	 * Добавляет в тег <head> страницы до подключения скриптов и стилей строку для прелоада каритнки по пути $path
 	 *
-	 * @param string $string
+	 * @param string|null $string
+	 * @param string $srcset
+	 * @param string $sizes
 	 * @return void
 	 */
-	public function addPreloadImage(string $path = ''): void
+	public function addPreloadImage(string|null $path = '', string $srcset = '', string $sizes = ''): void
 	{
 		if (!empty($path)) {
 			$ext = pathinfo($path, PATHINFO_EXTENSION);
+			$imagesrcset = !empty($srcset) ? ' imagesrcset="'.$srcset.'"' : '';
+			$imagesizes = !empty($sizes) ? ' imagesizes="'.$sizes.'"' : '';
 
-			Asset::getInstance()->addString('<link rel="preload" as="image" href="'.$path.'" type="image/'.$ext.'"/>', true, AssetLocation::BEFORE_CSS);
+			Asset::getInstance()->addString('<link rel="preload" as="image" href="'.$path.'" type="image/'.$ext.'"'.$imagesrcset.$imagesizes.'/>', true, AssetLocation::BEFORE_CSS);
 		}
 	}
 
