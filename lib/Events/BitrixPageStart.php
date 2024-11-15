@@ -49,9 +49,7 @@ class BitrixPageStart
 
 			foreach (\Config::get('Redirects.APP_SITE_REDIRECTS', []) as $status => $redirects) {
 				if (count($redirects) > 0) {
-					foreach ($redirects as $redirect) {
-						$pattern = key($redirect);
-						$url = current($redirect);
+					foreach ($redirects as $pattern => $url) {
 						$match = false;
 
 						// если это регулярка (ограничена палками - |)
