@@ -48,9 +48,10 @@ if (Router::isActive()) { // роут включён
 			if (Config::get('Router.APP_ROUTER_CACHE_REBUILD', false)) {
 				Logger::info('ребилд роутера включён');
 
-				Router::buildDefault();
+				$statusDefault = Router::buildDefault();
+				$statusRouter = Router::build();
 
-				if (Router::build() === true) { // роутер построен
+				if ($statusDefault || $statusRouter) { // роутер построен
 					Logger::info('роутер построен');
 
 					Router::toCache();
@@ -89,9 +90,10 @@ if (Router::isActive()) { // роут включён
 	} else { // роутер работает без кэша
 		Logger::info('роутер работает без кэша');
 
-		Router::buildDefault();
+		$statusDefault = Router::buildDefault();
+		$statusRouter = Router::build();
 
-		if (Router::build() === true) { // роутер построен
+		if ($statusDefault || $statusRouter) { // роутер построен
 			Logger::info('роутер построен');
 
 			$routeData = Router::getRouteFromDataByUrl();

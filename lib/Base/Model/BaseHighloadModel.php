@@ -185,8 +185,8 @@ class BaseHighloadModel
 	 * Составляет Select для текущего запроса
 	 *
 	 * Select по умолчанию переопределяется в случае получения Select из вне
-	 * Если нет Select, то смотрит на переменную класса $this->iblockElementsSelect
-	 * В $this->iblockElementsSelect по умолчанию выбираются все поля
+	 * Если нет Select, то смотрит на переменную класса $this->hblockElementsSelect
+	 * В $this->hblockElementsSelect по умолчанию выбираются все поля
 	 *
 	 * @param array $select
 	 *

@@ -10,7 +10,7 @@ use \Bitrix\Main\Application;
 class Router
 {
 	private static $routerConfigFile = 'routerConfig.txt';
-
+	private static $defaultRoutes = ['BxappDefault'];
 
 
 	/**
@@ -36,7 +36,7 @@ class Router
 				Glob::get('APP_SETUP_API_ROUTER_CHECK_HTTPS', false) === false ||
 				(Glob::get('APP_SETUP_API_ROUTER_CHECK_HTTPS', false) === true && CMain::IsHTTPS() === true)
 			) {
-				if (!empty(Config::get('Router.APP_ROUTER_BUNDLES', []))) {
+				if (!empty(Config::get('Router.APP_ROUTER_BUNDLES', [])) || !empty(self::$defaultRoutes)) {
 					return true;
 				} else {
 					Logger::info('Router: Роутер неактивен - нет указанных групп APP_ROUTER_BUNDLES');
@@ -82,10 +82,8 @@ class Router
 
 	public static function buildDefault(): bool
 	{
-		$bundles = ['BxappDefault' ];
-
-		if (count($bundles) > 0) {
-			foreach ($bundles as $bundle) {
+		if (count(self::$defaultRoutes) > 0) {
+			foreach (self::$defaultRoutes as $bundle) {
 				if (file_exists(APP_CORE_ROUTES_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
@@ -96,7 +94,7 @@ class Router
 			}
 			return true;
 		} else {
-			Logger::error('Router: не указано ни одной группы роутов в APP_ROUTER_BUNDLES');
+			Logger::info('Router: не указано ни одной группы роутов в APP_ROUTER_BUNDLES');
 
 			return false;
 		}
@@ -123,7 +121,7 @@ class Router
 			}
 			return true;
 		} else {
-			Logger::error('Router: не указано ни одной группы роутов в APP_ROUTER_BUNDLES');
+			Logger::info('Router: не указано ни одной группы роутов в APP_ROUTER_BUNDLES');
 
 			return false;
 		}
