@@ -850,4 +850,57 @@ class BaseIblockModel
 	 * @return array
 	 */
 	public function getSectionData(): array {}
+
+	/**
+	 * Генерация урлов для сайтмапа по заданному в модели инфоблоку
+	 *
+	 * В классе модели можно переопределить метод и написать свой сборщик урлов
+	 *
+	 * @param array $params
+	 * @return array
+	 */
+	public function sitemap($params): array
+	{
+		$data = [];
+
+		if (!empty($params['page'])) {
+			$item = $this->getElement(['LIST_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+
+			$data[$item['LIST_PAGE_URL']] = [
+				'url' => $item['LIST_PAGE_URL'],
+				'lastmod' => $item['TIMESTAMP_X'],
+				'changefreq' => $params['page']['change'],
+				'priority' => $params['page']['priority']
+			];
+		}
+
+		if (!empty($params['sections'])) {
+			$items = $this->getSections(['SECTION_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y', 'GLOBAL_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+
+			while ($item = $items->GetNext()) {
+				$data[$item['SECTION_PAGE_URL']] = [
+					'url' => $item['SECTION_PAGE_URL'],
+					'lastmod' => $item['TIMESTAMP_X'],
+					'changefreq' => $params['sections']['change'],
+					'priority' => $params['sections']['priority']
+				];
+			}
+		}
+
+		if (!empty($params['elements'])) {
+			$items = $this->getElements(['DETAIL_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y', 'SECTION_ACTIVE' => 'Y', 'SECTION_GLOBAL_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+
+			while ($item = $items->GetNext()) {
+				$data[$item['DETAIL_PAGE_URL']] = [
+					'url' => $item['DETAIL_PAGE_URL'],
+					'lastmod' => $item['TIMESTAMP_X'],
+					'changefreq' => $params['elements']['change'],
+					'priority' => $params['elements']['priority']
+				];
+			}
+		}
+
+		return $data;
+	}
+
 }

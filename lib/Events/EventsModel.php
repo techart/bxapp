@@ -63,6 +63,22 @@ class EventsModel
 				$cache = Cache::createInstance();
 				$cache->CleanDir($ar['CODE']);
 			}
+
+			if (\Config::get('Sitemap.ACTIVE', false)) {
+				\App::core('Sitemap')
+					->active(\Config::get('Sitemap.ACTIVE', false))
+					->site(\Config::get('Sitemap.SITE_ID'))
+					->name(\Config::get('Sitemap.NAME', ''))
+					->mode(\Config::get('Sitemap.MODE', 'bitrix'))
+					->domain(\Config::get('Sitemap.DOMAIN'))
+					->protocol(\Config::get('Sitemap.PROTOCOL', 'http'))
+					->sitemapId(\Config::get('Sitemap.SITEMAP_ID'))
+					->sitemapPath(\Config::get('Sitemap.SITEMAP_PATH', '/'))
+					->models(\Config::get('Sitemap.MODELS', []))
+					->urls(\Config::get('Sitemap.URLS', []))
+					->bitrix(\Config::get('Sitemap.BITRIX', []))
+					->create();
+			}
 		}
 	}
 

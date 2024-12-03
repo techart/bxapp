@@ -20,6 +20,7 @@ class Cli
 		'app_createBundle' => 'createBundle',
 		'app_createMiddlewareAfter' => 'createMiddlewareAfter',
 		'app_createMiddlewareBefore' => 'createMiddlewareBefore',
+		'app_createSitemap' => 'createSitemap',
 	);
 	static $action = '';
 	static $options = [];
