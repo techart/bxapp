@@ -64,21 +64,45 @@ class EventsModel
 				$cache->CleanDir($ar['CODE']);
 			}
 
-			if (\Config::get('Sitemap.ACTIVE', false)) {
-				\App::core('Sitemap')
-					->active(\Config::get('Sitemap.ACTIVE', false))
-					->site(\Config::get('Sitemap.SITE_ID'))
-					->name(\Config::get('Sitemap.NAME', ''))
-					->mode(\Config::get('Sitemap.MODE', 'bitrix'))
-					->domain(\Config::get('Sitemap.DOMAIN'))
-					->protocol(\Config::get('Sitemap.PROTOCOL', 'http'))
-					->sitemapId(\Config::get('Sitemap.SITEMAP_ID'))
-					->sitemapPath(\Config::get('Sitemap.SITEMAP_PATH', '/'))
-					->models(\Config::get('Sitemap.MODELS', []))
-					->urls(\Config::get('Sitemap.URLS', []))
-					->bitrix(\Config::get('Sitemap.BITRIX', []))
-					->create();
-			}
+			// if (\Config::get('Sitemap.ACTIVE', false)) {
+			// 	$shouldCreate = false;
+			// 	$mode = \Config::get('Sitemap.MODE', 'bitrix');
+			// 	$models = \Config::get('Sitemap.MODELS', []);
+			// 	$bitrix = \Config::get('Sitemap.BITRIX', []);
+
+			// 	if ($mode === 'bitrix' && !isset($bitrix['infoblocks'][$ar['CODE']])) {
+			// 		$shouldCreate = true;
+			// 	}
+
+			// 	if ($mode === 'models') {
+			// 		foreach($models as $model => $params) {
+			// 			if ($ar['CODE'] === \App::model($model)->table) {
+			// 				$shouldCreate = true;
+			// 				break;
+			// 			}
+			// 		}
+			// 	}
+
+			// 	if ($shouldCreate) {
+			// 		\App::core('Sitemap')
+			// 			->active(\Config::get('Sitemap.ACTIVE', false))
+			// 			->site(\Config::get('Sitemap.SITE_ID'))
+			// 			->name(\Config::get('Sitemap.NAME', ''))
+			// 			->domain(\Config::get('Sitemap.DOMAIN'))
+			// 			->protocol(\Config::get('Sitemap.PROTOCOL', 'http'))
+			// 			->mode($mode)
+			// 			->compression(\Config::get('Sitemap.COMPRESSION', false))
+			// 			->bitrixSitemapId(\Config::get('Sitemap.SITEMAP_ID'))
+			// 			->sitemapPath(\Config::get('Sitemap.SITEMAP_PATH', '/'))
+			// 			->maxUrlsPerSitemap(\Config::get('Sitemap.MAX_URLS_PER_SITEMAP'))
+			// 			->models($models)
+			// 			->urls(\Config::get('Sitemap.URLS', []))
+			// 			->bitrix($bitrix)
+			// 			->create();
+
+			// 		\Logger::info('Sitemap: Sitemap автоматически сгенерирован из-за изменения инфоблока ' . $ar['CODE']);
+			// 	}
+			// }
 		}
 	}
 
