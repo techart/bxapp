@@ -566,7 +566,7 @@ class Sitemap
 	 */
 	protected function getSaveDirectory(): string
 	{
-		$dir = realpath($this->docRoot . '/' . $this->sitemapPath);
+		$dir = realpath($this->docRoot . '/' . trim($this->sitemapPath, '/'));
 
 		if (!$dir) {
 			\Logger::error('Sitemap: Указан неверный путь для сохранения sitemap: ' . $this->docRoot . '/' . $this->sitemapPath);
@@ -639,6 +639,16 @@ class Sitemap
 	}
 
 	/**
+	 * Возвращает название индексного файла сайтмапа
+	 *
+	 * @return string
+	 */
+	protected function getIndexFileName(): string
+	{
+		return 'sitemap-index-' . $this->siteId . '.xml';
+	}
+
+	/**
 	 * Генерирует sitemap по заданным урлам в $this->collectedUrls
 	 *
 	 * @return void
@@ -656,7 +666,7 @@ class Sitemap
 				$config = new Config();
 				$config->setBaseURL($this->getBaseURL());
 				$config->setSaveDirectory($this->getSaveDirectory());
-				$config->setSitemapIndexURL('https://bxapptest.sharapov.techart.intranet');
+				$config->setSitemapIndexURL(trim($this->getBaseURL(), '/') . '/' . trim($this->sitemapPath, '/'));
 
 				$generator = new SitemapGenerator($config);
 
@@ -666,7 +676,7 @@ class Sitemap
 
 				$generator->setMaxURLsPerSitemap($this->maxUrlsPerSitemap);
 				$generator->setSitemapFileName($this->getFileName());
-				$generator->setSitemapIndexFileName("sitemap-index.xml");
+				$generator->setSitemapIndexFileName($this->getIndexFileName());
 
 				foreach($this->collectedUrls as $item) {
 					if (!empty($item['url'])) {
@@ -681,8 +691,6 @@ class Sitemap
 
 				$generator->flush();
 				$generator->finalize();
-
-				$generator->submitSitemap();
 			} else {
 				\Logger::error('Sitemap: Нет URL для генерации сайтмапа');
 			}

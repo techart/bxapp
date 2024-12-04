@@ -874,11 +874,13 @@ class BaseIblockModel
 			];
 		}
 
+		$sections = [];
+
 		if (!empty($params['sections'])) {
 			$items = $this->getSections(['SECTION_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y', 'GLOBAL_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
 
 			while ($item = $items->GetNext()) {
-				$data[$item['SECTION_PAGE_URL']] = [
+				$sections[$item['SECTION_PAGE_URL']] = [
 					'url' => $item['SECTION_PAGE_URL'],
 					'lastmod' => $item['TIMESTAMP_X'],
 					'changefreq' => $params['sections']['change'],
@@ -887,8 +889,14 @@ class BaseIblockModel
 			}
 		}
 
+		$data = array_merge($data, $sections);
+
 		if (!empty($params['elements'])) {
-			$items = $this->getElements(['DETAIL_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y', 'SECTION_ACTIVE' => 'Y', 'SECTION_GLOBAL_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+			if (count($sections) > 0) {
+				$items = $this->getElements(['DETAIL_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y', 'SECTION_ACTIVE' => 'Y', 'SECTION_GLOBAL_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+			} else {
+				$items = $this->getElements(['DETAIL_PAGE_URL', 'TIMESTAMP_X'], ['ACTIVE' => 'Y', 'IBLOCK_ACTIVE' => 'Y'], ['SORT' => 'ASC']);
+			}
 
 			while ($item = $items->GetNext()) {
 				$data[$item['DETAIL_PAGE_URL']] = [
@@ -902,5 +910,4 @@ class BaseIblockModel
 
 		return $data;
 	}
-
 }
