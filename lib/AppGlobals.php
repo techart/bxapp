@@ -6,8 +6,6 @@ class AppGlobals
 
 	public static function setGlobals()
 	{
-		// базовый/стартовый язык
-		\Glob::set('APP_SETUP_LANG', strval(\Env::get('APP_LANG', 'ru')));
 		// сборка
 		\Glob::set('APP_ENV', strval(\Env::get('APP_ENV', 'prod')));
 		// включено использования кэша в трейте или нет

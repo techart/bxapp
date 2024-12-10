@@ -5,7 +5,7 @@ namespace Techart\BxApp;
  * Читает и возвращает значения из .env файла
  *
  * Env::get() - полный массив значений из .env
- * Env::get('APP_LANG') - текущий язык
+ * Env::get('APP_ENV') - текущая сборка
  * Env::get('QWEQWE') - null, если нет такого ключа
  * Env::get('QWEQWE', 123) - 123, если нет такого ключа
  */

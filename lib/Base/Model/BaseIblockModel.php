@@ -9,7 +9,8 @@ namespace Techart\BxApp\Base\Model;
  * Обязательно нужно указать код инфоблока в переменной $table.
  *
  * Можно указать стандартный набор полей при выборки секций и элементов
- * через переменные $iblockSectionsSelect и $iblockElementsSelect
+ * через переменные:
+ * $iblockSectionsSelect, $iblockSectionsSelectForLocalization, $iblockElementsSelect, $iblockElementsSelectForLocalization
  *
  * Содержит 5 публичных стандартных метода: getInfoblock, getSections, getSection, getElements, getElement, getSeoFields
  * для получения соответствующей информации из инфоблока.
@@ -107,13 +108,8 @@ namespace Techart\BxApp\Base\Model;
  * В этом случае:
  *
 	1)
-	 Если язык указан и если APP_MODEL_LOCALIZATION_MODE = 'file' и ЯЗЫК != APP_LANG
-	 То модель ищется по пути Modes/_Lang/ЯЗЫК/$file
-	 В противном случае модель ищется по стандартному пути
-
-	 2)
-	Если язык указан и если APP_MODEL_LOCALIZATION_MODE = 'code' и ЯЗЫК != APP_LANG
-	То в модели к коду $this->table через подчеркивание добавляется язык - "_ЯЗЫК"
+	Если язык указан и если getLocalizationMode() = 'code' и ЯЗЫК != APP_LANG
+	То в модели к коду $this->table через подчеркивание добавляется язык - "*_en"
 	В противном случае $this->table остаётся как было указано в модели
  *
  *
@@ -132,15 +128,20 @@ class BaseIblockModel
 
 
 	public $table = ''; // код инфоблока
+	public $lid = ''; // постфикс-указатель на текущий язык модели
 	public $iblockSectionsSelect = []; // выборка полей для секций модели
+	public $iblockSectionsSelectForLocalization = []; // выборка полей для секций модели
 	public $iblockElementsSelect = []; // выборка полей для элементов модели
+	public $iblockElementsSelectForLocalization = []; // выборка полей для элементов модели
+	public $localizationMode = ''; // режим локализации модели
 	private $iblockData = []; // массив параметров инфоблока
+	private $curModes = ['code', 'select', 'checkbox']; // режимы локализации модели инфоблока
 
 
 	/**
 	 * $locale - требуемый язык
 	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code' и $locale != APP_LANG
-	 * То в модели к коду $this->table через подчеркивание добавляется $locale - "_$locale"
+	 * То в модели к коду $this->table через подчеркивание добавляется $locale - "*_en"
 	 * В противном случае $this->table остаётся как было указано в модели
 	 *
 	 * @param string $locale
@@ -149,13 +150,17 @@ class BaseIblockModel
 	{
 		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
 
+		$this->setLocalizationMode();
+
 		if (!empty($this->table)) {
+			// если дефолтный язык не равен языку модели
+			if (\H::isDefaultLanguage($curLang) === false) {
+				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+			}
+
 			// если режим локализации моделей указан как "code"
-			if (\Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'file') == 'code') {
-				// если дефолтный язык не равен переданному
-				if (\Config::get('App.APP_LANG', 'ru') !== $curLang) {
-					$this->table .= '_'.$curLang;
-				}
+			if ($this->getLocalizationMode() == 'code') {
+				$this->table .= strtolower($this->lid); // добавляем к коду инфоблока указание на язык модели
 			}
 
 			$this->getInfoblock();
@@ -165,8 +170,31 @@ class BaseIblockModel
 		}
 	}
 
-	private function setLocale(array $filter = []): array
+	/**
+	 * Устанавливает текущий режим локализации модели
+	 *
+	 * @return void
+	 */
+	private function setLocalizationMode(): void
 	{
+		$curMode = !empty($this->localizationMode) ? $this->localizationMode : \Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'code');
+
+		if (!in_array($curMode, $this->curModes)) {
+			throw new \LogicException('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
+			exit();
+		}
+
+		$this->localizationMode = $curMode;
+	}
+
+	/**
+	 * Возвращает текущий режим локализации модели
+	 *
+	 * @return string
+	 */
+	public function getLocalizationMode(): string
+	{
+		return $this->localizationMode;
 	}
 
 	/**
@@ -192,6 +220,9 @@ class BaseIblockModel
 	 * Если переданный $select не пустой, то использует его.
 	 * Если нет, то смотрит на переменную класса $this->iblockSectionsSelect.
 	 *
+	 * Если режим локализации модели =  select,
+	 * то смотрит на переменную класса $this->iblockSectionsSelectForLocalization
+	 *
 	 * @param array $select
 	 * @return array
 	 */
@@ -200,10 +231,23 @@ class BaseIblockModel
 		$curSelect = [];
 
 		if (count($select) > 0) {
-			$curSelect += $select;
+			$curSelect = array_merge($curSelect, $select);
 		} else {
 			if (count($this->iblockSectionsSelect) > 0) {
-				$curSelect += $this->iblockSectionsSelect;
+				// свойста из iblockElementsSelect нужно брать всегда независимо от $localizationMode
+				$curSelect = array_merge($curSelect, $this->iblockSectionsSelect);
+			}
+			if ($this->getLocalizationMode() == 'select') {
+				if (count($this->iblockSectionsSelectForLocalization) > 0) {
+					$locSelect = [];
+
+					foreach ($this->iblockSectionsSelectForLocalization as $v) {
+						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+					}
+
+					// добавляет локализованные свойства
+					$curSelect = array_merge($curSelect, $locSelect);
+				}
 			}
 		}
 
@@ -250,6 +294,9 @@ class BaseIblockModel
 	 * Если переданный $select не пустой, то использует его.
 	 * Если нет, то смотрит на переменную класса $this->iblockElementsSelect.
 	 *
+	 * Если режим локализации модели =  select,
+	 * то смотрит на переменную класса $this->iblockElementsSelectForLocalization
+	 *
 	 * @param array $select
 	 * @return array
 	 */
@@ -258,10 +305,23 @@ class BaseIblockModel
 		$curSelect = [];
 
 		if (count($select) > 0) {
-			$curSelect += $select;
+			$curSelect = array_merge($curSelect, $select);
 		} else {
+			// свойста из iblockElementsSelect нужно брать всегда независимо от $localizationMode
 			if (count($this->iblockElementsSelect) > 0) {
-				$curSelect += $this->iblockElementsSelect;
+				$curSelect = array_merge($curSelect, $this->iblockElementsSelect);
+			}
+			if ($this->getLocalizationMode() == 'select') {
+				if (count($this->iblockElementsSelectForLocalization) > 0) {
+					$locSelect = [];
+
+					foreach ($this->iblockElementsSelectForLocalization as $v) {
+						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+					}
+
+					// добавляет локализованные свойства
+					$curSelect = array_merge($curSelect, $locSelect);
+				}
 			}
 		}
 
@@ -328,7 +388,7 @@ class BaseIblockModel
 	/**
 	 * Возвращает объект всех секций инфоблока в необработанном виде
 	 * Можно указать список полей, условия фильтра и т.д.
-	 * $select перебивает переменную инфоблока $iblockSectionsSelect.
+	 * $select перебивает переменные инфоблока $iblockSectionsSelect и $iblockSectionsSelectForLocalization
 	 *
 	 * @param array $select
 	 * @param array $filter
@@ -348,7 +408,7 @@ class BaseIblockModel
 	/**
 	 * Возвращает массив с данными конкретной секции
 	 * Можно указать список полей, условия фильтра и т.д.
-	 * $select перебивает переменную инфоблока $iblockSectionsSelect.
+	 * $select перебивает переменные инфоблока $iblockSectionsSelect и $iblockSectionsSelectForLocalization
 	 *
 	 * @param array $select
 	 * @param array $filter
@@ -451,7 +511,7 @@ class BaseIblockModel
 	/**
 	 * Возвращает объект всех элементов инфоблока в необработанном виде.
 	 * Можно указать список полей, условия фильтра и т.д.
-	 * $select перебивает переменную инфоблока $iblockElementsSelect.
+	 * $select перебивает переменные инфоблока $iblockElementsSelect и $iblockElementsSelectForLocalization
 	 *
 	 * @param array $select
 	 * @param array $filter
@@ -474,7 +534,7 @@ class BaseIblockModel
 	/**
 	 * Возвращает массив с данными конкретного элемента
 	 * Можно указать список полей, условия фильтра и т.д.
-	 * $select перебивает переменную инфоблока $iblockElementsSelect.
+	 * $select перебивает переменные инфоблока $iblockElementsSelect и $iblockElementsSelectForLocalization
 	 * $filter может быть по ID или CODE (указываем сами)
 	 *
 	 * @param array $select
@@ -689,7 +749,7 @@ class BaseIblockModel
 	 * Возвращает массив-дерево всех секций инфоблока.
 	 * Вложенные секции лежат в ключе "sections"
 	 *
-	 * $select - по дефолту берёт из $iblockSectionsSelect модели
+	 * $select - по дефолту берёт из $iblockSectionsSelect или $iblockSectionsSelectForLocalization модели
 	 *
 	 * @param array $select
 	 * @param array $filter
@@ -740,8 +800,8 @@ class BaseIblockModel
 	 * Вложенные секции лежат в ключе "sections"
 	 * Вложенные элементы лежат в ключе "elements"
 	 *
-	 * $select - по дефолту берёт из $iblockSectionsSelect модели
-	 * $selectElement - по дефолту берёт из $iblockElementsSelect модели
+	 * $select - по дефолту берёт из $iblockSectionsSelect или $iblockSectionsSelectForLocalization модели
+	 * $selectElement - по дефолту берёт из $iblockElementsSelect или $iblockElementsSelectForLocalization модели
 	 *
 	 * @param array $select
 	 * @param array $filter

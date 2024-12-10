@@ -203,6 +203,22 @@ class Helpers
 		return in_array(\Glob::get('APP_ENV'), ['dev', 'hot']);
 	}
 
+	/**
+	 * Возвращает true, если $lang равен дефолтному языку (APP_LANG в конфиге App.php)
+	 * Возвращает false в противном случае
+	 *
+	 * Если $lang не задан, то проверяется LANGUAGE_ID
+	 *
+	 * @param string $lang
+	 * @return boolean
+	 */
+	public static function isDefaultLanguage(string $lang = ''): bool
+	{
+		$curLang = !empty($lang) ? $lang : LANGUAGE_ID;
+
+		return ($curLang === \Config::get('App.APP_LANG', 'ru')) ? true : false;
+	}
+
 	public static function addPageContainerIfNecessary()
 	{
 		global $APPLICATION;
@@ -289,7 +305,7 @@ class Helpers
 	 * Парсит GET-параметры URL
 	 * Собирает в массив GET-параметры из переданного URL
 	 * При одинаковых названиях параметра, складывает всё в массив под одним ключём
-	 * 
+	 *
 	 * @param string $url
 	 * @return array
 	 */

@@ -79,11 +79,15 @@ class App
 	 */
 	public static function init(string $initPath = ''): void
 	{
-		Define::setDefine($initPath);
+		Define::set($initPath);
 
 		self::setup();
 
 		Autoload::register();
+
+		// константа-постфикс текущего языка в верхнем регистре
+		define("__LID__", \H::isDefaultLanguage() ? '' : strtoupper('_'.LANGUAGE_ID));
+
 		\Techart\BxApp\Events\Shutdown::register();
 
 		AppGlobals::setGlobals();
@@ -291,13 +295,14 @@ class App
 		$dir = 'Models';
 		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
 
-		// если режим локализации моделей указан как "file"
-		if (Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'file') == 'file') {
+		// ______пока отключено, может в дальнейшем для чего-то понадобится_____
+		// если дефолтный режим работы файлов моделей указан как "separated"
+		/*if (Config::get('App.APP_MODEL_LOCALIZATION_FILE_MODE', 'alone') == 'separated') {
 			// если дефолтный язык не равен переданному
 			if (Config::get('App.APP_LANG', 'ru') !== $curLang) {
 				$dir .= '/_Lang/'.$curLang;
 			}
-		}
+		}*/
 
 		return self::get('models', $dir, $file, $collect, $curLang);
 	}
@@ -501,5 +506,23 @@ class App
 	public static function setBundleProtector(array $protector = []): void
 	{
 		Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', $protector);
+	}
+
+	/**
+	 * Возвращает массив с текущими языками битиркса
+	 *
+	 * @return array
+	 */
+	public static function getLanguages(): array
+	{
+		$languages = [];
+		$rsLang = \CLanguage::GetList('lid', 'asc', ['ACTIVE' => 'Y']);
+
+		while ($arLang = $rsLang->Fetch())
+		{
+			$languages[$arLang['LANGUAGE_ID']] = $arLang;
+		}
+
+		return $languages;
 	}
 }

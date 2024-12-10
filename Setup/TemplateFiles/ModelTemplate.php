@@ -3,7 +3,11 @@
 class {{model_name}} extends BaseIblockModel
 {
 	public $table = '{{model_table}}';
+	public $iblockSectionsSelect = [];
+	public $iblockSectionsSelectForLocalization = [];
 	public $iblockElementsSelect = ['ID', 'NAME'];
+	public $iblockElementsSelectForLocalization = [];
+	public $localizationMode = ''; // code | select
 
 
 	public function getElementsData(): array

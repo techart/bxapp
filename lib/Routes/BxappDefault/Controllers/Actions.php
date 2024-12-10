@@ -9,7 +9,7 @@ class Actions extends \BaseRoutesController
 
 		// тут договориться и в $props сделать массив с типами ошибок и обрабатывать их тут
 
-		\Logger::add('frontendError', $props, 'frontendError');
+		\Logger::add($props['type'], $props['text'], 'frontendError');
 
 		return $this->result('', '', []);
 	}

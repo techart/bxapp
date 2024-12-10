@@ -36,9 +36,21 @@ class EventsModel
 				$eventManager = \Bitrix\Main\EventManager::getInstance();
 
 				foreach (\Config::get('App.APP_HIGHLOAD_BLOCKS_LIST') as $v) {
-					$eventManager->AddEventHandler("", $v."OnAfterDelete", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
-					$eventManager->AddEventHandler("", $v."OnAfterAdd", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
-					$eventManager->AddEventHandler("", $v."OnAfterUpdate", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+					$table = \App::model($v)->table;
+
+					// нужно назначать эвенты для всех возможных HB таблиц с учётом языков и режима локализации code
+					// эвенты сработают только при изменении в соответствующем HB
+					foreach (\App::getLanguages() as $lang) {
+						if (\Config::get('App.APP_LANG', 'ru') == $lang['LANGUAGE_ID']) {
+							$code = $table;
+						} else {
+							$code = $table.\H::ucfirst($lang['LANGUAGE_ID']);
+						}
+
+						$eventManager->AddEventHandler("", $code."OnAfterDelete", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+						$eventManager->AddEventHandler("", $code."OnAfterAdd", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+						$eventManager->AddEventHandler("", $code."OnAfterUpdate", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+					}
 				}
 			}
 		}

@@ -1,10 +1,48 @@
 <?php
 namespace Techart\BxApp;
 
+/**
+ * Класс для задания констант BxApp
+ */
+
 class Define
 {
-	public static function setDefine(string $initPath = '')
+	/**
+	 * Запускает установку констант
+	 *
+	 * @param string $initPath
+	 * @return void
+	 */
+	public static function set(string $initPath = ''): void
 	{
+		self::defineMain();
+		self::definePaths($initPath);
+	}
+
+	/**
+	 * Устанавливает константы окружения, которые влияют на всё BxApp
+	 *
+	 * @return void
+	 */
+	private static function defineMain(): void
+	{
+		define("BXAPP_LANGUAGE_ID", LANGUAGE_ID);
+		define("BXAPP_SITE_ID", SITE_ID);
+	}
+
+	/**
+	 * Устанавливает константы путей
+	 *
+	 * @param string $initPath
+	 * @return void
+	 */
+	private static function definePaths(string $initPath = ''): void
+	{
+		if (empty($initPath)) {
+			throw new \LogicException('В \Techart\BxApp\App::init() не передан $initPath!');
+			exit();
+		}
+
 		// общее
 		define("PROJECT_ROOT_DIR", realpath($initPath.'/../../../'));
 		define("SITE_ROOT_DIR", PROJECT_ROOT_DIR.'/www');
@@ -38,7 +76,7 @@ class Define
 		define("APP_TRAITS_DIR", APP_ROOT_DIR.'/Traits');
 		define("APP_VIEWS_DIR", APP_ROOT_DIR.'/Views');
 		define("APP_VIEWS_PDF_DIR", APP_VIEWS_DIR.'/Pdf');
-		define("APP_CACHE_ROUTER_DIR", APP_CACHE_DIR.'/router');
+		define("APP_CACHE_ROUTER_DIR", APP_CACHE_DIR.'/router/'.BXAPP_SITE_ID);
 		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/pages');
 	}
 }

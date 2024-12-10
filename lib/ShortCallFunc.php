@@ -64,7 +64,7 @@ if (!function_exists('dumpE')) {
 		$lastCall = debug_backtrace()[0];
 
 		if (!empty($arguments)) {
-			echo '<div style="margin: 2em; background-color:#f5b3b3; padding:1em; color:#000; font-size: 14px; max-height: 90vh; overflow: auto; box-shadow: 0 0 20px rgba(73, 77, 97, 0.25), 0 0 3px rgba(73, 77, 97, 0.1);"><div style="border-top: 1px dashed #000; padding: 1em;">';
+			echo '<pre style="margin: 2em; background-color:#f5b3b3; padding:1em; color:#000; font-size: 14px; max-height: 90vh; overflow: auto; box-shadow: 0 0 20px rgba(73, 77, 97, 0.25), 0 0 3px rgba(73, 77, 97, 0.1);"><div style="border-top: 1px dashed #000; padding: 1em;">';
 
 			foreach ($arguments as $row) {
 				echo '<div style="border-bottom: 1px dashed #000; padding: 1em;">';

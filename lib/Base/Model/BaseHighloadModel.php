@@ -10,6 +10,17 @@ namespace Techart\BxApp\Base\Model;
  * Работа с моделью хайлоадблоков очень похожа на работу с моделью инфоблока.
  * Читай описание в файле BaseIblockModel.php
  *
+ *
+ * ______ЛОКАЛИЗАЦИЯ:
+ *
+ * При вызове модели третьим параметром можно передать требуемый язык
+ * App::model('HbTest', true, 'en')->getElementsData()
+ * В этом случае:
+ *
+	1)
+	Если язык указан и если getLocalizationMode() = 'code' и ЯЗЫК != APP_LANG
+	То в модели к коду $this->table с большой буквы добавляется язык - "*En"
+	В противном случае $this->table остаётся как было указано в модели
  */
 
 \CModule::IncludeModule('highloadblock');
@@ -28,14 +39,18 @@ class BaseHighloadModel
 
 
 	public $table = ''; // код highload блока
+	public $lid = ''; // постфикс-указатель на текущий язык модели
 	public $hblockElementsSelect = ['*']; // выборка полей для элементов модели
+	public $hblockElementsSelectForLocalization = []; // выборка полей для элементов модели
+	public $localizationMode = ''; // режим локализации модели
 	private $hblockData = []; // массив параметров highload блока
+	private $curModes = ['code', 'select', 'checkbox']; // режимы локализации модели хайлоадблока
 
 
 	/**
 	 * $locale - требуемый язык
 	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code' и $locale != APP_LANG
-	 * То в модели к коду $this->table через подчеркивание добавляется $locale - "_$locale"
+	 * То в модели к коду $this->table с большой буквы добавляется $locale - "*En"
 	 * В противном случае $this->table остаётся как было указано в модели
 	 *
 	 * @param string $locale
@@ -43,14 +58,20 @@ class BaseHighloadModel
 	public function __construct(string $locale = '')
 	{
 		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
+		$lid = '';
+
+		$this->setLocalizationMode();
 
 		// если режим локализации моделей указан как "code"
 		if (!empty($this->table)) {
-			if (\Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'file') == 'code') {
-				// если дефолтный язык не равен переданному
-				if (\Config::get('App.APP_LANG', 'ru') !== $curLang) {
-					$this->table .= '_'.$curLang;
-				}
+			// если дефолтный язык не равен языку модели
+			if (\H::isDefaultLanguage($curLang) === false) {
+				$lid = $curLang;
+				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+			}
+
+			if ($this->getLocalizationMode() == 'code') {
+				$this->table .= ''.\H::ucfirst($lid);
 			}
 
 			$this->getHighloadBlock();
@@ -58,6 +79,33 @@ class BaseHighloadModel
 			throw new \LogicException('Модель "' . get_class($this) . '" должна содержать не пустую переменную $iblockCode!');
 			exit();
 		}
+	}
+
+	/**
+	 * Устанавливает текущий режим локализации модели
+	 *
+	 * @return void
+	 */
+	private function setLocalizationMode(): void
+	{
+		$curMode = !empty($this->localizationMode) ? $this->localizationMode : \Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'code');
+
+		if (!in_array($curMode, $this->curModes)) {
+			throw new \LogicException('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
+			exit();
+		}
+
+		$this->localizationMode = $curMode;
+	}
+
+	/**
+	 * Возвращает текущий режим локализации модели
+	 *
+	 * @return string
+	 */
+	public function getLocalizationMode(): string
+	{
+		return $this->localizationMode;
 	}
 
 	/**
@@ -185,8 +233,8 @@ class BaseHighloadModel
 	 * Составляет Select для текущего запроса
 	 *
 	 * Select по умолчанию переопределяется в случае получения Select из вне
-	 * Если нет Select, то смотрит на переменную класса $this->hblockElementsSelect
-	 * В $this->hblockElementsSelect по умолчанию выбираются все поля
+	 * Если нет Select, то смотрит на переменную класса $hblockElementsSelect или $hblockElementsSelectForLocalization
+	 * В $hblockElementsSelect по умолчанию выбираются все поля
 	 *
 	 * @param array $select
 	 *
@@ -197,10 +245,23 @@ class BaseHighloadModel
 		$curSelect = [];
 
 		if (count($select) > 0) {
-			$curSelect = $select;
+			$curSelect = array_merge($curSelect, $select);
 		} else {
+			// свойста из iblockElementsSelect нужно брать всегда независимо от $localizationMode
 			if(count($this->hblockElementsSelect) > 0) {
-				$curSelect = $this->hblockElementsSelect;
+				$curSelect = array_merge($curSelect, $this->hblockElementsSelect);
+			}
+			if ($this->getLocalizationMode() == 'select') {
+				if (count($this->hblockElementsSelectForLocalization) > 0) {
+					$locSelect = [];
+
+					foreach ($this->hblockElementsSelectForLocalization as $v) {
+						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+					}
+
+					// добавляет локализованные свойства
+					$curSelect = array_merge($curSelect, $locSelect);
+				}
 			}
 		}
 
