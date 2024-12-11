@@ -452,4 +452,18 @@ class Protector
 
 		return $this;
 	}
+
+	/**
+	 * Проверяет не устерал ли ID сессии PHPSESSID в куках
+	 * 
+	 * @return bool
+	 */
+	public function checkNextSessionID(): bool
+	{
+		if ($_COOKIE['PHPSESSID'] !== session_id()) {
+			return false;
+		}
+
+		return true;
+	}
 }

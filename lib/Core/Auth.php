@@ -12,6 +12,8 @@ class Auth
 	{
 		global $USER;
 
+		if (!is_object($USER)) $USER = new \CUser;
+
 		return $USER;
 	}
 
