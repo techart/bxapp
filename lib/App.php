@@ -86,7 +86,11 @@ class App
 		Autoload::register();
 
 		// константа-постфикс текущего языка в верхнем регистре
-		define("__LID__", \H::isDefaultLanguage() ? '' : strtoupper('_'.LANGUAGE_ID));
+		define("__LID__", \H::isDefaultLanguage() ? '' : strtoupper('_'.BXAPP_LANGUAGE_ID));
+		// константа-постфикс текущей группы в верхнем регистре
+		define("__GID__", empty(BXAPP_SITE_GROUP_ID) ? '' : strtoupper('_'.BXAPP_SITE_GROUP_ID));
+		// константа-постфикс объединяющая язык и группу
+		define("__PID__", __GID__.__LID__);
 
 		\Techart\BxApp\Events\Shutdown::register();
 
@@ -293,7 +297,7 @@ class App
 	public static function model(string $file = '', bool $collect = true, string $locale = ''): object
 	{
 		$dir = 'Models';
-		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
 		// ______пока отключено, может в дальнейшем для чего-то понадобится_____
 		// если дефолтный режим работы файлов моделей указан как "separated"

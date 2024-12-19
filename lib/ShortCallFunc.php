@@ -237,7 +237,7 @@ if (!function_exists('getIblockId')) {
 		if (!empty($code)) {
 			$res = CIBlock::GetList(
 				array(),
-				array('SITE_ID' => SITE_ID, 'ACTIVE' => 'Y', "CODE" => $code)
+				array('SITE_ID' => BXAPP_SITE_ID, 'ACTIVE' => 'Y', "CODE" => $code)
 			);
 
 			if ($arRes = $res->Fetch()) {

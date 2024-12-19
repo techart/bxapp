@@ -174,6 +174,9 @@ class AppSetup
 		}
 		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', APP_TRAITS_DIR);
 		recurseCopy(APP_CORE_SETUP_DIR.'/Views', APP_VIEWS_DIR);
+		if (!file_exists(APP_ROOT_DIR.'/BxAppRegistry.php')) {
+			copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_ROOT_DIR.'/BxAppRegistry.php');
+		}
 		if (!is_dir(APP_FAVICON_FILES_DIR)) {
 			mkdir(APP_FAVICON_FILES_DIR);
 			copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');

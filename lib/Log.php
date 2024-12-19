@@ -299,13 +299,10 @@ class Log
 
 		if (count(self::$messages) > 0) {
 			foreach (self::$messages as $file => $data) {
-				if ($for == 'toEmail') {
-				}
-
 				if ($for == 'toEmail' or $for == $file) {
 					foreach ($data as $v) {
 						if ($v['typeID'] <= $typeID) {
-							if (!in_array($file, $titleFiles)) {
+							if (!in_array($file, $titleFiles) && $for != $file) {
 								$text .= $lineBreak.'['.$file.'.log]'.$lineBreak;
 								$titleFiles[] = $file;
 							}
@@ -381,16 +378,7 @@ class Log
 			$text = self::buildLogText(self::$typesForEmail, 'toEmail');
 
 			if (!empty($text) && !empty(self::$emails)) {
-				$type = 'WARNING';
-				if (self::$curTypeID == 2) {
-					$type = 'ERROR';
-				}
-				if (self::$curTypeID == 1) {
-					$type = 'CRITICAL';
-				}
-				if (self::$curTypeID == 0) {
-					$type = 'FRONTEND_ERROR';
-				}
+				$type = strtoupper(self::$types[self::$curTypeID]);
 
 				mail(self::$emails, $type.'! - ошибки с сайта '.$_SERVER['HTTP_HOST'], $text, 'Content-Type: text/plain; charset=utf-8' . "\r\n");
 			}

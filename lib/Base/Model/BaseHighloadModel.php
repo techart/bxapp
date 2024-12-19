@@ -40,6 +40,7 @@ class BaseHighloadModel
 
 	public $table = ''; // код highload блока
 	public $lid = ''; // постфикс-указатель на текущий язык модели
+	public $pid = ''; // постфикс-указатель глобальный (объединяющий язык и группу)
 	public $hblockElementsSelect = ['*']; // выборка полей для элементов модели
 	public $hblockElementsSelectForLocalization = []; // выборка полей для элементов модели
 	public $localizationMode = ''; // режим локализации модели
@@ -57,8 +58,7 @@ class BaseHighloadModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
-		$lid = '';
+		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 
@@ -66,12 +66,13 @@ class BaseHighloadModel
 		if (!empty($this->table)) {
 			// если дефолтный язык не равен языку модели
 			if (\H::isDefaultLanguage($curLang) === false) {
-				$lid = $curLang;
 				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
 			}
 
+			$this->pid = __GID__.$this->lid;
+
 			if ($this->getLocalizationMode() == 'code') {
-				$this->table .= ''.\H::ucfirst($lid);
+				$this->table .= ''.\H::ucfirst($this->pid);
 			}
 
 			$this->getHighloadBlock();
@@ -256,7 +257,7 @@ class BaseHighloadModel
 					$locSelect = [];
 
 					foreach ($this->hblockElementsSelectForLocalization as $v) {
-						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+						$locSelect[] = $v.$this->pid; // подставляем постфикс языка для свойства
 					}
 
 					// добавляет локализованные свойства

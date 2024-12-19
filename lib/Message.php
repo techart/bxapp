@@ -12,9 +12,9 @@ namespace Techart\BxApp;
  *
  * Самый простой вариант:
  *
- * \M::get('TEST') - ищет в Localization/Messages/Default/LANGUAGE_ID/messages.php и вернёт значение из ключа TEST
+ * \M::get('TEST') - ищет в Localization/Messages/Default/BXAPP_LANGUAGE_ID/messages.php и вернёт значение из ключа TEST
  *
- * LANGUAGE_ID - текущий язык битрикса
+ * BXAPP_LANGUAGE_ID - текущий язык BxApp
  *
  * Можно рядом создать файл не messages.php, а, например, buttons.php
  *
@@ -26,10 +26,10 @@ namespace Techart\BxApp;
  * Тогда обратиться можно будет так:
  *
  * \M::get('Site/Buttons::main.CALL_ME_TEXT')
- * В примере выше ищется файл Localization/Messages/Site/Buttons/LANGUAGE_ID/main.php и в нём ключ CALL_ME_TEXT
+ * В примере выше ищется файл Localization/Messages/Site/Buttons/BXAPP_LANGUAGE_ID/main.php и в нём ключ CALL_ME_TEXT
  *
  * \M::get('Site/Buttons::CALL_ME_TEXT')
- * В примере выше ищется файл Localization/Messages/Site/Buttons/LANGUAGE_ID/messages.php и в нём ключ CALL_ME_TEXT
+ * В примере выше ищется файл Localization/Messages/Site/Buttons/BXAPP_LANGUAGE_ID/messages.php и в нём ключ CALL_ME_TEXT
  *
  * Если путь к файлу найти не удалось, то возвращается указанный текст.
  *
@@ -169,7 +169,7 @@ class Message
 	 * Возвращает значение для $name
 	 * С подстановками из $replace
 	 * $number - число для функции плюрализации
-	 * По умолчанию $locale = LANGUAGE_ID
+	 * По умолчанию $locale = BXAPP_LANGUAGE_ID
 	 *
 	 * Если $name не существует, то возвращает пустую строку
 	 *
@@ -181,7 +181,7 @@ class Message
 	 */
 	public static function get(string $name = '', array $replace = [], int $number = 0, string $locale = ''): string
 	{
-		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 		$parse = self::parseName($name);
 		$curTranslatorName = $parse['namespace'].'-'.$parse['group'].'-'.$curLang;
 		$curReplacements = self::getReplacements($replace, $curLang);

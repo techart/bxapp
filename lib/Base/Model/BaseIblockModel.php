@@ -129,6 +129,7 @@ class BaseIblockModel
 
 	public $table = ''; // код инфоблока
 	public $lid = ''; // постфикс-указатель на текущий язык модели
+	public $pid = ''; // постфикс-указатель глобальный (объединяющий язык и группу)
 	public $iblockSectionsSelect = []; // выборка полей для секций модели
 	public $iblockSectionsSelectForLocalization = []; // выборка полей для секций модели
 	public $iblockElementsSelect = []; // выборка полей для элементов модели
@@ -148,7 +149,7 @@ class BaseIblockModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 
@@ -158,9 +159,11 @@ class BaseIblockModel
 				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
 			}
 
+			$this->pid = __GID__.$this->lid;
+
 			// если режим локализации моделей указан как "code"
 			if ($this->getLocalizationMode() == 'code') {
-				$this->table .= strtolower($this->lid); // добавляем к коду инфоблока указание на язык модели
+				$this->table .= strtolower($this->pid); // добавляем к коду инфоблока указание на язык модели
 			}
 
 			$this->getInfoblock();
@@ -242,7 +245,7 @@ class BaseIblockModel
 					$locSelect = [];
 
 					foreach ($this->iblockSectionsSelectForLocalization as $v) {
-						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+						$locSelect[] = $v.$this->pid; // подставляем постфикс для свойства
 					}
 
 					// добавляет локализованные свойства
@@ -316,7 +319,7 @@ class BaseIblockModel
 					$locSelect = [];
 
 					foreach ($this->iblockElementsSelectForLocalization as $v) {
-						$locSelect[] = $v.$this->lid; // подставляем постфикс языка для свойства
+						$locSelect[] = $v.$this->pid; // подставляем постфикс для свойства
 					}
 
 					// добавляет локализованные свойства
@@ -369,7 +372,7 @@ class BaseIblockModel
 			$res = \CIBlock::GetList(
 				[],
 				[
-					'SITE_ID' => SITE_ID,
+					'SITE_ID' => BXAPP_SITE_ID,
 					"CODE" => $this->table
 				],
 				false

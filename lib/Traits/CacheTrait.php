@@ -49,14 +49,14 @@ trait CacheTrait
 	 * Возвращает ID текущего кэша.
 	 * Это или переданная строка $cacheID.
 	 * Или по умолчанию строка состоящая из:
-	 * SITE_ID, LANGUAGE_ID, имени класса модели, имени метода и переданные аргументы метода, где вызывается функция кэша.
+	 * BXAPP_SITE_ID, BXAPP_LANGUAGE_ID, имени класса модели, имени метода и переданные аргументы метода, где вызывается функция кэша.
 	 *
 	 * @param string $cacheID
 	 * @return string
 	 */
 	private function getCacheID(string $cacheID = ''): string
 	{
-		return !empty($cacheID) ? $cacheID : SITE_ID.'_'.LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[2]['function'].'_'.md5(json_encode(debug_backtrace()[2]['args']));
+		return !empty($cacheID) ? $cacheID : BXAPP_SITE_ID.'_'.BXAPP_LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[2]['function'].'_'.md5(json_encode(debug_backtrace()[2]['args']));
 	}
 
 	/**
@@ -72,7 +72,7 @@ trait CacheTrait
 	 */
 	public function buildCacheID(array $params = []): string
 	{
-		$curCacheId = SITE_ID.'_'.LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));
+		$curCacheId = BXAPP_SITE_ID.'_'.BXAPP_LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[1]['function'].'_'.md5(json_encode($params));
 
 		return $curCacheId;
 	}

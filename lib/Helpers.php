@@ -207,14 +207,14 @@ class Helpers
 	 * Возвращает true, если $lang равен дефолтному языку (APP_LANG в конфиге App.php)
 	 * Возвращает false в противном случае
 	 *
-	 * Если $lang не задан, то проверяется LANGUAGE_ID
+	 * Если $lang не задан, то проверяется BXAPP_LANGUAGE_ID
 	 *
 	 * @param string $lang
 	 * @return boolean
 	 */
 	public static function isDefaultLanguage(string $lang = ''): bool
 	{
-		$curLang = !empty($lang) ? $lang : LANGUAGE_ID;
+		$curLang = !empty($lang) ? $lang : BXAPP_LANGUAGE_ID;
 
 		return ($curLang === \Config::get('App.APP_LANG', 'ru')) ? true : false;
 	}

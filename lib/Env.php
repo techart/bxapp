@@ -29,8 +29,16 @@ class Env
 	protected static function getEnv(string $key = ''): mixed
 	{
 		if (self::$env === false) {
-			if (file_exists(PROJECT_ROOT_DIR.'/.env')) {
-				self::$env = Dotenv::createImmutable(PROJECT_ROOT_DIR)->load();
+			$envFile = '.env';
+
+			if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('env', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
+				$envFile .= '_'.BXAPP_SITE_ID;
+			}
+
+			$envPath = PROJECT_ROOT_DIR.'/'.$envFile;
+
+			if (file_exists($envPath)) {
+				self::$env = Dotenv::createImmutable(PROJECT_ROOT_DIR, $envFile)->load();
 			} else {
 				self::$env = [];
 			}
