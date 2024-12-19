@@ -101,6 +101,7 @@ class App
 
 		include_once ('ShortCallFunc.php');
 
+		include_once (APP_ROOT_DIR.'/Traits/AssetsTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
