@@ -303,7 +303,7 @@ class Log
 					foreach ($data as $v) {
 						if ($v['typeID'] <= $typeID) {
 							if (!in_array($file, $titleFiles) && $for != $file) {
-								$text .= $lineBreak.'['.$file.'.log]'.$lineBreak;
+								$text .= $lineBreak.'['.$file.'.log] ('.APP_LOGS_DIR.'/'.$file.'.log)'.$lineBreak;
 								$titleFiles[] = $file;
 							}
 

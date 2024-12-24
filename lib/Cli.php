@@ -12,16 +12,17 @@ namespace Techart\BxApp;
 class Cli
 {
 	static $defaultActions = array(
-		'app_setup' => 'setup',
-		'app_setupTemplate' => 'setupTemplate',
-		'app_clearCacheRouter' => 'clearCacheRouter',
-		'app_createModel' => 'createModel',
-		'app_createCli' => 'createCli',
-		'app_createBundle' => 'createBundle',
-		'app_createMiddlewareAfter' => 'createMiddlewareAfter',
-		'app_createMiddlewareBefore' => 'createMiddlewareBefore',
-		'app_createSitemap' => 'createSitemap',
+		'bxapp_setup' => 'setup',
+		'bxapp_setupTemplate' => 'setupTemplate',
+		'bxapp_clearCacheRouter' => 'clearCacheRouter',
+		'bxapp_createModel' => 'createModel',
+		'bxapp_createCli' => 'createCli',
+		'bxapp_createBundle' => 'createBundle',
+		'bxapp_createMiddlewareAfter' => 'createMiddlewareAfter',
+		'bxapp_createMiddlewareBefore' => 'createMiddlewareBefore',
+		'bxapp_createSitemap' => 'createSitemap',
 	);
+	static $siteId = '';
 	static $action = '';
 	static $options = [];
 
@@ -34,25 +35,40 @@ class Cli
 	 */
 	public static function run($argv = []): void
 	{
-		self::$action = $argv[1];
-		self::$options = array_slice($argv, 2);
+		self::$siteId = $argv[1];
+
+		if (!empty(BXAPP_REGISTRY_SITES[self::$siteId])) {
+			self::$action = $argv[2];
+			self::$options = array_slice($argv, 3);
+		} else {
+			self::$siteId = BXAPP_SITE_ID;
+
+			if (strpos($argv[2], '_') !== false) {
+				self::$action = $argv[2];
+				self::$options = array_slice($argv, 3);
+			} else {
+				self::$action = $argv[1];
+				self::$options = array_slice($argv, 2);
+			}
+		}
 
 		// Вызов дефолтного действия, если такое есть
 		if (isset(self::$defaultActions[self::$action])) {
 			call_user_func_array(
 				[new CliActions, self::$defaultActions[self::$action]],
-				self::$options
+				[self::$options, self::$siteId]
 			);
 		} else {
-			$classMethod = explode('_', $argv[1]);
+			$classMethod = explode('_', self::$action);
 
 			if (count($classMethod) == 2) {
 				$className = $classMethod[0];
 				$methodName = $classMethod[1];
-				$methodArgs = array_slice($argv, 2);
+				$methodArgs = self::$options;
 
 				if (!empty($className) && !empty($methodName)) {
-					$classFile = APP_CLI_DIR.'/'.$className.'.php';
+					$dirs = Registry::buildBxAppEntitiesDirs(self::$siteId);
+					$classFile = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['cliDir'].'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -63,7 +79,7 @@ class Cli
 							$curClass = new $className;
 
 							if (method_exists($curClass, $methodName)) {
-								call_user_func_array([$curClass, $methodName], $methodArgs);
+								call_user_func_array([$curClass, $methodName], [$methodArgs, self::$siteId]);
 							} else {
 								// echo 'В классе '.$className.' не найден метод: '.$methodName.PHP_EOL;
 								Logger::warning('В классе '.$className.' не найден метод: '.$methodName);

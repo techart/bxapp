@@ -372,7 +372,7 @@ class BaseIblockModel
 			$res = \CIBlock::GetList(
 				[],
 				[
-					'SITE_ID' => BXAPP_SITE_ID,
+					"SITE_ID" => BXAPP_SITE_ID,
 					"CODE" => $this->table
 				],
 				false

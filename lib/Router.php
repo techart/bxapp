@@ -84,10 +84,10 @@ class Router
 	{
 		if (count(self::$defaultRoutes) > 0) {
 			foreach (self::$defaultRoutes as $bundle) {
-				if (file_exists(APP_CORE_ROUTES_DIR.'/'.$bundle.'/Routes.php')) {
+				if (file_exists(APP_CORE_ROUTER_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
-					require_once(APP_CORE_ROUTES_DIR.'/'.$bundle.'/Routes.php');
+					require_once(APP_CORE_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
 				}
@@ -111,10 +111,10 @@ class Router
 
 		if (count($bundles) > 0) {
 			foreach ($bundles as $bundle) {
-				if (file_exists(APP_ROUTES_DIR.'/'.$bundle.'/Routes.php')) {
+				if (file_exists(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
-					require_once(APP_ROUTES_DIR.'/'.$bundle.'/Routes.php');
+					require_once(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
 				}
@@ -135,21 +135,17 @@ class Router
 	 */
 	public static function explodeUrl(string $url = ''): array
 	{
-		$match = array_filter(explode('/', $url));
-		$stat = [];
-
-		foreach ($match as $k => $v) {
-			if (count($stat) == 2) {
-				break;
-			}
-			$stat[] = $v;
-			unset($match[$k]);
-		}
+		$prefix = (string)Config::get('Router.APP_ROUTER_PREFIX', 'siteapi');
+		$match = array_filter(explode($prefix, $url));
+		$siteData = explode('/', trim($match[0], '/'));
+		$routeData = explode('/', trim($match[1], '/'));
+		$bundle = mb_strtolower($routeData[0]);
+		unset($routeData[0]);
 
 		return [
-			'prefix' => $stat[0],
-			'bundle' => mb_strtolower($stat[1]),
-			'route' => '/'.implode('/', $match).'/',
+			'prefix' => $prefix,
+			'bundle' => $bundle,
+			'route' => '/'.implode('/', $routeData).'/',
 		];
 	}
 
@@ -366,16 +362,16 @@ class Router
 			if (isset($routeData['controller']) && isset($routeData['method'])) {
 				if ($routeData['bundle'] == 'BxappDefault') {
 					// dump(11);
-					$controllerFile = APP_CORE_ROUTES_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php';
-					// dump(APP_CORE_ROUTES_DIR);
+					$controllerFile = APP_CORE_ROUTER_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php';
+					// dump(APP_CORE_ROUTER_DIR);
 				} else {
 					// dump(22);
-					$controllerFile = realpath(APP_ROUTES_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php');
+					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php');
 				}
 				// dd($controllerFile);
 				if (file_exists($controllerFile)) {
 					require_once($controllerFile);
-					$controllerClass = 'Routes\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];
+					$controllerClass = 'Router\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];
 
 					if (class_exists($controllerClass)) {
 						$controller = new $controllerClass();

@@ -1,7 +1,7 @@
 <?php
-namespace Routes\BxappDefault\Controllers;
+namespace Router\BxappDefault\Controllers;
 
-class Actions extends \BaseRoutesController
+class Actions extends \BaseRouterController
 {
 	public function logger()
 	{

@@ -126,7 +126,7 @@ if (!function_exists('recurseCopy')) {
 					recurseCopy("$sourceDirectory/$file", "$destinationDirectory/$childFolder/$file");
 				} else {
 					if (!file_exists("$destinationDirectory/$childFolder/$file")) {
-					copy("$sourceDirectory/$file", "$destinationDirectory/$childFolder/$file");
+						copy("$sourceDirectory/$file", "$destinationDirectory/$childFolder/$file");
 					}
 				}
 			}
@@ -217,6 +217,34 @@ if (!function_exists('checkCreateDir')) {
 		if (!empty($dir)) {
 			if (!is_dir($dir)) {
 				mkdir($dir);
+			}
+		}
+	}
+}
+
+if (!function_exists('checkChaineCreateDir')) {
+	/**
+	 * Проверяет наличие директории $dir
+	 * Создаёт все отсутствующие директории по заданному пути
+	 *
+	 * @param string $dir
+	 * @return void
+	 */
+	function checkChaineCreateDir(string $dir = ''): void
+	{
+		if (!empty($dir)) {
+			if (!is_dir($dir)) {
+				$dirs = explode('/', $dir);
+				$curDir = $dirs[0];
+				array_shift($dirs);
+
+				foreach ($dirs as $dir) {
+					$curDir .= '/'.$dir;
+	
+					if (!is_dir($curDir)) {
+						mkdir($curDir);
+					}
+				}
 			}
 		}
 	}

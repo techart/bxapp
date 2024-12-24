@@ -97,74 +97,8 @@ class Define
 		define("APP_SELF_DIR", APP_VENDOR_DIR.'/lib');
 		define("APP_CORE_DIR", APP_SELF_DIR.'/Core');
 		define("APP_CORE_BASE_DIR", APP_SELF_DIR.'/Base');
-		define("APP_CORE_ROUTES_DIR", APP_SELF_DIR.'/Routes');
+		define("APP_CORE_ROUTER_DIR", APP_SELF_DIR.'/Router');
 		define("APP_CORE_TRAITS_DIR", APP_SELF_DIR.'/Traits');
-	}
-
-	/**
-	 * Собирает пути к BxApp директориям
-	 *
-	 * @return void
-	 */
-	private static function buildBxAppPaths(): array
-	{
-		$bxAppPaths = [
-			'bxAppDir' => 'BxApp',
-			'cliDir' => 'Cli',
-			'configsDir' => 'Configs',
-			'localizationDir' => 'Localization',
-			'logsDir' => 'Logs',
-			'menuDir' => 'Menu',
-			'middlewareDir' => 'Middleware',
-			'modelsDir' => 'Models',
-			'modulesDir' => 'Modules',
-			'routesDir' => 'Routes',
-			'servicesDir' => 'Services',
-			'traitsDir' => 'Traits',
-			'viewsDir' => 'Views',
-		];
-
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappDir']) && !empty(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappDir'])) {
-			$bxAppPaths['bxAppDir'] = BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappDir'];
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Cli', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['cliDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Configs', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['configsDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Localization', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['localizationDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Logs', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['logsDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Menu', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['menuDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Middleware', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['middlewareDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Models', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['modelsDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Modules', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['modulesDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Routes', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['routesDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Services', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['servicesDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Traits', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['traitsDir'] .= '_'.BXAPP_SITE_ID;
-		}
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('Views', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-			$bxAppPaths['viewsDir'] .= '_'.BXAPP_SITE_ID;
-		}
-
-		return $bxAppPaths;
 	}
 
 	/**
@@ -174,7 +108,7 @@ class Define
 	 */
 	private static function defineBxAppPaths(): void
 	{
-		$bxAppPaths = self::buildBxAppPaths();
+		$bxAppPaths = Registry::buildBxAppEntitiesDirs();
 
 		// Пути app на сайте: php_interface/BxApp
 		define("APP_ROOT_DIR", APP_PHP_INTERFACE_DIR.'/'.$bxAppPaths['bxAppDir']); // путь к папке BxApp (или её переопределению)
@@ -188,7 +122,7 @@ class Define
 		define("APP_MIDDLEWARE_AFTER_DIR", APP_MIDDLEWARE_DIR.'/After'); // папка Middleware/After
 		define("APP_MODELS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['modelsDir']); // папка Models
 		define("APP_MODULES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['modulesDir']); // папка Modules
-		define("APP_ROUTES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['routesDir']); // папка Routes
+		define("APP_ROUTER_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['routerDir']); // папка Router
 		define("APP_SERVICES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['servicesDir']); // папка Services
 		define("APP_TRAITS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['traitsDir']); // папка Traits
 		define("APP_VIEWS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['viewsDir']); // папка Views

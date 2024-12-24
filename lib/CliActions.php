@@ -14,7 +14,8 @@ class CliActions
 	 */
 	public function setup(): void
 	{
-		AppSetup::setup();
+		$args = func_get_args();
+		AppSetup::setup($args[1]);
 
 		echo 'Создание файлов завершено!'.PHP_EOL;
 	}
@@ -38,7 +39,8 @@ class CliActions
 	 */
 	public function createModel(): void
 	{
-		AppSetup::createModel(func_get_args());
+		$args = func_get_args();
+		AppSetup::createModel($args[0], $args[1]);
 
 		echo 'Создание модели завершено!'.PHP_EOL;
 	}
@@ -50,7 +52,8 @@ class CliActions
 	 */
 	public function createCli(): void
 	{
-		AppSetup::createCli(func_get_args());
+		$args = func_get_args();
+		AppSetup::createCli($args[0], $args[1]);
 
 		echo 'Создание Cli класса завершено!'.PHP_EOL;
 	}
@@ -62,7 +65,8 @@ class CliActions
 	 */
 	public function createBundle(): void
 	{
-		AppSetup::createBundle(func_get_args());
+		$args = func_get_args();
+		AppSetup::createBundle($args[0], $args[1]);
 
 		echo 'Создание бандла завершено!'.PHP_EOL;
 	}
@@ -74,7 +78,8 @@ class CliActions
 	 */
 	public function createMiddlewareAfter(): void
 	{
-		AppSetup::createMiddlewareAfter(func_get_args());
+		$args = func_get_args();
+		AppSetup::createMiddlewareAfter($args[0], $args[1]);
 
 		echo 'Создание middleware завершено!'.PHP_EOL;
 	}
@@ -86,7 +91,8 @@ class CliActions
 	 */
 	public function createMiddlewareBefore(): void
 	{
-		AppSetup::createMiddlewareBefore(func_get_args());
+		$args = func_get_args();
+		AppSetup::createMiddlewareBefore($args[0], $args[1]);
 
 		echo 'Создание middleware завершено!'.PHP_EOL;
 	}

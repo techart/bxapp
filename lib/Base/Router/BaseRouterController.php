@@ -1,5 +1,5 @@
 <?php
-namespace Techart\BxApp\Base\Routes;
+namespace Techart\BxApp\Base\Router;
 
 
 /**
@@ -18,7 +18,7 @@ namespace Techart\BxApp\Base\Routes;
 use \Bitrix\Main\Application;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class BaseRoutesController
+class BaseRouterController
 {
 	use \ResultTrait;
 	use \ErrorTrait;

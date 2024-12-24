@@ -1,7 +1,7 @@
 <?php
-namespace Routes\{{BundleName}}\Controllers;
+namespace Router\{{BundleName}}\Controllers;
 
-class Actions extends \BaseRoutesController
+class Actions extends \BaseRouterController
 {
 	public function method()
 	{

@@ -102,7 +102,6 @@ class Pdf
 
 		if (file_exists($templatePath)) {
 			if (\Config::get('Pdf.APP_PDF_USE_BLADE', true)) {
-				\Logger::warning('PDF - файл шаблона не существует: '.$templatePath);
 				return \BladeTemplate::getBlade()->run($template, $vars);
 			} else {
 				extract($vars);

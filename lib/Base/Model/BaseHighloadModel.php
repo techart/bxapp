@@ -62,14 +62,13 @@ class BaseHighloadModel
 
 		$this->setLocalizationMode();
 
-		// если режим локализации моделей указан как "code"
+		// если режим локализации моделей указан как "code" 
 		if (!empty($this->table)) {
 			// если дефолтный язык не равен языку модели
 			if (\H::isDefaultLanguage($curLang) === false) {
-				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+				$this->lid = \H::ucfirst($curLang); // обновляем указатель языка модели
 			}
-
-			$this->pid = __GID__.$this->lid;
+			$this->pid = \H::ucfirst(trim(__GID__, '_')).$this->lid;
 
 			if ($this->getLocalizationMode() == 'code') {
 				$this->table .= ''.\H::ucfirst($this->pid);
