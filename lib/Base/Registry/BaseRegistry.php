@@ -44,4 +44,27 @@ class BaseRegistry
 	{
 		return $this->currentLanguage;
 	}
+
+	public function setStaticApi()
+	{
+		if (isset($_GET['staticapi']) && $_GET['staticapi'] == true) {
+			define('BXAPP_IS_STATIC', true);
+			define('BXAPP_IS_SITE_PAGE', false);
+			define('BXAPP_ROUTER_CURRENT_REQUEST_METHOD', $_GET['method']);
+			define('BXAPP_ROUTER_CURRENT_REQUEST_URL', $_GET['url']);
+			unset($_GET['staticapi']);
+			unset($_GET['method']);
+			unset($_GET['url']);
+			if (isset($_GET['serverid'])) {
+				$this->currentServer = $_GET['serverid'];
+				unset($_GET['serverid']);
+			}
+			if (isset($_GET['siteid'])) {
+				$this->currentSite = $_GET['siteid'];
+				unset($_GET['siteid']);
+			}
+			define('BXAPP_ROUTER_CURRENT_REQUEST_QUERY', $_GET);
+		}
+	}
+
 }

@@ -127,7 +127,11 @@ class Define
 		define("APP_TRAITS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['traitsDir']); // папка Traits
 		define("APP_VIEWS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['viewsDir']); // папка Views
 		define("APP_VIEWS_PDF_DIR", APP_VIEWS_DIR.'/Pdf'); // папка Views/Pdf
-		define("APP_CACHE_ROUTER_DIR", APP_CACHE_DIR.'/router/'.BXAPP_SITE_ID); // папка кэша роутера
+		define("APP_CACHE_BLADE_DIR", APP_CACHE_DIR.'/blade'); // папка кэша блейда
+		define("APP_CACHE_ROUTER_ROOT_DIR", APP_CACHE_DIR.'/router'); // папка кэша роутера
+		define("APP_CACHE_ROUTER_DIR", APP_CACHE_ROUTER_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша роутера сайта
 		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/pages'); // папка кэша роутов (страниц)
+		define("APP_CACHE_STATIC_ROOT_DIR", APP_CACHE_DIR.'/static'); // папка кэша статики
+		define("APP_CACHE_STATIC_DIR", APP_CACHE_STATIC_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша статики сайта
 	}
 }

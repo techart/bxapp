@@ -13,6 +13,21 @@ class Router
 	private static $defaultRoutes = ['BxappDefault'];
 
 
+	private static function getRequestQuery(): string
+	{
+		return defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY') ? BXAPP_ROUTER_CURRENT_REQUEST_QUERY : '';
+	}
+
+	private static function getRequestMethod(): string
+	{
+		return defined('BXAPP_ROUTER_CURRENT_REQUEST_METHOD') ? BXAPP_ROUTER_CURRENT_REQUEST_METHOD : Application::getInstance()->getContext()->getRequest()->getRequestMethod();
+	}
+
+	private static function getRequestUri(): string
+	{
+		return defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') ? BXAPP_ROUTER_CURRENT_REQUEST_URL : Application::getInstance()->getContext()->getRequest()->getRequestUri();
+	}
+
 	/**
 	 * Возвращает переданный $url или, если он пустой, то RequestUri
 	 *
@@ -21,7 +36,7 @@ class Router
 	 */
 	private static function getCurrentUrl(string $url = ''): string
 	{
-		return !empty($url) ? $url : Application::getInstance()->getContext()->getRequest()->getRequestUri();
+		return !empty($url) ? $url : self::getRequestUri();
 	}
 
 	/**
@@ -193,7 +208,7 @@ class Router
 	public static function findCurrentRoute(array $routerData = []): mixed
 	{
 		$currentUri = self::getCurrentUrl();
-		$currentRequestMethod = mb_strtolower(Application::getInstance()->getContext()->getRequest()->getRequestMethod());
+		$currentRequestMethod = mb_strtolower(self::getRequestMethod());
 		$prefixBundle = self::explodeUrl($currentUri);
 
 		if (isset($routerData[$currentRequestMethod][$prefixBundle['bundle']])) {//[$prefixBundle['route']]
@@ -249,7 +264,7 @@ class Router
 	 */
 	public static function toPageCache(string $url = '', array $pageRouteData = []): void
 	{
-		$curMethod = Application::getInstance()->getContext()->getRequest()->getRequestMethod();
+		$curMethod = self::getRequestMethod();
 		checkCreateDir(APP_CACHE_ROUTER_PAGES_DIR);
 
 		if (file_put_contents(APP_CACHE_ROUTER_PAGES_DIR.'/'.md5($url.'_'.$curMethod).'.txt', serialize($pageRouteData))) {
@@ -267,7 +282,7 @@ class Router
 	 */
 	public static function getRouteFromPageCacheByUrl(string $url = ''): mixed
 	{
-		$curMethod = Application::getInstance()->getContext()->getRequest()->getRequestMethod();
+		$curMethod = self::getRequestMethod();
 		$pageCacheData = file_get_contents(APP_CACHE_ROUTER_PAGES_DIR.'/'.md5($url.'_'.$curMethod).'.txt');
 
 		if ($pageCacheData !== false) {
@@ -328,7 +343,7 @@ class Router
 				}
 			}
 		} else {
-			Logger::error('Router: файл кэша не создан');
+			Logger::info('Router: файл кэша не создан');
 		}
 
 		return false;

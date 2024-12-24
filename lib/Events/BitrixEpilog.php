@@ -18,11 +18,7 @@ class BitrixEpilog
 		// если это не json запрос
 		// если это не апи запрос
 		// если это не админка
-		if (
-			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
-			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
-			strpos($_SERVER['REQUEST_URI'], '/bitrix/admin') === false
-		) {
+		if (\H::isSitePage()) {
 			$currentEntryPoints = \App::core('Assets')->getCurrentEntryPoints();
 
 			// если точка layout ещё не подключена

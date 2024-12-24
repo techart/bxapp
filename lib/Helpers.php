@@ -323,4 +323,25 @@ class Helpers
 
 		return $params;
 	}
+
+	/**
+	 * Возвращает true, если находимся на странице сайта
+	 *
+	 * @return boolean
+	 */
+	public static function isSitePage(): bool
+	{
+		if (
+			(defined('BXAPP_IS_SITE_PAGE') && BXAPP_IS_SITE_PAGE === true) &&
+			Glob::get('BXAPP_IS_SITE_PAGE', true) === true &&
+			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
+			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
+			strpos($_SERVER['REQUEST_URI'], '/bitrix/admin') === false
+		) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

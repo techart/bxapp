@@ -394,11 +394,8 @@ class Log
 	{
 		self::writeToFile();
 		self::sendEmail();
-		if (
-			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
-			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
-			strpos($_SERVER['REQUEST_URI'], '/bitrix/admin') === false
-		) {
+
+		if (\H::isSitePage()) {
 			self::showLoggerBar();
 		}
 	}
