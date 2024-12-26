@@ -1,6 +1,6 @@
 <?php if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();?>
 <!DOCTYPE html>
-<html lang="<?= BXAPP_LANGUAGE_ID ?>">
+<html lang="<?= LANGUAGE_ID ?>">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">

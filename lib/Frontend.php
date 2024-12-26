@@ -16,7 +16,7 @@ class Frontend
 	 * block - инстанс BemBlock
 	 * renderer - инстанс текущего класса
 	 *
-	 * @return array
+	 * @return void
 	 */
 	private function bladeBlockDefaultVars(): array
 	{

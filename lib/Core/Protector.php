@@ -115,8 +115,8 @@ class Protector
 	 */
 	public function checkSmartCaptcha(bool $reverse = false): object
 	{
-		$values = \App::core('Main')->getCurRequestValues();
-		$check = \App::core('SmartCaptcha')->checkSmart($values['smart-token']);
+		$values = App::core('Main')->getCurRequestValues();
+		$check = App::core('SmartCaptcha')->checkSmart($values['token']);
 
 		$this->setFriendship($check, $reverse);
 
@@ -451,19 +451,5 @@ class Protector
 		$this->setFriendship($check, $reverse);
 
 		return $this;
-	}
-
-	/**
-	 * Проверяет не устарел ли ID сессии PHPSESSID в куках
-	 * 
-	 * @return bool
-	 */
-	public function checkNextSessionID(): bool
-	{
-		if ($_COOKIE['PHPSESSID'] !== session_id()) {
-			return false;
-		}
-
-		return true;
 	}
 }

@@ -61,17 +61,10 @@ class Middleware
 	{
 		$curMiddleware = Config::get('Middleware.specialBefore', []);
 		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
-		$classes = [];
 
-		foreach ($curMiddleware as $pattern => $className) {
-			if (preg_match($pattern, $uri)) {
-				$classes[$uri] = $className;
-			}
-		}
-
-		if (isset($classes[$uri])) {
-			if (count($classes[$uri]) > 0) {
-				foreach ($classes[$uri] as $className) {
+		if (isset($curMiddleware[$uri])) {
+			if (count($curMiddleware[$uri]) > 0) {
+				foreach ($curMiddleware[$uri] as $className) {
 					$classFile = APP_MIDDLEWARE_BEFORE_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
@@ -104,10 +97,10 @@ class Middleware
 	 * На основе данных ключа "after" в конфиге Middleware.php выполняет указанные
 	 * классы посредников ПОСЛЕ выпонения экшена роута
 	 *
-	 * @param array|string $actionData
+	 * @param array $actionData
 	 * @return mixed
 	 */
-	public static function after(array|string $actionData = []): mixed
+	public static function after(array $actionData = []): mixed
 	{
 		$curMiddleware = Config::get('Middleware.after', []);
 
@@ -125,7 +118,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
-								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
+								return call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
 							}
@@ -139,33 +132,25 @@ class Middleware
 			}
 		} else {
 			Logger::info('Для роута нет назначенных Middleware after');
+			return $actionData;
 		}
-
-		return $actionData;
 	}
 
 	/**
 	 * На основе данных ключа "specialAfter" в конфиге Middleware.php выполняет указанные
 	 * классы посредников ПОСЛЕ выпонения экшена роута
 	 *
-	 * @param array|string $actionData
+	 * @param array $actionData
 	 * @return mixed
 	 */
-	public static function specialAfter(array|string $actionData = []): mixed
+	public static function specialAfter(array $actionData = []): mixed
 	{
 		$curMiddleware = Config::get('Middleware.specialAfter', []);
 		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
-		$classes = [];
 
-		foreach ($curMiddleware as $pattern => $className) {
-			if (preg_match($pattern, $uri)) {
-				$classes[$uri] = $className;
-			}
-		}
-
-		if (isset($classes[$uri])) {
-			if (count($classes[$uri]) > 0) {
-				foreach ($classes[$uri] as $className) {
+		if (isset($curMiddleware[$uri])) {
+			if (count($curMiddleware[$uri]) > 0) {
+				foreach ($curMiddleware[$uri] as $className) {
 					$classFile = APP_MIDDLEWARE_AFTER_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
@@ -177,7 +162,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
-								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
+								return call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
 							}
@@ -191,8 +176,7 @@ class Middleware
 			}
 		} else {
 			Logger::info('Для роута нет назначенных Middleware specialAfter');
+			return $actionData;
 		}
-
-		return $actionData;
 	}
 }

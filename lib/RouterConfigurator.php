@@ -87,7 +87,6 @@ class RouterConfigurator
 	public static function setRouteRequestMethod(string $requestMethod = '', string $bundle = '', string $url = ''): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['requestMethod'] = $requestMethod;
-		self::$RouterData[$requestMethod][$bundle][$url]['url'] = $url;
 	}
 
 	/**

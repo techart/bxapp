@@ -1,8 +1,6 @@
 <?
 namespace Techart\BxApp\Core;
 
-use \Bitrix\Iblock\InheritedProperty\ElementValues;
-
 \Bitrix\Main\Loader::includeModule('iblock');
 
 /**
@@ -14,7 +12,7 @@ use \Bitrix\Iblock\InheritedProperty\ElementValues;
 
 class Seo
 {
-	public $name = ''; // название страницы
+	public $code = ''; // код страницы
 	public $metas = []; // меты для страницы
 	public $iblockId = ''; // id инфоблока
 
@@ -54,9 +52,9 @@ class Seo
 		$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 		if($entryPoint == 'mainPage' || $entryPoint == 'error404') {
-			$this->name = $entryPoint;
+			$this->code = $entryPoint;
 		} else {
-			$this->name = $url;
+			$this->code = array_pop(explode('/', trim($url, '/')));
 		}
 	}
 
@@ -72,7 +70,7 @@ class Seo
 		$infoblock = \CIBlock::GetList(
 			[],
 			[
-				'SITE_ID' => BXAPP_SITE_ID,
+				'SITE_ID' => SITE_ID,
 				"CODE" => $iblockСode
 			],
 			false
@@ -101,21 +99,16 @@ class Seo
 			['SORT' => 'ASC'],
 			[
 				'IBLOCK_ID' => $this->iblockId,
-				'SECTION_CODE' => BXAPP_SITE_ID . '-' . BXAPP_LANGUAGE_ID,
-				'NAME' => $this->name
+				'CODE' => $this->code
 			], false, false,
-			['ID']
+			['PROPERTY_TITLE', 'PROPERTY_DESCRIPTION', 'PROPERTY_KEYWORDS']
 		);
 
 		while($item = $items->Fetch()) {
-			$iprops = new ElementValues($this->iblockId, $item['ID']);
-			$ipropValues = $iprops->getValues();
-
 			$metas = [
-				'title' => $ipropValues['ELEMENT_META_TITLE'],
-				'description' => $ipropValues['ELEMENT_META_DESCRIPTION'],
-				'keywords' => $ipropValues['ELEMENT_META_KEYWORDS'],
-				'h1' => $ipropValues['ELEMENT_PAGE_TITLE']
+				'title' => $item['PROPERTY_TITLE_VALUE'],
+				'description' => $item['PROPERTY_DESCRIPTION_VALUE'],
+				'keywords' => $item['PROPERTY_KEYWORDS_VALUE']
 			];
 		}
 

@@ -95,38 +95,8 @@ trait FormModelTrait
 	public function sendFormToEvent(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = ''): void
 	{
 		Event::send([
-			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
-			"LID" => BXAPP_SITE_ID,
-			"C_FIELDS" => $fields,
-			'FILE' => $file,
-			'MESSAGE_ID' => $messageId,
-			'LANGUAGE_ID' => $languageId,
-		]);
-	}
-
-	/**
-	 * На основе Event::sendImmediate()
-	 * Отправляет немедленно данные в эвент.
-	 * Имя эвента должно быть указано в public $eventName = ''; модели
-	 *
-	 * $fields = [
-			"FULL_NAME" => $formData['fullName'],
-			"EMAIL" => $formData['email'],
-			"MESSAGE" => $formData['message'],
-			"PAGE" => $_SERVER['REQUEST_URI'],
-		]
-	 *
-	 * @param array $fields
-	 * @param array $file
-	 * @param int|string $messageId
-	 * @param string $languageId
-	 * @return void
-	 */
-	public function sendFormToEventImmediate(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = ''): void
-	{
-		Event::sendImmediate([
-			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
-			"LID" => BXAPP_SITE_ID,
+			"EVENT_NAME" => $this->eventName,
+			"LID" => SITE_ID,
 			"C_FIELDS" => $fields,
 			'FILE' => $file,
 			'MESSAGE_ID' => $messageId,

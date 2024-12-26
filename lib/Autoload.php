@@ -39,7 +39,7 @@ class Autoload
 			'BaseForm' => '\Techart\BxApp\Base\Form\BaseForm',
 			'BaseIblockModel' => '\Techart\BxApp\Base\Model\BaseIblockModel',
 			'BaseHighloadModel' => '\Techart\BxApp\Base\Model\BaseHighloadModel',
-			'BaseRouterController' => '\Techart\BxApp\Base\Router\BaseRouterController',
+			'BaseRoutesController' => '\Techart\BxApp\Base\Routes\BaseRoutesController',
 			'BaseMenu' => '\Techart\BxApp\Base\Menu\BaseMenu',
 			//'BaseSeo' => '\Techart\BxApp\Base\Seo\BaseSeo',
 		];

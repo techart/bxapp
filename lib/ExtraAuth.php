@@ -43,7 +43,7 @@ class ExtraAuth
 				"EMAIL" => $email,
 				"ACTIVE" => "Y",
 				"EXTERNAL_AUTH_ID" => $authId,
-				"LID" => BXAPP_SITE_ID,
+				"LID" => SITE_ID,
 			);
 
 			if ($user) {

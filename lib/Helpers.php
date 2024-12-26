@@ -207,14 +207,14 @@ class Helpers
 	 * Возвращает true, если $lang равен дефолтному языку (APP_LANG в конфиге App.php)
 	 * Возвращает false в противном случае
 	 *
-	 * Если $lang не задан, то проверяется BXAPP_LANGUAGE_ID
+	 * Если $lang не задан, то проверяется LANGUAGE_ID
 	 *
 	 * @param string $lang
 	 * @return boolean
 	 */
 	public static function isDefaultLanguage(string $lang = ''): bool
 	{
-		$curLang = !empty($lang) ? $lang : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($lang) ? $lang : LANGUAGE_ID;
 
 		return ($curLang === \Config::get('App.APP_LANG', 'ru')) ? true : false;
 	}
@@ -323,25 +323,4 @@ class Helpers
 
 		return $params;
 	}
-
-	/**
-	 * Возвращает true, если находимся на странице сайта
-	 *
-	 * @return boolean
-	 */
-	public static function isSitePage(): bool
-	{
-		if (
-			(defined('BXAPP_IS_SITE_PAGE') && BXAPP_IS_SITE_PAGE === true) &&
-			Glob::get('BXAPP_IS_SITE_PAGE', true) === true &&
-			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
-			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
-			strpos($_SERVER['REQUEST_URI'], '/bitrix/admin') === false
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 }

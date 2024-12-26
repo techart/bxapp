@@ -56,7 +56,7 @@ trait ResultTrait
 	{
 		$result = [
 			'status' => 'success',
-			'language' => BXAPP_LANGUAGE_ID,
+			'language' => LANGUAGE_ID,
 		];
 
 		// если в классе используется кэш, то выводим его статус

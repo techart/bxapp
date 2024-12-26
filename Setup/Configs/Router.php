@@ -13,6 +13,6 @@ return [
 	'APP_ROUTER_PREFIX' => 'siteapi', // поменять тут и в .htaccess
 	'APP_ROUTER_CASE_SENSITIVE' => true, // регулярка роутера должна учитывать регистр?
 	'APP_ROUTER_CACHE_REBUILD' => true, // ____ЧИТАТЬ_ЗАМЕЧАНИЕ_ВЫШЕ____
-	'APP_ROUTER_BUNDLES' => [], // какие бандлы нужно обрабатывать (подпапки в папке Router)
+	'APP_ROUTER_BUNDLES' => [], // какие бандлы нужно обрабатывать (подпапки в папке Routes)
 	'APP_ROUTER_CACHE_TYPE' => 'file', // file | memcache - на данный момент работает только __file__ кэш
 ];

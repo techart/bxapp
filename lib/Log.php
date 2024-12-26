@@ -299,11 +299,14 @@ class Log
 
 		if (count(self::$messages) > 0) {
 			foreach (self::$messages as $file => $data) {
+				if ($for == 'toEmail') {
+				}
+
 				if ($for == 'toEmail' or $for == $file) {
 					foreach ($data as $v) {
 						if ($v['typeID'] <= $typeID) {
-							if (!in_array($file, $titleFiles) && $for != $file) {
-								$text .= $lineBreak.'['.$file.'.log] ('.APP_LOGS_DIR.'/'.$file.'.log)'.$lineBreak;
+							if (!in_array($file, $titleFiles)) {
+								$text .= $lineBreak.'['.$file.'.log]'.$lineBreak;
 								$titleFiles[] = $file;
 							}
 
@@ -378,7 +381,16 @@ class Log
 			$text = self::buildLogText(self::$typesForEmail, 'toEmail');
 
 			if (!empty($text) && !empty(self::$emails)) {
-				$type = strtoupper(self::$types[self::$curTypeID]);
+				$type = 'WARNING';
+				if (self::$curTypeID == 2) {
+					$type = 'ERROR';
+				}
+				if (self::$curTypeID == 1) {
+					$type = 'CRITICAL';
+				}
+				if (self::$curTypeID == 0) {
+					$type = 'FRONTEND_ERROR';
+				}
 
 				mail(self::$emails, $type.'! - ошибки с сайта '.$_SERVER['HTTP_HOST'], $text, 'Content-Type: text/plain; charset=utf-8' . "\r\n");
 			}
@@ -394,8 +406,11 @@ class Log
 	{
 		self::writeToFile();
 		self::sendEmail();
-
-		if (\H::isSitePage()) {
+		if (
+			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
+			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
+			strpos($_SERVER['REQUEST_URI'], '/bitrix/admin') === false
+		) {
 			self::showLoggerBar();
 		}
 	}

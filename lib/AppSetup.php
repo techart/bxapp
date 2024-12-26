@@ -14,7 +14,7 @@ class AppSetup
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createModel(array $options = [], string $siteId = ''): void
+	public static function createModel(array $options = []): void
 	{
 		$path = str_replace('\\', '/', $options[0]);
 		$explodePath = explodePathString($path);
@@ -25,15 +25,13 @@ class AppSetup
 			[$modelName, strtolower($modelName)],
 			$template
 		);
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$modelsPath = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['modelsDir'];
 
-		if (!is_dir($modelsPath)) {
-			mkdir($modelsPath);
+		if (!is_dir(APP_MODELS_DIR)) {
+			mkdir(APP_MODELS_DIR);
 		}
-		createDirsChaine($modelsPath, $explodePath['dirs']);
+		createDirsChaine(APP_MODELS_DIR, $explodePath['dirs']);
 
-		file_put_contents($modelsPath.'/'.$path.'.php', $template);
+		file_put_contents(APP_MODELS_DIR.'/'.$path.'.php', $template);
 	}
 
 	/**
@@ -43,7 +41,7 @@ class AppSetup
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createCli(array $options = [], string $siteId = ''): void
+	public static function createCli(array $options = []): void
 	{
 		$path = str_replace('\\', '/', $options[0]);
 		$method = $options[1] ?? 'cliMethod';
@@ -56,15 +54,13 @@ class AppSetup
 			[$cliName, strtolower($cliMethod)],
 			$template
 		);
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$cliPath = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['cliDir'];
 
-		if (!is_dir($cliPath)) {
-			mkdir($cliPath);
+		if (!is_dir(APP_CLI_DIR)) {
+			mkdir(APP_CLI_DIR);
 		}
-		createDirsChaine($cliPath, $explodePath['dirs']);
+		createDirsChaine(APP_CLI_DIR, $explodePath['dirs']);
 
-		file_put_contents($cliPath.'/'.$path.'.php', $template);
+		file_put_contents(APP_CLI_DIR.'/'.$path.'.php', $template);
 	}
 
 	/**
@@ -74,22 +70,20 @@ class AppSetup
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createBundle(array $options = [], string $siteId = ''): void
+	public static function createBundle(array $options = []): void
 	{
 		$bundleName = ucfirst(str_replace(['\\', '/'], '', $options[0]));
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$routesPath = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['routerDir'];
 
-		if (!is_dir($routesPath.'/'.$bundleName)) {
-			recurseCopy(APP_CORE_SETUP_DIR.'/TemplateFiles/Router/BundleName', $routesPath.'/'.$bundleName);
+		if (!is_dir(APP_ROUTES_DIR.'/'.$bundleName)) {
+			recurseCopy(APP_CORE_SETUP_DIR.'/TemplateFiles/Routes/BundleName', APP_ROUTES_DIR.'/'.$bundleName);
 
-			$template = file_get_contents($routesPath.'/'.$bundleName.'/Controllers/Actions.php');
+			$template = file_get_contents(APP_ROUTES_DIR.'/'.$bundleName.'/Controllers/Actions.php');
 			$template = str_replace(
 				['{{BundleName}}'],
 				[$bundleName],
 				$template
 			);
-			file_put_contents($routesPath.'/'.$bundleName.'/Controllers/Actions.php', $template);
+			file_put_contents(APP_ROUTES_DIR.'/'.$bundleName.'/Controllers/Actions.php', $template);
 		}
 	}
 
@@ -100,22 +94,20 @@ class AppSetup
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createMiddlewareAfter(array $options = [], string $siteId = ''): void
+	public static function createMiddlewareAfter(array $options = []): void
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$middlewareAfterPath = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['middlewareDir'] . '/After';
 
-		if (!file_exists($middlewareAfterPath.'/'.$name.'.php')) {
-			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareAfter.php', $middlewareAfterPath.'/'.$name.'.php');
+		if (!file_exists(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php')) {
+			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareAfter.php', APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
 
-			$template = file_get_contents($middlewareAfterPath.'/'.$name.'.php');
+			$template = file_get_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
 			$template = str_replace(
 				['{{middleware_name}}'],
 				[$name],
 				$template
 			);
-			file_put_contents($middlewareAfterPath.'/'.$name.'.php', $template);
+			file_put_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php', $template);
 		}
 	}
 
@@ -126,22 +118,20 @@ class AppSetup
 	 * @param array $options
 	 * @return void
 	 */
-	public static function createMiddlewareBefore(array $options = [], string $siteId = ''): void
+	public static function createMiddlewareBefore(array $options = []): void
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$middlewareBeforePath = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['middlewareDir'] . '/Before';
 
-		if (!file_exists($middlewareBeforePath.'/'.$name.'.php')) {
-			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareBefore.php', $middlewareBeforePath.'/'.$name.'.php');
+		if (!file_exists(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php')) {
+			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareBefore.php', APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
 
-			$template = file_get_contents($middlewareBeforePath.'/'.$name.'.php');
+			$template = file_get_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
 			$template = str_replace(
 				['{{middleware_name}}'],
 				[$name],
 				$template
 			);
-			file_put_contents($middlewareBeforePath.'/'.$name.'.php', $template);
+			file_put_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php', $template);
 		}
 	}
 
@@ -152,59 +142,66 @@ class AppSetup
 	 *
 	 * @return void
 	 */
-	public static function setup($siteId = ''): void
+	public static function setup(): void
 	{
-		$rootDir = APP_PHP_INTERFACE_DIR . '/' . 'BxApp' . (!empty($siteId) ? '_'.$siteId : '');
-		if (!is_dir($rootDir)) {
-			mkdir($rootDir);
+		if (!is_dir(APP_ROOT_DIR)) {
+			mkdir(APP_ROOT_DIR);
 		}
-
-		recurseCopy(APP_CORE_SETUP_DIR.'/Cli', $rootDir . '/Cli');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', $rootDir . '/Configs');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Localization', $rootDir . '/Localization');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Logs', $rootDir . '/Logs');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Menu', $rootDir . '/Menu');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', $rootDir . '/Middleware');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Models', $rootDir . '/Models');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Modules', $rootDir . '/Modules');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Router', $rootDir . '/Router');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Services', $rootDir . '/Services');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', $rootDir . '/Traits');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Views', $rootDir . '/Views');
-
-		if (empty($siteId)) {
-			if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
-				copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
-			}
-			if (!is_dir(APP_FAVICON_FILES_DIR)) {
-				mkdir(APP_FAVICON_FILES_DIR);
-				copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');
-			}
-			if (!is_dir(APP_CACHE_DIR)) {
-				mkdir(APP_CACHE_DIR);
-			}
-			if (!is_dir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets')) {
-				mkdir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets');
-				copy(APP_CORE_SETUP_DIR.'/gitkeep', SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets/.gitkeep');
-			}
-			if (!is_dir(APP_CACHE_DIR.'/blade')) {
-				mkdir(APP_CACHE_DIR.'/blade');
-			}
-			if (!is_dir(APP_CACHE_ROUTER_DIR)) {
-				mkdir(APP_CACHE_ROUTER_DIR);
-			}
-			if (!file_exists(PROJECT_ROOT_DIR.'/.env')) {
-				copy(APP_CORE_SETUP_DIR.'/.env', PROJECT_ROOT_DIR.'/.env');
-			}
-			if (!file_exists(PROJECT_ROOT_DIR.'/.env.example')) {
-				copy(APP_CORE_SETUP_DIR.'/.env.example', PROJECT_ROOT_DIR.'/.env.example');
-			}
-			if (!file_exists(APP_ROOT_DIR.'/.gitignore')) {
-				copy(APP_CORE_SETUP_DIR.'/gitignore', APP_ROOT_DIR.'/.gitignore');
-			}
-			if (file_exists(SITE_ROOT_DIR.'/local/.config.php')) {
-				unlink(SITE_ROOT_DIR.'/local/.config.php');
-			}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Cli', APP_CLI_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', APP_CONFIGS_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Localization', APP_LOCALIZATION_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Logs', APP_LOGS_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Menu', APP_MENU_DIR);
+		if (!is_dir(APP_MENU_DIR)) {
+			mkdir(APP_MENU_DIR);
+		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', APP_MIDDLEWARE_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Models', APP_MODELS_DIR);
+		if (!is_dir(APP_MODELS_DIR)) {
+			mkdir(APP_MODELS_DIR);
+		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Modules', APP_MODULES_DIR);
+		if (!is_dir(APP_MODULES_DIR)) {
+			mkdir(APP_MODULES_DIR);
+		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Routes', APP_ROUTES_DIR);
+		if (!is_dir(APP_ROUTES_DIR)) {
+			mkdir(APP_ROUTES_DIR);
+		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Services', APP_SERVICES_DIR);
+		if (!is_dir(APP_SERVICES_DIR)) {
+			mkdir(APP_SERVICES_DIR);
+		}
+		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', APP_TRAITS_DIR);
+		recurseCopy(APP_CORE_SETUP_DIR.'/Views', APP_VIEWS_DIR);
+		if (!is_dir(APP_FAVICON_FILES_DIR)) {
+			mkdir(APP_FAVICON_FILES_DIR);
+			copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');
+		}
+		if (!is_dir(APP_CACHE_DIR)) {
+			mkdir(APP_CACHE_DIR);
+		}
+		if (!is_dir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets')) {
+			mkdir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets');
+			copy(APP_CORE_SETUP_DIR.'/gitkeep', SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets/.gitkeep');
+		}
+		if (!is_dir(APP_CACHE_DIR.'/blade')) {
+			mkdir(APP_CACHE_DIR.'/blade');
+		}
+		if (!is_dir(APP_CACHE_ROUTER_DIR)) {
+			mkdir(APP_CACHE_ROUTER_DIR);
+		}
+		if (!file_exists(PROJECT_ROOT_DIR.'/.env')) {
+			copy(APP_CORE_SETUP_DIR.'/.env', PROJECT_ROOT_DIR.'/.env');
+		}
+		if (!file_exists(PROJECT_ROOT_DIR.'/.env.example')) {
+			copy(APP_CORE_SETUP_DIR.'/.env.example', PROJECT_ROOT_DIR.'/.env.example');
+		}
+		if (!file_exists(APP_ROOT_DIR.'/.gitignore')) {
+			copy(APP_CORE_SETUP_DIR.'/gitignore', APP_ROOT_DIR.'/.gitignore');
+		}
+		if (file_exists(SITE_ROOT_DIR.'/local/.config.php')) {
+			unlink(SITE_ROOT_DIR.'/local/.config.php');
 		}
 	}
 

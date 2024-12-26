@@ -53,14 +53,14 @@ class Validator
 
 	/**
 	 * Возвращает инстанс валидатора для указанной локали $locale
-	 * Если $locale не указана, то берётся из константы BXAPP_LANGUAGE_ID
+	 * Если $locale не указана, то берётся из битрикс константы LANGUAGE_ID
 	 *
 	 * @param string $locale
 	 * @return object
 	 */
 	public function get(string $locale = ''): object
 	{
-		$loc = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$loc = !empty($locale) ? $locale : LANGUAGE_ID;
 
 		if (!$this->$validator[$loc]) {
 			$this->$validator[$loc] = new Factory($this->trans($loc));

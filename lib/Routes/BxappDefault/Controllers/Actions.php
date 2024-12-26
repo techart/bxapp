@@ -1,7 +1,7 @@
 <?php
-namespace Router\BxappDefault\Controllers;
+namespace Routes\BxappDefault\Controllers;
 
-class Actions extends \BaseRouterController
+class Actions extends \BaseRoutesController
 {
 	public function logger()
 	{
@@ -92,26 +92,5 @@ class Actions extends \BaseRouterController
 		}
 
 		return $this->result('', 'ok', true);
-	}
-
-	public function createNextSession()
-	{
-		$data = ['action' => 'createSession', 'PHPSESSID' => session_id()];
-		return $this->result('', '', $data);
-	}
-
-	public function checkNextSession()
-	{
-		$data = [];
-
-		if (isset($_COOKIE['PHPSESSID']) && !empty($_COOKIE['PHPSESSID'])) {
-			// if (\App::core('Protector')->checkNextSessionID()) {
-			// 	session_regenerate_id(true);
-			// }
-
-			$data = ['action' => 'updateSession', 'PHPSESSID' => session_id()];
-		}
-
-		return $this->result('', '', $data);
 	}
 }

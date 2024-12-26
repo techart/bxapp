@@ -1,5 +1,6 @@
 variables:
  UPDATE_REPO: "git@github.com:techart/bxapp.git"
+ UPDATE_REPO_BRANCH: "v04"
 include:
  - project: "libs/cicd-includes"
-   file: "/templates/.gitlab-ci-packagist.yml"
+   file: "/templates/.gitlab-ci-packagist-versions.yml"
