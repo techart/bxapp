@@ -29,6 +29,7 @@ class Autoload
 			'H' => '\Techart\BxApp\Helpers',
 			'Log' => '\Techart\BxApp\Log',
 			'Logger' => '\Techart\BxApp\Logger',
+			'AppCache' => '\Techart\BxApp\Cache',
 
 			'FormModelTrait' => '\Techart\BxApp\Traits\FormModelTrait',
 			'ResultTrait' => '\Techart\BxApp\Traits\ResultTrait',

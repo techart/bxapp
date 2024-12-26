@@ -411,15 +411,4 @@ class Router
 
 		App::core('Main')->do404();
 	}
-
-	/**
-	 * Очищает кэш роутера
-	 *
-	 * @return void
-	 */
-	public static function clearCache(): void
-	{
-		array_map('unlink', array_filter((array) glob(APP_CACHE_ROUTER_DIR."/*")));
-		array_map('unlink', array_filter((array) glob(APP_CACHE_ROUTER_PAGES_DIR."/*")));
-	}
 }

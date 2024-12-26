@@ -45,7 +45,7 @@ class BaseRegistry
 		return $this->currentLanguage;
 	}
 
-	public function setStaticApi()
+	public function setForStaticApi()
 	{
 		if (isset($_GET['staticapi']) && $_GET['staticapi'] == true) {
 			define('BXAPP_IS_STATIC', true);
@@ -67,4 +67,11 @@ class BaseRegistry
 		}
 	}
 
+	public function setForCli()
+	{
+		if (defined('BXAPP_CLI_ARGV') && $this->sites[BXAPP_CLI_ARGV[1]]) {
+			$this->currentSite = BXAPP_CLI_ARGV[1];
+			$this->currentLanguage = $this->sites[$this->currentSite]['language'];
+		}
+	}
 }

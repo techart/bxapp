@@ -176,6 +176,10 @@ class AppSetup
 			if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
 				copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
 			}
+			if (file_exists(APP_PHP_INTERFACE_DIR.'/cli.php')) {
+				unlink(APP_PHP_INTERFACE_DIR.'/cli.php');
+			}
+			copy(APP_CORE_SETUP_DIR.'/cli.php', APP_PHP_INTERFACE_DIR.'/cli.php');
 			if (!is_dir(APP_FAVICON_FILES_DIR)) {
 				mkdir(APP_FAVICON_FILES_DIR);
 				copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');

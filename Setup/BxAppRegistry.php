@@ -1,5 +1,4 @@
 <?php
-/*
 use \Techart\BxApp\Base\Registry\BaseRegistry;
 
 
@@ -14,23 +13,17 @@ class BxAppRegistry extends BaseRegistry
 	];
 	protected $sites = [
 		's1' => [
+			// 'group' => 'ss',
 			'server' => 'server1',
-			'group' => 'ss',
 			'language' => 'ru',
 		],
-		's2' => [
-			'server' => 'server1',
+		/*'s2' => [
 			'group' => 'ss',
+			'server' => 'server1',
 			'language' => 'en',
 			'bxappDir' => 'BxApp_s2',
 			'bxappEntities' => ['env'],
-		],
-		's3' => [
-			'server' => 'server1',
-			'group' => 'ss',
-			'language' => 'by',
-			'bxappEntities' => ['env', 'Logs'],
-		],
+		],*/
 	];
 	protected $groups = [
 		'ss' => [
@@ -48,6 +41,8 @@ class BxAppRegistry extends BaseRegistry
 		// $this->currentServer = '';
 		// $this->currentSite = SITE_ID;
 		// $this->currentLanguage = LANGUAGE_ID;
+
+		// $this->setForStaticApi();
+		$this->setForCli();
 	}
 }
-*/

@@ -8,7 +8,7 @@ namespace Techart\BxApp;
 class CliActions
 {
 	/**
-	 * vphp cli.php app_setup
+	 * vphp cli.php setup:app
 	 *
 	 * @return void
 	 */
@@ -21,7 +21,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_setupTemplate
+	 * vphp cli.php setup:template
 	 *
 	 * @return void
 	 */
@@ -33,7 +33,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_createModel Test/Test/Test
+	 * vphp cli.php create:model Test/Test/Test
 	 *
 	 * @return void
 	 */
@@ -46,7 +46,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_createCli CliClass method
+	 * vphp cli.php create:cli CliClass method
 	 *
 	 * @return void
 	 */
@@ -59,7 +59,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_createBundle Catalog
+	 * vphp cli.php create:bundle Catalog
 	 *
 	 * @return void
 	 */
@@ -72,7 +72,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_app_createMiddlewareAfter MiddlewareName
+	 * vphp cli.php create:middlewareAfter MiddlewareName
 	 *
 	 * @return void
 	 */
@@ -85,7 +85,7 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_createMiddlewareBefore MiddlewareName
+	 * vphp cli.php create:middlewareBefore MiddlewareName
 	 *
 	 * @return void
 	 */
@@ -98,19 +98,20 @@ class CliActions
 	}
 
 	/**
-	 * vphp cli.php app_clearCacheRouter
+	 * vphp cli.php cache:clear all
 	 *
 	 * @return void
 	 */
-	public function clearCacheRouter(): void
+	public function clearCache(): void
 	{
-		Router::clearCache();
+		$args = func_get_args();
+		\AppCache::clear($args[0], $args[1]);
 
-		echo 'Очистка кэша роутера выполнена!'.PHP_EOL;
+		echo 'Очистка кэша выполнена!'.PHP_EOL;
 	}
 
 	/**
-	 * vphp cli.php app_createSitemap
+	 * vphp cli.php create:sitemap
 	 *
 	 * @return void
 	 */

@@ -136,14 +136,14 @@ class BaseIblockModel
 	public $iblockElementsSelectForLocalization = []; // выборка полей для элементов модели
 	public $localizationMode = ''; // режим локализации модели
 	private $iblockData = []; // массив параметров инфоблока
-	private $curModes = ['code', 'select', 'checkbox']; // режимы локализации модели инфоблока
+	private $curModes = ['none', 'code', 'select', 'checkbox']; // режимы локализации модели инфоблока
 
 
 	/**
 	 * $locale - требуемый язык
-	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code' и $locale != APP_LANG
+	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code'
 	 * То в модели к коду $this->table через подчеркивание добавляется $locale - "*_en"
-	 * В противном случае $this->table остаётся как было указано в модели
+	 * Если APP_MODEL_LOCALIZATION_MODE = 'none', то $this->table остаётся как было указано в модели
 	 *
 	 * @param string $locale
 	 */
@@ -152,18 +152,18 @@ class BaseIblockModel
 		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
-
+		
 		if (!empty($this->table)) {
-			// если дефолтный язык не равен языку модели
-			if (\H::isDefaultLanguage($curLang) === false) {
+			$locMode = $this->getLocalizationMode();
+
+			if ($locMode !== 'none') {
 				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
-			}
+				$this->pid = __GID__.$this->lid;
 
-			$this->pid = __GID__.$this->lid;
-
-			// если режим локализации моделей указан как "code"
-			if ($this->getLocalizationMode() == 'code') {
-				$this->table .= strtolower($this->pid); // добавляем к коду инфоблока указание на язык модели
+				// если режим локализации моделей указан как "code"
+				if ($locMode == 'code') {
+					$this->table .= strtolower($this->pid); // добавляем к коду инфоблока указание на язык модели
+				}
 			}
 
 			$this->getInfoblock();

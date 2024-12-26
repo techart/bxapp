@@ -12,15 +12,15 @@ namespace Techart\BxApp;
 class Cli
 {
 	static $defaultActions = array(
-		'bxapp_setup' => 'setup',
-		'bxapp_setupTemplate' => 'setupTemplate',
-		'bxapp_clearCacheRouter' => 'clearCacheRouter',
-		'bxapp_createModel' => 'createModel',
-		'bxapp_createCli' => 'createCli',
-		'bxapp_createBundle' => 'createBundle',
-		'bxapp_createMiddlewareAfter' => 'createMiddlewareAfter',
-		'bxapp_createMiddlewareBefore' => 'createMiddlewareBefore',
-		'bxapp_createSitemap' => 'createSitemap',
+		'setup:app' => 'setup',
+		'setup:template' => 'setupTemplate',
+		'cache:clear' => 'clearCache',
+		'create:model' => 'createModel',
+		'create:cli' => 'createCli',
+		'create:bundle' => 'createBundle',
+		'create:middlewareAfter' => 'createMiddlewareAfter',
+		'create:middlewareBefore' => 'createMiddlewareBefore',
+		'create:sitemap' => 'createSitemap',
 	);
 	static $siteId = '';
 	static $action = '';

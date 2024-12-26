@@ -86,7 +86,7 @@ class App
 		Autoload::register();
 
 		// константа-постфикс текущего языка в верхнем регистре
-		define("__LID__", \H::isDefaultLanguage() ? '' : strtoupper('_'.BXAPP_LANGUAGE_ID));
+		define("__LID__", strtoupper('_'.BXAPP_LANGUAGE_ID));
 		// константа-постфикс текущей группы в верхнем регистре
 		define("__GID__", empty(BXAPP_SITE_GROUP_ID) ? '' : strtoupper('_'.BXAPP_SITE_GROUP_ID));
 		// константа-постфикс объединяющая язык и группу

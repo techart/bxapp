@@ -7,7 +7,7 @@ class {{model_name}} extends BaseIblockModel
 	public $iblockSectionsSelectForLocalization = [];
 	public $iblockElementsSelect = ['ID', 'NAME'];
 	public $iblockElementsSelectForLocalization = [];
-	public $localizationMode = ''; // code | select
+	public $localizationMode = ''; // none | code | select
 
 
 	public function getElementsData(): array

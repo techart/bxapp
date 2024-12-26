@@ -18,9 +18,9 @@ namespace Techart\BxApp\Base\Model;
  * В этом случае:
  *
 	1)
-	Если язык указан и если getLocalizationMode() = 'code' и ЯЗЫК != APP_LANG
+	Если язык указан и если getLocalizationMode() = 'code'
 	То в модели к коду $this->table с большой буквы добавляется язык - "*En"
-	В противном случае $this->table остаётся как было указано в модели
+	Если getLocalizationMode() = 'none', то $this->table остаётся как было указано в модели
  */
 
 \CModule::IncludeModule('highloadblock');
@@ -45,14 +45,14 @@ class BaseHighloadModel
 	public $hblockElementsSelectForLocalization = []; // выборка полей для элементов модели
 	public $localizationMode = ''; // режим локализации модели
 	private $hblockData = []; // массив параметров highload блока
-	private $curModes = ['code', 'select', 'checkbox']; // режимы локализации модели хайлоадблока
+	private $curModes = ['none', 'code', 'select', 'checkbox']; // режимы локализации модели хайлоадблока
 
 
 	/**
 	 * $locale - требуемый язык
-	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code' и $locale != APP_LANG
+	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'code'
 	 * То в модели к коду $this->table с большой буквы добавляется $locale - "*En"
-	 * В противном случае $this->table остаётся как было указано в модели
+	 * Если APP_MODEL_LOCALIZATION_MODE = 'none', то $this->table остаётся как было указано в модели
 	 *
 	 * @param string $locale
 	 */
@@ -62,16 +62,17 @@ class BaseHighloadModel
 
 		$this->setLocalizationMode();
 
-		// если режим локализации моделей указан как "code" 
 		if (!empty($this->table)) {
-			// если дефолтный язык не равен языку модели
-			if (\H::isDefaultLanguage($curLang) === false) {
-				$this->lid = \H::ucfirst($curLang); // обновляем указатель языка модели
-			}
-			$this->pid = \H::ucfirst(trim(__GID__, '_')).$this->lid;
+			$locMode = $this->getLocalizationMode();
 
-			if ($this->getLocalizationMode() == 'code') {
-				$this->table .= ''.\H::ucfirst($this->pid);
+			if ($locMode !== 'none') {
+				$this->lid = \H::ucfirst($curLang); // обновляем указатель языка модели
+				$this->pid = \H::ucfirst(trim(__GID__, '_')).$this->lid;
+			
+				// если режим локализации моделей указан как "code" 
+				if ($locMode == 'code') {
+					$this->table .= ''.\H::ucfirst($this->pid);
+				}
 			}
 
 			$this->getHighloadBlock();
