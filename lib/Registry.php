@@ -43,6 +43,13 @@ class Registry
 					if (method_exists($registryClass, 'apply')) {
 						$registryClass->apply();
 
+						if (!defined('BXAPP_IS_SITE_PAGE')) {
+							define('BXAPP_IS_SITE_PAGE', true);
+						}
+						if (!defined('BXAPP_IS_STATIC')) {
+							define('BXAPP_IS_STATIC', false);
+						}
+
 						$settings['servers'] = $registryClass->getServers();
 						$settings['sites'] = $registryClass->getSites();
 						$settings['groups'] = $registryClass->getGroups();
@@ -72,7 +79,7 @@ class Registry
 	public static function buildBxAppEntitiesDirs(string $siteId = ''): array
 	{
 		$bxappSiteId = !empty($siteId) ? $siteId : BXAPP_SITE_ID;
-		
+
 		if (empty(self::$bxAppEntitiesDirs[$bxappSiteId])) {
 			$bxAppEntitiesDirs = [
 				'bxAppDir' => 'BxApp',
@@ -89,7 +96,7 @@ class Registry
 				'traitsDir' => 'Traits',
 				'viewsDir' => 'Views',
 			];
-	
+
 			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir']) && !empty(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir'])) {
 				$bxAppEntitiesDirs['bxAppDir'] = BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir'];
 			}

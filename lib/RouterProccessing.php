@@ -36,10 +36,14 @@ if (Router::isActive()) { // роут включён
 
 			\Techart\BxApp\Middleware::before();
 			\Techart\BxApp\Middleware::specialBefore();
+			\Techart\BxApp\Middleware::defaultBefore();
+			\Techart\BxApp\Middleware::defaultSpecialBefore();
 
 			$routeData = Router::doAction($routeData);
 			$routeData = \Techart\BxApp\Middleware::after($routeData);
 			$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+			$routeData = \Techart\BxApp\Middleware::defaultAfter($routeData);
+			$routeData = \Techart\BxApp\Middleware::defaultSpecialAfter($routeData);
 
 			echo \App::core('Main')->jsonResponse($routeData);
 		} else { // роута нет в кэше
@@ -68,10 +72,14 @@ if (Router::isActive()) { // роут включён
 
 						\Techart\BxApp\Middleware::before();
 						\Techart\BxApp\Middleware::specialBefore();
+						\Techart\BxApp\Middleware::defaultBefore();
+						\Techart\BxApp\Middleware::defaultSpecialBefore();
 
 						$routeData = Router::doAction($routeData);
 						$routeData = \Techart\BxApp\Middleware::after($routeData);
 						$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+						$routeData = \Techart\BxApp\Middleware::defaultAfter($routeData);
+						$routeData = \Techart\BxApp\Middleware::defaultSpecialAfter($routeData);
 
 						echo \App::core('Main')->jsonResponse($routeData);
 					} else { // роут не найден
@@ -109,10 +117,14 @@ if (Router::isActive()) { // роут включён
 
 				\Techart\BxApp\Middleware::before();
 				\Techart\BxApp\Middleware::specialBefore();
+				\Techart\BxApp\Middleware::defaultBefore();
+				\Techart\BxApp\Middleware::defaultSpecialBefore();
 
 				$routeData = Router::doAction($routeData);
 				$routeData = \Techart\BxApp\Middleware::after($routeData);
 				$routeData = \Techart\BxApp\Middleware::specialAfter($routeData);
+				$routeData = \Techart\BxApp\Middleware::defaultAfter($routeData);
+				$routeData = \Techart\BxApp\Middleware::defaultSpecialAfter($routeData);
 
 				echo \App::core('Main')->jsonResponse($routeData);
 

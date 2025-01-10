@@ -13,14 +13,14 @@ class BxAppRegistry extends BaseRegistry
 	];
 	protected $sites = [
 		's1' => [
+			// 'server' => 'server1',
 			// 'group' => 'ss',
-			'server' => 'server1',
-			'language' => 'ru',
+			'language' => 'ru', // _ОБЯЗАТЕЛЬНО_
 		],
 		/*'s2' => [
 			'group' => 'ss',
 			'server' => 'server1',
-			'language' => 'en',
+			'language' => 'en', // _ОБЯЗАТЕЛЬНО_
 			'bxappDir' => 'BxApp_s2',
 			'bxappEntities' => ['env'],
 		],*/
@@ -42,7 +42,7 @@ class BxAppRegistry extends BaseRegistry
 		// $this->currentSite = SITE_ID;
 		// $this->currentLanguage = LANGUAGE_ID;
 
-		// $this->setForStaticApi();
-		$this->setForCli();
+		// $this->setForStaticApi(); // для работы staticapi механизма
+		$this->setForCli(); // для правильной работы cli команд
 	}
 }

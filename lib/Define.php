@@ -97,6 +97,7 @@ class Define
 		define("APP_SELF_DIR", APP_VENDOR_DIR.'/lib');
 		define("APP_CORE_DIR", APP_SELF_DIR.'/Core');
 		define("APP_CORE_BASE_DIR", APP_SELF_DIR.'/Base');
+		define("APP_CORE_MIDDLEWARE_DIR", APP_SELF_DIR.'/Middleware');
 		define("APP_CORE_ROUTER_DIR", APP_SELF_DIR.'/Router');
 		define("APP_CORE_TRAITS_DIR", APP_SELF_DIR.'/Traits');
 	}

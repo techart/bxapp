@@ -10,6 +10,15 @@ use \Bitrix\Main\Application;
 
 class Middleware
 {
+	private static $defaultMiddlewareAfter = [];
+	private static $defaultMiddlewareSpecialAfter = [
+		'(.*)' => ['StaticApi'],
+	];
+	private static $defaultMiddlewareBefore = [];
+	private static $defaultMiddlewareSpecialBefore = [];
+
+
+
 	/**
 	 * На основе данных ключа "before" в конфиге Middleware.php выполняет указанные
 	 * классы посредников ДО выпонения экшена роута
@@ -60,7 +69,7 @@ class Middleware
 	public static function specialBefore(): void
 	{
 		$curMiddleware = Config::get('Middleware.specialBefore', []);
-		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
+		$uri = Router::getRequestUri();
 		$classes = [];
 
 		foreach ($curMiddleware as $pattern => $className) {
@@ -78,6 +87,96 @@ class Middleware
 						require_once($classFile);
 
 						$className = "Site\\Middleware\\Before\\".$className;
+
+						if (class_exists($className)) {
+							$curClass = new $className;
+
+							if (method_exists($curClass, 'handle')) {
+								call_user_func_array([$curClass, 'handle'], []);
+							} else {
+								Logger::info('В классе '.$className.' не найден метод: handle');
+							}
+						} else {
+							Logger::info('Не найден класс: '.$className);
+						}
+					} else {
+						Logger::info('Не найден файл: '.$classFile);
+					}
+				}
+			}
+		} else {
+			Logger::info('Для роута нет назначенных Middleware specialBefore');
+		}
+	}
+
+	/**
+	 * На основе данных ключа "before" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function defaultBefore(): void
+	{
+		$curBeforeArray = self::$defaultMiddlewareBefore;
+
+		if (isset($curBeforeArray[App::getRoute('name')])) {
+			if (count($curBeforeArray[App::getRoute('name')]) > 0) {
+				foreach ($curBeforeArray[App::getRoute('name')] as $className) {
+					$classFile = APP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
+
+					if (file_exists($classFile)) {
+						require_once($classFile);
+
+						$className = "Middleware\\Before\\".$className;
+
+						if (class_exists($className)) {
+							$curClass = new $className;
+
+							if (method_exists($curClass, 'handle')) {
+								call_user_func_array([$curClass, 'handle'], []);
+							} else {
+								Logger::info('В классе '.$className.' не найден метод: handle');
+							}
+						} else {
+							Logger::info('Не найден класс: '.$className);
+						}
+					} else {
+						Logger::info('Не найден файл: '.$classFile);
+					}
+				}
+			}
+		} else {
+			Logger::info('Для роута нет назначенных Middleware before');
+		}
+	}
+
+	/**
+	 * На основе данных ключа "specialBefore" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function defaultSpecialBefore(): void
+	{
+		$curMiddleware = self::$defaultMiddlewareSpecialBefore;
+		$uri = Router::getRequestUri();
+		$classes = [];
+
+		foreach ($curMiddleware as $pattern => $className) {
+			if (preg_match($pattern, $uri)) {
+				$classes[$uri] = $className;
+			}
+		}
+
+		if (isset($classes[$uri])) {
+			if (count($classes[$uri]) > 0) {
+				foreach ($classes[$uri] as $className) {
+					$classFile = APP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
+
+					if (file_exists($classFile)) {
+						require_once($classFile);
+
+						$className = "Middleware\\Before\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -154,7 +253,7 @@ class Middleware
 	public static function specialAfter(array|string $actionData = []): mixed
 	{
 		$curMiddleware = Config::get('Middleware.specialAfter', []);
-		$uri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
+		$uri = Router::getRequestUri();
 		$classes = [];
 
 		foreach ($curMiddleware as $pattern => $className) {
@@ -191,6 +290,99 @@ class Middleware
 			}
 		} else {
 			Logger::info('Для роута нет назначенных Middleware specialAfter');
+		}
+
+		return $actionData;
+	}
+
+	/**
+	 * На основе данных ключа "specialBefore" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function defaultAfter(array|string $actionData = []): mixed
+	{
+		$curMiddleware = self::$defaultMiddlewareAfter;
+
+		if (isset($curMiddleware[App::getRoute('name')])) {
+			if (count($curMiddleware[App::getRoute('name')]) > 0) {
+				foreach ($curMiddleware[App::getRoute('name')] as $className) {
+					$classFile = APP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
+
+					if (file_exists($classFile)) {
+						require_once($classFile);
+
+						$className = "Middleware\\After\\".$className;
+
+						if (class_exists($className)) {
+							$curClass = new $className;
+
+							if (method_exists($curClass, 'handle')) {
+								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
+							} else {
+								Logger::info('В классе '.$className.' не найден метод: handle');
+							}
+						} else {
+							Logger::info('Не найден класс: '.$className);
+						}
+					} else {
+						Logger::info('Не найден файл: '.$classFile);
+					}
+				}
+			}
+		} else {
+			Logger::info('Для роута нет назначенных Middleware after');
+		}
+
+		return $actionData;
+	}
+
+	/**
+	 * На основе данных ключа "specialBefore" в конфиге Middleware.php выполняет указанные
+	 * классы посредников ДО выпонения экшена роута
+	 *
+	 * @return void
+	 */
+	public static function defaultSpecialAfter(array|string $actionData = []): mixed
+	{
+		$uri = Router::getRequestUri();
+		$classes = [];
+
+		foreach (self::$defaultMiddlewareSpecialAfter as $pattern => $className) {
+			if (preg_match($pattern, $uri)) {
+				$classes[$uri] = $className;
+			}
+		}
+
+		if (isset($classes[$uri])) {
+			if (count($classes[$uri]) > 0) {
+				foreach ($classes[$uri] as $className) {
+					$classFile = APP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
+
+					if (file_exists($classFile)) {
+						require_once($classFile);
+
+						$className = "Middleware\\After\\".$className;
+
+						if (class_exists($className)) {
+							$curClass = new $className;
+
+							if (method_exists($curClass, 'handle')) {
+								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
+							} else {
+								Logger::info('В классе '.$className.' не найден метод: handle');
+							}
+						} else {
+							Logger::info('Не найден класс: '.$className);
+						}
+					} else {
+						Logger::info('Не найден файл: '.$classFile);
+					}
+				}
+			}
+		} else {
+			Logger::info('Для роута нет назначенных Middleware specialBefore');
 		}
 
 		return $actionData;

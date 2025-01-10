@@ -343,5 +343,4 @@ class Helpers
 			return false;
 		}
 	}
-
 }

@@ -33,7 +33,7 @@ class AppSetup
 		}
 		createDirsChaine($modelsPath, $explodePath['dirs']);
 
-		file_put_contents($modelsPath.'/'.$path.'.php', $template);
+		file_put_contents($modelsPath.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php', $template);
 	}
 
 	/**
@@ -51,9 +51,10 @@ class AppSetup
 		$cliName = ucfirst($explodePath['file']);
 		$cliMethod = strtolower($method);
 		$template = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/CliTemplate.php');
+		$cliNamespace = !empty($explodePath['dirs']) ? '\\'.implode('\\', $explodePath['dirs']) : '';
 		$template = str_replace(
-			['{{cli_name}}', '{{cli_method}}'],
-			[$cliName, strtolower($cliMethod)],
+			['{{cli_name}}', '{{cli_method}}', '{{cli_namespace}}'],
+			[$cliName, strtolower($cliMethod), $cliNamespace],
 			$template
 		);
 		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
@@ -64,7 +65,7 @@ class AppSetup
 		}
 		createDirsChaine($cliPath, $explodePath['dirs']);
 
-		file_put_contents($cliPath.'/'.$path.'.php', $template);
+		file_put_contents($cliPath.'/'.implode('/', $explodePath['dirs']).'/'.$cliName.'.php', $template);
 	}
 
 	/**

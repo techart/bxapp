@@ -73,7 +73,7 @@ class Cli
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Site\\Cli\\".$className;
+						$className = "Site\\Cli\\".str_replace("/", "\\", $className);
 
 						if (class_exists($className)) {
 							$curClass = new $className;

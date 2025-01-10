@@ -88,6 +88,7 @@ class RouterConfigurator
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['requestMethod'] = $requestMethod;
 		self::$RouterData[$requestMethod][$bundle][$url]['url'] = $url;
+		self::$RouterData[$requestMethod][$bundle][$url]['routeUrl'] = '/'.(string)Config::get('Router.APP_ROUTER_PREFIX', 'siteapi').'/'.$bundle.$url;
 	}
 
 	/**

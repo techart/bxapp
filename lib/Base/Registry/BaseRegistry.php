@@ -63,6 +63,9 @@ class BaseRegistry
 				$this->currentSite = $_GET['siteid'];
 				unset($_GET['siteid']);
 			}
+			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
+				$this->currentLanguage = $this->sites[$this->currentSite]['language'];
+			}
 			define('BXAPP_ROUTER_CURRENT_REQUEST_QUERY', $_GET);
 		}
 	}
@@ -71,7 +74,10 @@ class BaseRegistry
 	{
 		if (defined('BXAPP_CLI_ARGV') && $this->sites[BXAPP_CLI_ARGV[1]]) {
 			$this->currentSite = BXAPP_CLI_ARGV[1];
-			$this->currentLanguage = $this->sites[$this->currentSite]['language'];
+
+			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
+				$this->currentLanguage = $this->sites[$this->currentSite]['language'];
+			}
 		}
 	}
 }

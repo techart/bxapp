@@ -1,5 +1,5 @@
 <?php
-namespace Site\Cli;
+namespace Site\Cli{{cli_namespace}};
 
 /**
  * Пример вызова метода класса через консоль (в папке php_interface):

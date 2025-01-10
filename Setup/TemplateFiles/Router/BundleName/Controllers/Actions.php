@@ -7,6 +7,7 @@ class Actions extends \BaseRouterController
 	{
 		// $this->args
 		// $props = $this->getValues();
+		// $curUrl = \Router::getRequestUri();
 		$data = [];
 
 		return $this->result('', '', $data);

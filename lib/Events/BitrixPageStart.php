@@ -45,7 +45,8 @@ class BitrixPageStart
 	public static function siteRedirects(): void
 	{
 		if (\Config::get('Redirects.APP_SITE_REDIRECTS_ACTIVE', false) === true) {
-			$curUrl = $_SERVER['REQUEST_URI'];
+			// $curUrl = $_SERVER['REQUEST_URI'];
+			$curUrl = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 			foreach (\Config::get('Redirects.APP_SITE_REDIRECTS', []) as $status => $redirects) {
 				if (count($redirects) > 0) {

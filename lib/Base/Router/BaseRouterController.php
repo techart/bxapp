@@ -95,7 +95,12 @@ class BaseRouterController
 	{
 		$props = [];
 		$method = !empty($method) ? $method : strtolower($this->request->getRequestMethod());
-		$values = \App::core('Main')->getCurRequestValues($method);
+
+		if ($method == 'get' && defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY')) {
+			$values = BXAPP_ROUTER_CURRENT_REQUEST_QUERY;
+		} else {
+			$values = \App::core('Main')->getCurRequestValues($method);
+		}
 
 		if (count($values) > 0) {
 			foreach ($values as $k => $v) {

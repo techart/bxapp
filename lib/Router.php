@@ -13,17 +13,35 @@ class Router
 	private static $defaultRoutes = ['BxappDefault'];
 
 
-	private static function getRequestQuery(): string
+	/**
+	 * Возвращает массив текущих GET параметров
+	 * Учитывает работу через BxApp роутер и staticapi
+	 *
+	 * @return array
+	 */
+	public static function getRequestQuery(): array
 	{
-		return defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY') ? BXAPP_ROUTER_CURRENT_REQUEST_QUERY : '';
+		return defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY') ? BXAPP_ROUTER_CURRENT_REQUEST_QUERY : $_GET;
 	}
 
-	private static function getRequestMethod(): string
+	/**
+	 * Возвращает текущий метод запроса
+	 * Учитывает работу через BxApp роутер и staticapi
+	 *
+	 * @return array
+	 */
+	public static function getRequestMethod(): string
 	{
 		return defined('BXAPP_ROUTER_CURRENT_REQUEST_METHOD') ? BXAPP_ROUTER_CURRENT_REQUEST_METHOD : Application::getInstance()->getContext()->getRequest()->getRequestMethod();
 	}
 
-	private static function getRequestUri(): string
+	/**
+	 * Возвращает текущий адрес запроса
+	 * Учитывает работу через BxApp роутер и staticapi
+	 *
+	 * @return array
+	 */
+	public static function getRequestUri(): string
 	{
 		return defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') ? BXAPP_ROUTER_CURRENT_REQUEST_URL : Application::getInstance()->getContext()->getRequest()->getRequestUri();
 	}
@@ -356,7 +374,7 @@ class Router
 	 */
 	public static function toCache(): void
 	{
-		checkCreateDir(APP_CACHE_ROUTER_DIR);
+		checkChaineCreateDir(APP_CACHE_ROUTER_DIR);
 
 		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile, serialize(RouterConfigurator::get()))) {
 			Logger::info('кэш роутера записан');
