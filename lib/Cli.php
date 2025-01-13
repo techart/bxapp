@@ -36,6 +36,7 @@ class Cli
 	public static function run($argv = []): void
 	{
 		self::$siteId = $argv[1];
+		$isSetSiteId = true;
 
 		if (!empty(BXAPP_REGISTRY_SITES[self::$siteId])) {
 			self::$action = $argv[2];
@@ -43,10 +44,11 @@ class Cli
 		} else {
 			self::$siteId = BXAPP_SITE_ID;
 
-			if (strpos($argv[2], '_') !== false) {
+			if (strpos($argv[2], '_') !== false || strpos($argv[2], ':') !== false) {
 				self::$action = $argv[2];
 				self::$options = array_slice($argv, 3);
 			} else {
+				$isSetSiteId = false;
 				self::$action = $argv[1];
 				self::$options = array_slice($argv, 2);
 			}
@@ -56,7 +58,7 @@ class Cli
 		if (isset(self::$defaultActions[self::$action])) {
 			call_user_func_array(
 				[new CliActions, self::$defaultActions[self::$action]],
-				[self::$options, self::$siteId]
+				[self::$options, self::$siteId, $isSetSiteId]
 			);
 		} else {
 			$classMethod = explode('_', self::$action);
@@ -67,8 +69,7 @@ class Cli
 				$methodArgs = self::$options;
 
 				if (!empty($className) && !empty($methodName)) {
-					$dirs = Registry::buildBxAppEntitiesDirs(self::$siteId);
-					$classFile = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['cliDir'].'/'.$className.'.php';
+					$classFile = APP_CLI_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -79,7 +80,7 @@ class Cli
 							$curClass = new $className;
 
 							if (method_exists($curClass, $methodName)) {
-								call_user_func_array([$curClass, $methodName], [$methodArgs, self::$siteId]);
+								call_user_func_array([$curClass, $methodName], [$methodArgs, self::$siteId, $isSetSiteId]);
 							} else {
 								// echo 'В классе '.$className.' не найден метод: '.$methodName.PHP_EOL;
 								Logger::warning('В классе '.$className.' не найден метод: '.$methodName);

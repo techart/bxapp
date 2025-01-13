@@ -41,9 +41,7 @@ class Cache {
 	 */
 	public static function clearModels(string $siteId = ''): void
 	{
-		$dirs = Registry::buildBxAppEntitiesDirs($siteId);
-		$path = APP_PHP_INTERFACE_DIR . '/' . $dirs['bxAppDir'] . '/' . $dirs['modelsDir'];
-		$models = self::collectModels($path);
+		$models = self::collectModels(APP_MODELS_DIR);
 
 		foreach($models as $model) {
 			Directory::deleteDirectory(SITE_ROOT_DIR."/bitrix/cache/" . App::model($model)->table);
@@ -80,6 +78,7 @@ class Cache {
 	 */
 	public static function clearStatic(string $siteId = ''): void
 	{
+		Directory::deleteDirectory(APP_CACHE_STATIC_ROOT_DIR.'/'.$siteId);
 	}
 
 	/**

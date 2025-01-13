@@ -15,7 +15,7 @@ class CliActions
 	public function setup(): void
 	{
 		$args = func_get_args();
-		AppSetup::setup($args[1]);
+		AppSetup::setup($args[1], $args[2]);
 
 		echo 'Создание файлов завершено!'.PHP_EOL;
 	}
