@@ -315,7 +315,9 @@ class BaseHighloadModel
 			'filter' => $hlfilter,
 		]);
 
-		return $element->Fetch();
+		$data = $element->Fetch();
+
+		return !$data ? [] : $data;
 	}
 
 	/**
