@@ -36,9 +36,10 @@ class Seo
 
 		$metas = $this->getMetas();
 
-		foreach($metas as $key => $value) {
-			if($value)
+		foreach ($metas as $key => $value) {
+			if ($value) {
 				$APPLICATION->SetPageProperty($key, $value);
+			}
 		}
 	}
 
@@ -53,7 +54,7 @@ class Seo
 	{
 		$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-		if($entryPoint == 'mainPage' || $entryPoint == 'error404') {
+		if ($entryPoint == 'mainPage' || $entryPoint == 'error404') {
 			$this->name = $entryPoint;
 		} else {
 			$this->name = $url;
@@ -107,7 +108,7 @@ class Seo
 			['ID']
 		);
 
-		while($item = $items->Fetch()) {
+		while ($item = $items->Fetch()) {
 			$iprops = new ElementValues($this->iblockId, $item['ID']);
 			$ipropValues = $iprops->getValues();
 

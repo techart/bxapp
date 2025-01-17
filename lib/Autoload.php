@@ -25,6 +25,7 @@ class Autoload
 			'Config' => '\Techart\BxApp\Config',
 			'Glob' => '\Techart\BxApp\Glob',
 			'BladeTemplate' => '\Techart\BxApp\BladeTemplate',
+			'Router' => '\Techart\BxApp\Router',
 			'M' => '\Techart\BxApp\Message',
 			'H' => '\Techart\BxApp\Helpers',
 			'Log' => '\Techart\BxApp\Log',

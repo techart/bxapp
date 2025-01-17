@@ -68,8 +68,8 @@ class BaseHighloadModel
 			if ($locMode !== 'none') {
 				$this->lid = \H::ucfirst($curLang); // обновляем указатель языка модели
 				$this->pid = \H::ucfirst(trim(__GID__, '_')).$this->lid;
-			
-				// если режим локализации моделей указан как "code" 
+
+				// если режим локализации моделей указан как "code"
 				if ($locMode == 'code') {
 					$this->table .= ''.\H::ucfirst($this->pid);
 				}
@@ -316,7 +316,9 @@ class BaseHighloadModel
 			'filter' => $hlfilter,
 		]);
 
-		return $element->Fetch();
+		$data = $element->Fetch();
+
+		return !$data ? [] : $data;
 	}
 
 	/**

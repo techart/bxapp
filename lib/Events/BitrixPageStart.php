@@ -45,51 +45,61 @@ class BitrixPageStart
 	public static function siteRedirects(): void
 	{
 		if (\Config::get('Redirects.APP_SITE_REDIRECTS_ACTIVE', false) === true) {
-			// $curUrl = $_SERVER['REQUEST_URI'];
-			$curUrl = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+			// урлы начинающиеся с /bitrix/ или /upload/ никогда не участвуют в BxApp редиректах
+			if (strpos($_SERVER['REQUEST_URI'], '/bitrix/') !== 0 && strpos($_SERVER['REQUEST_URI'], '/upload/') !== 0) {
+				$curUrl = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
 
-			foreach (\Config::get('Redirects.APP_SITE_REDIRECTS', []) as $status => $redirects) {
-				if (count($redirects) > 0) {
-					foreach ($redirects as $pattern => $url) {
-						$match = false;
+				// редирект с большого регистра на маленький
+				if (\Config::get('Redirects.APP_SITE_REDIRECTS_TO_LOWER', false) === true) {
+					if ($curUrl != mb_strtolower($curUrl)) {
+						\App::core('Main')->doRedirect(mb_strtolower($curUrl), false, '301');
+						exit();
+					}
+				}
 
-						// если это регулярка (ограничена палками - |)
-						if (strpos($pattern, '|') === 0) {
-							// если совпадает
-							if (preg_match($pattern, $curUrl, $matches) === 1) {
-								if ($matches > 1) {
-									$url = preg_replace($pattern, $url, $curUrl); // делаем замены
+				foreach (\Config::get('Redirects.APP_SITE_REDIRECTS', []) as $status => $redirects) {
+					if (count($redirects) > 0) {
+						foreach ($redirects as $pattern => $url) {
+							$match = false;
+
+							// если это регулярка (ограничена палками - |)
+							if (strpos($pattern, '|') === 0) {
+								// если совпадает
+								if (preg_match($pattern, $curUrl, $matches) === 1) {
+									if ($matches > 1) {
+										$url = preg_replace($pattern, $url, $curUrl); // делаем замены
+									}
+									$match = 0;
 								}
+							}
+
+							$dog = strpos($pattern, '@');
+							if ($dog !== false) {
+								if ($dog === 0) {
+									// если в начале адреса есть "@", то проверяем через strpos
+									$match = stripos($curUrl, str_replace('@', '', $pattern));
+								}
+								if ($dog > 0) {
+									$curPattern = str_replace('@', '', $pattern);
+
+									// если не в начале адреса есть "@", то надо исключить точное совпадение
+									if ($curPattern != $curUrl) {
+										$match = stripos($curUrl, $curPattern);
+									}
+								}
+							}
+
+							// если точное соответствие
+							if ($pattern == $curUrl) {
 								$match = 0;
 							}
-						}
 
-						$dog = strpos($pattern, '@');
-						if ($dog !== false) {
-							if ($dog === 0) {
-								// если в начале адреса есть "@", то проверяем через strpos
-								$match = stripos($curUrl, str_replace('@', '', $pattern));
-							}
-							if ($dog > 0) {
-								$curPattern = str_replace('@', '', $pattern);
-
-								// если не в начале адреса есть "@", то надо исключить точное совпадение
-								if ($curPattern != $curUrl) {
-									$match = stripos($curUrl, $curPattern);
+							if ($match !== false) {
+								// совпасть должно с начала, а не где-то с середины
+								if ($match === 0 && !empty($url)) {
+									\App::core('Main')->doRedirect($url, false, $status);
+									exit();
 								}
-							}
-						}
-
-						// если точное соответствие
-						if ($pattern == $curUrl) {
-							$match = 0;
-						}
-
-						if ($match !== false) {
-							// совпасть должно с начала, а не где-то с середины
-							if ($match === 0 && !empty($url)) {
-								\App::core('Main')->doRedirect($url, false, $status);
-								exit();
 							}
 						}
 					}

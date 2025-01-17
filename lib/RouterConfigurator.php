@@ -8,15 +8,26 @@ namespace Techart\BxApp;
 class RouterConfigurator
 {
 	private static $RouterData = [];
+	private static $namesData = [];
 
 	/**
-	 * Возвращает массив даных протектора
+	 * Возвращает массив даных конфигуратора
 	 *
 	 * @return array
 	 */
 	public static function get(): array
 	{
 		return self::$RouterData;
+	}
+
+	/**
+	 * Возвращает массив имён даных
+	 *
+	 * @return array
+	 */
+	public static function getNames(): array
+	{
+		return self::$namesData;
 	}
 
 	/**
@@ -160,7 +171,10 @@ class RouterConfigurator
 	 */
 	public static function setRouteName(string $requestMethod = '', string $bundle = '', string $url = '', string $name = ''): void
 	{
-		self::$RouterData[$requestMethod][$bundle][$url]['name'] = $name;
+		if (!empty($name)) {
+			self::$RouterData[$requestMethod][$bundle][$url]['name'] = $name;
+			self::$namesData['names'][$name] = self::$RouterData[$requestMethod][$bundle][$url]['routeUrl'];
+		}
 	}
 
 	/**

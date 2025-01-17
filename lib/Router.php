@@ -10,8 +10,36 @@ use \Bitrix\Main\Application;
 class Router
 {
 	private static $routerConfigFile = 'routerConfig.txt';
+	private static $routerNamesFile = 'routerNames.txt';
 	private static $defaultRoutes = ['BxappDefault'];
 
+
+	public static function routeUrl(string $name = '', array $args = []): string
+	{
+		$url = '';
+
+		if (!empty($name) && count($args) > 0 && self::isCacheNamesAlive()) {
+			$cacheNamesData = file_get_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile);
+
+			if (!empty($cacheNamesData)) {
+				if ($cacheNamesData !== false) {
+					$routerNamesData = unserialize($cacheNamesData);
+
+					if (isset($routerNamesData['names'][$name])) {
+						$search = [];
+
+						foreach (array_keys($args) as $v) {
+							$search[] = '{'.$v.'}';
+						}
+
+						$url = str_replace($search, array_values($args), $routerNamesData['names'][$name]);
+					}
+				}
+			}
+		}
+
+		return $url;
+	}
 
 	/**
 	 * Возвращает массив текущих GET параметров
@@ -54,7 +82,7 @@ class Router
 	 */
 	private static function getCurrentUrl(string $url = ''): string
 	{
-		return !empty($url) ? $url : self::getRequestUri();
+		return urldecode(!empty($url) ? $url : self::getRequestUri());
 	}
 
 	/**
@@ -107,6 +135,21 @@ class Router
 	{
 		// файл кэша присутствует?
 		if (file_exists(APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Возвращает true, если есть файл кэша имён роутов
+	 *
+	 * @return boolean
+	 */
+	public static function isCacheNamesAlive(): bool
+	{
+		// файл кэша присутствует?
+		if (file_exists(APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile)) {
 			return true;
 		} else {
 			return false;
@@ -170,8 +213,9 @@ class Router
 	{
 		$prefix = (string)Config::get('Router.APP_ROUTER_PREFIX', 'siteapi');
 		$match = array_filter(explode($prefix, $url));
-		$siteData = explode('/', trim($match[0], '/'));
-		$routeData = explode('/', trim($match[1], '/'));
+		$parsedUrl = parse_url($match[1]);
+		// $siteData = explode('/', trim($match[0], '/'));
+		$routeData = explode('/', trim($parsedUrl['path'], '/'));
 		$bundle = mb_strtolower($routeData[0]);
 		unset($routeData[0]);
 
@@ -179,6 +223,7 @@ class Router
 			'prefix' => $prefix,
 			'bundle' => $bundle,
 			'route' => '/'.implode('/', $routeData).'/',
+			'query' => isset($parsedUrl['query']) ? $parsedUrl['query'] : '',
 		];
 	}
 
@@ -197,10 +242,22 @@ class Router
 					$pattern = '[0-9]+';
 				}
 				if ($pattern == 'string') {
-					$pattern = '[a-z-]+';
+					$pattern = '[a-zа-я-]+';
 				}
 				if ($pattern == 'stringCase') {
+					$pattern = '[a-zA-Zа-яА-Я-]+';
+				}
+				if ($pattern == 'stringEn') {
+					$pattern = '[a-z-]+';
+				}
+				if ($pattern == 'stringEnCase') {
 					$pattern = '[a-zA-Z-]+';
+				}
+				if ($pattern == 'stringRu') {
+					$pattern = '[а-я-]+';
+				}
+				if ($pattern == 'stringRuCase') {
+					$pattern = '[а-яА-Я-]+';
 				}
 				if ($pattern == 'code') {
 					$pattern = '[a-zA-Z0-9-]+';
@@ -234,9 +291,10 @@ class Router
 				$pattern = self::buildPattern($routeUrl, $routParams);
 				$pregCase = Config::get('Router.APP_ROUTER_CASE_SENSITIVE', true) ? '' : 'i';
 
-				if (preg_match("#^".$pattern."$#".$pregCase, $prefixBundle['route'], $match)) {
+				if (preg_match("#^".$pattern."$#u".$pregCase, $prefixBundle['route'], $match)) {
 					unset($match[0]);
 					$routParams['args'] = $match;
+					$routParams['query'] = Router::getRequestQuery();
 
 					return $routParams;
 				}
@@ -257,7 +315,7 @@ class Router
 	public static function getRouteFromDataByUrl(string $url = ''): mixed
 	{
 		$routerData = RouterConfigurator::get();
-
+		// dd($_SERVER['REQUEST_URI']);
 		if ($routerData !== false) {
 			$currentRouteData = self::findCurrentRoute($routerData);
 
@@ -348,7 +406,7 @@ class Router
 								self::toPageCache($curUrl, $currentRouteData);
 								return $currentRouteData;
 							} else {
-								Logger::error('Router: в кэше нет роута для переданного урла');
+								Logger::info('Router: в кэше нет роута для переданного урла');
 							}
 						} else {
 							Logger::error('Router: данные кэша повреждены');
@@ -381,6 +439,12 @@ class Router
 		} else {
 			Logger::error('кэш роутера записать не удалось');
 		}
+
+		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile, serialize(RouterConfigurator::getNames()))) {
+			Logger::info('кэш имён роутера записан');
+		} else {
+			Logger::error('кэш имён роутера записать не удалось');
+		}
 	}
 
 	/**
@@ -394,14 +458,10 @@ class Router
 		if (!empty($routeData)) {
 			if (isset($routeData['controller']) && isset($routeData['method'])) {
 				if ($routeData['bundle'] == 'BxappDefault') {
-					// dump(11);
 					$controllerFile = APP_CORE_ROUTER_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php';
-					// dump(APP_CORE_ROUTER_DIR);
 				} else {
-					// dump(22);
 					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$routeData['bundle'].'/Controllers/'.$routeData['controller'].'.php');
 				}
-				// dd($controllerFile);
 				if (file_exists($controllerFile)) {
 					require_once($controllerFile);
 					$controllerClass = 'Router\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];

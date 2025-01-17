@@ -94,7 +94,8 @@ abstract class BaseMenu
 
 			$newSection = [
 				'link' => $section['CODE'],
-				'text' => $section['NAME'],
+				'title' => $section['NAME'],
+				'text' => $section['DESCRIPTION'],
 				'code' => $section['CODE'],
 				'selected' => $selected,
 				'level' => $section['DEPTH_LEVEL'],
@@ -140,7 +141,8 @@ abstract class BaseMenu
 
 			$newSection = [
 				'link' => $section['CODE'],
-				'text' => $section['NAME'],
+				'title' => $section['NAME'],
+				'text' => $section['DESCRIPTION'],
 				'code' => $section['CODE'],
 				'selected' => $selected,
 				'level' => $section['DEPTH_LEVEL'],

@@ -79,6 +79,18 @@ class Route
 	private $protector = [];
 
 
+
+	/**
+	 * Назначает текущему бандлу глобальные протекторы
+	 *
+	 * @param array $protector
+	 * @return void
+	 */
+	public static function setBundleProtector(array $protector = []): void
+	{
+		\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', $protector);
+	}
+
 	/**
 	 * Оборачивает несколько роутов в группу.
 	 * $group - может быть пустой строкой
@@ -137,6 +149,7 @@ class Route
 			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle);
 			\Techart\BxApp\RouterConfigurator::setRouteUrl($this->requestMethod, $this->bundle, $this->getCurrentUrl());
 			\Techart\BxApp\RouterConfigurator::setRouteRequestMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl());
+			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), strtolower($this->bundle.'-'.$requestMethod.'-'.$classMethod[0].'-'.$classMethod[1]));
 			\Techart\BxApp\RouterConfigurator::setRouteBundle($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeBundle);
 			\Techart\BxApp\RouterConfigurator::setRouteGroup($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->group);
 			\Techart\BxApp\RouterConfigurator::setRouteMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $classMethod[0], $classMethod[1]);
