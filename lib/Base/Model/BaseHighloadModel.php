@@ -156,9 +156,9 @@ class BaseHighloadModel
 		$res = $entityDataClass::delete($id);
 
 		if ($res->isSuccess()) {
-			$result = $this->buildResult(false, 'Элемент успешно удалён');
+			$result = $this->buildResult([], false, 'Элемент успешно удалён');
 		} else {
-			$result = $this->buildResult(true, 'Ошибка удаления элемента '.$id.': '.implode('; ', $res->getErrorMessages()));
+			$result = $this->buildResult([], true, 'Ошибка удаления элемента '.$id.': '.implode('; ', $res->getErrorMessages()));
 		}
 
 		return $result;
@@ -180,9 +180,9 @@ class BaseHighloadModel
 		$res = $entityDataClass::add($fields);
 
 		if ($res->isSuccess()) {
-			$result = $this->buildResult(false, 'Запись успешно добавлена!', ['id' => $res->getId()]);
+			$result = $this->buildResult(['id' => $res->getId()], false, 'Запись успешно добавлена!');
 		} else {
-			$result = $this->buildResult(true, implode('; ', $res->getErrorMessages()));
+			$result = $this->buildResult([], true, implode('; ', $res->getErrorMessages()));
 		}
 
 		return $result;
@@ -203,9 +203,9 @@ class BaseHighloadModel
 		$res = $entityDataClass::update($id, $fields);
 
 		if ($res->isSuccess()) {
-			$result = $this->buildResult(false, 'Запись успешно обновлена!');
+			$result = $this->buildResult([], false, 'Запись успешно обновлена!');
 		} else {
-			$result = $this->buildResult(true, implode('; ', $res->getErrorMessages()));
+			$result = $this->buildResult([], true, implode('; ', $res->getErrorMessages()));
 		}
 
 		return $result;

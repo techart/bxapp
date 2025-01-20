@@ -17,15 +17,16 @@ namespace Techart\BxApp\Traits;
  *
  * Например:
  *
- * $result = $this->buildResult(true, 'Пользователь с таким именем не найден');
+ * $result = $this->buildResult([], true, 'Пользователь с таким именем не найден');
  *
  * или
  *
- * $this->buildResult(false, 'Проверочный код был успешно отправлен на почту', [
+ * $this->buildResult([
 		'user' => $userEmail,
 		'checkWord' => $checkWord,
 		'dispatchTime' => time(),
-	]);
+	],
+	false, 'Проверочный код был успешно отправлен на почту');
 
 	А контроллер бандла на основе этих данных сформирует ответ во фронтенд (для чего использует ResultTrait).
 
@@ -39,15 +40,15 @@ trait BuildResultTrait
 	 *
 	 * $error - если true, значит произошла ошибка
 	 *
-	 * @param boolean $error
+	 * @param mixed $data
+	 * @param boolean $isError
 	 * @param string $message
-	 * @param array|object $data
 	 * @return array
 	 */
-	public function buildResult(bool $error = false, string $message = '', array|object $data = []): array
+	public function buildResult(mixed $data = [], bool $isError = false, string $message = ''): array
 	{
 		return [
-			'error' => $error,
+			'error' => $isError,
 			'message' => $message,
 			'data' => $data,
 		];

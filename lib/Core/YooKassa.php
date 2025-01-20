@@ -49,7 +49,7 @@ class YooKassa
 			return $this->client;
 		} else {
 			\Logger::error('YooKassa: не удалось авторизоваться - "'.$this->exception->getMessage().'"');
-			return $this->buildResult(true, $this->exception->getMessage());
+			return $this->buildResult([], true, $this->exception->getMessage());
 		}
 	}
 

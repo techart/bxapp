@@ -152,7 +152,7 @@ class BaseIblockModel
 		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
-		
+
 		if (!empty($this->table)) {
 			$locMode = $this->getLocalizationMode();
 
@@ -441,9 +441,9 @@ class BaseIblockModel
 		$el = new \CIBlockSection;
 
 		if ($el->Delete($id)) {
-			$result = $this->buildResult(false, 'Секция успешно удалена');
+			$result = $this->buildResult([], false, 'Секция успешно удалена');
 		} else {
-			$result = $this->buildResult(true, 'Ошибка удаления секции '.$id);
+			$result = $this->buildResult([], true, 'Ошибка удаления секции '.$id);
 		}
 
 		return $result;
@@ -470,9 +470,9 @@ class BaseIblockModel
 		$el = new \CIBlockSection;
 
 		if ($el->update($id, $fields, $resort, $updateSearch, $resizePictures)) {
-			$result = $this->buildResult(false, 'Секция успешно обновлена!');
+			$result = $this->buildResult([], false, 'Секция успешно обновлена!');
 		} else {
-			$result = $this->buildResult(true, $el->LAST_ERROR);
+			$result = $this->buildResult([], true, $el->LAST_ERROR);
 		}
 
 		return $result;
@@ -503,9 +503,9 @@ class BaseIblockModel
 		$curFields = $default + $fields;
 
 		if ($elemID = $el->add($curFields, $resort, $updateSearch, $resizePictures)) {
-			$result = $this->buildResult(false, 'Запись успешно добавлена!', ['id' => $elemID]);
+			$result = $this->buildResult(['id' => $elemID], false, 'Запись успешно добавлена!');
 		} else {
-			$result = $this->buildResult(true, $el->LAST_ERROR);
+			$result = $this->buildResult([], true, $el->LAST_ERROR);
 		}
 
 		return $result;
@@ -566,9 +566,9 @@ class BaseIblockModel
 		$el = new \CIBlockElement;
 
 		if ($el->Delete($id)) {
-			$result = $this->buildResult(false, 'Элемент успешно удалён');
+			$result = $this->buildResult([], false, 'Элемент успешно удалён');
 		} else {
-			$result = $this->buildResult(true, 'Ошибка удаления элемента '.$id);
+			$result = $this->buildResult([], true, 'Ошибка удаления элемента '.$id);
 		}
 
 		return $result;
@@ -599,9 +599,9 @@ class BaseIblockModel
 		$curFields = $default + $fields;
 
 		if ($elemID = $el->add($curFields, $workFlow, $updateSearch, $resizePictures)) {
-			$result = $this->buildResult(false, 'Запись успешно добавлена!', ['id' => $elemID]);
+			$result = $this->buildResult(['id' => $elemID], false, 'Запись успешно добавлена!');
 		} else {
-			$result = $this->buildResult(true, $el->LAST_ERROR);
+			$result = $this->buildResult([], true, $el->LAST_ERROR);
 		}
 
 		return $result;
@@ -639,9 +639,9 @@ class BaseIblockModel
 		$el = new \CIBlockElement;
 
 		if ($el->update($id, $fields, $workFlow, $updateSearch, $resizePictures, $checkDiskQuota)) {
-			$result = $this->buildResult(false, 'Запись успешно обновлена!');
+			$result = $this->buildResult([], false, 'Запись успешно обновлена!');
 		} else {
-			$result = $this->buildResult(true, $el->LAST_ERROR);
+			$result = $this->buildResult([], true, $el->LAST_ERROR);
 		}
 
 		return $result;
@@ -670,9 +670,9 @@ class BaseIblockModel
 			$el = new \CIBlockElement;
 			$el->SetPropertyValuesEx($id, $this->getInfoblock()['ID'], $propertyValues, $flags);
 
-			$result = $this->buildResult(false, 'Обновлено');
+			$result = $this->buildResult([], false, 'Обновлено');
 		} else {
-			$result = $this->buildResult(true, 'Элемент ID должен быть больше 0');
+			$result = $this->buildResult([], true, 'Элемент ID должен быть больше 0');
 		}
 
 		return $result;
