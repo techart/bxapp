@@ -26,13 +26,21 @@ namespace Techart\BxApp\Base\Menu;
 
 abstract class BaseMenu
 {
-	use \BuildResultTrait;
-	use \CacheTrait;
 	use \CacheTrait;
 
 	protected $data = [];
 	protected $allowElements = false;
+	protected $modelName = '';
 
+
+	public function __construct()
+	{
+		if (!empty($this->modelName)) {
+			$this->table = \App::model($this->modelName)->table;
+		} else {
+			$this->table .= 'Menu_'.get_called_class();
+		}
+	}
 
 	/**
 	 * Проходит по массиву, сравнивая url с полем code
@@ -212,8 +220,9 @@ abstract class BaseMenu
 	 */
 	protected function buildMenuByHLBlockElems(string $hbModelName = ''): array
 	{
+		$curModelName = !empty($hbModelName) ? $hbModelName : $this->modelName;
 		$this->data = $this->getHbElements(
-			$hbModelName,
+			$curModelName,
 			function($code = '') {
 				return $this->setSelectedMenuElement($code);
 			}
@@ -230,9 +239,10 @@ abstract class BaseMenu
 	 */
 	protected function buildMenuByIblockSections(string $ibModelName = '', bool $allowElements = false): array
 	{
+		$curModelName = !empty($ibModelName) ? $ibModelName : $this->modelName;
 		$this->allowElements = $allowElements;
-		$this->data = $this->getIBlockSections($ibModelName);
-		$this->data = $this->linearBuildTree($ibModelName);
+		$this->data = $this->getIBlockSections($curModelName);
+		$this->data = $this->linearBuildTree($curModelName);
 		// $this->data = $this->recursionBuildTree();
 
 		return $this->data;
@@ -246,8 +256,9 @@ abstract class BaseMenu
 	 */
 	protected function buildMenuByIBlockElems(string $ibModelName = '', string|int $id = ''): array
 	{
+		$curModelName = !empty($ibModelName) ? $ibModelName : $this->modelName;
 		$this->data = $this->getIBlockElements(
-			$ibModelName,
+			$curModelName,
 			$id,
 			function($code = '') {
 				return $this->setSelectedMenuElement($code);
