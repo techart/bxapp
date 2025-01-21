@@ -49,7 +49,7 @@ trait AssetsTrait
 	private function setLibs(string $entry): void
 	{
 		$file = SITE_TEMPLATE_ID == '.default' ? file_get_contents(SITE_ROOT_DIR.'/local/templates/site/frontend/user.settings.js') : file_get_contents(SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend').'/user.settings.js');
-		$file_entry = stristr($file, $entry);
+		$file_entry = stristr($file, $entry.':');
 		$file_entry = stristr($file_entry, '{');
 		$file_entry = stristr($file_entry, '}', true).'}';
 

@@ -26,12 +26,13 @@ namespace Techart\BxApp\Base\Menu;
 
 abstract class BaseMenu
 {
-	use CacheTrait;
-	use ResultTrait;
+	use \BuildResultTrait;
+	use \CacheTrait;
+	use \CacheTrait;
 
-	public $className = '';
-	protected $allowElements = true;
-	protected $data = null;
+	protected $data = [];
+	protected $allowElements = false;
+
 
 	/**
 	 * Проходит по массиву, сравнивая url с полем code
@@ -53,28 +54,6 @@ abstract class BaseMenu
 	}
 
 	/**
-	 * Возвращает меню построенное на элементах HighLoadBlock'a
-	 * Принимает в себя массив элементов
-	 *
-	 * @return array
-	 */
-	protected function buildMenuByHLBlockElems()
-	{
-		$this->data = \App::model($this->className)->getElementsData()['data']['items'];
-
-		foreach ($this->data as $item) {
-			$data[] = [
-				'link' => $item['UF_LINK'],
-				'text' => $item['UF_TEXT'],
-				'code' => $item['UF_CODE'],
-				'selected' => $this->setSelectedMenuElement($item['UF_CODE']),
-			];
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Возвращает массив иерархически построенного дерева из секций и элементов инфоблока
 	 * Рекурсивный метод ( метод тяжёлый, по возможности использоваться линейный linearBuildTree )
 	 * Принимает в себя массив секций
@@ -83,7 +62,7 @@ abstract class BaseMenu
 	 * @param array $pID
 	 * @return array
 	 */
-	protected function recursionBuildTree($pID = null)
+	protected function recursionBuildTree(string $ibModelName = '', $pID = null)
 	{
 		$branch = [];
 
@@ -101,7 +80,8 @@ abstract class BaseMenu
 				'level' => $section['DEPTH_LEVEL'],
 				'IBLOCK_SECTION_ID' => $section['IBLOCK_SECTION_ID'],
 				'ID' => $section['ID'],
-				'sub' => $this->allowElements ? \App::model($this->className)->getIBlockElements(
+				'sub' => $this->allowElements ? $this->getIBlockElements(
+					$ibModelName,
 					$section['ID'],
 					function($code = '') {
 						return $this->setSelectedMenuElement($code);
@@ -129,15 +109,13 @@ abstract class BaseMenu
 	 *
 	 * @return array
 	 */
-	protected function linearBuildTree()
+	protected function linearBuildTree(string $ibModelName = '')
 	{
 		$branch = [];
 		$tree = [];
 
 		foreach ($this->data as $section) {
-			if($this->allowElements) {
-				$selected = $this->setSelectedMenuElement($section['CODE']);
-			}
+			$selected = $this->setSelectedMenuElement($section['CODE']);
 
 			$newSection = [
 				'link' => $section['CODE'],
@@ -148,11 +126,12 @@ abstract class BaseMenu
 				'level' => $section['DEPTH_LEVEL'],
 				'IBLOCK_SECTION_ID' => $section['IBLOCK_SECTION_ID'],
 				'ID' => $section['ID'],
-				'sub' => $this->allowElements ? \App::model($this->className)->getIBlockElements(
+				'sub' => $this->allowElements ? $this->getIBlockElements(
+					$ibModelName,
 					$section['ID'],
 					function($code = '') {
 						return $this->setSelectedMenuElement($code);
-					})['data'] : '',
+					}) : '',
 			];
 
 			$tree[$section['ID']] = $newSection;
@@ -171,19 +150,90 @@ abstract class BaseMenu
 		return $branch;
 	}
 
+	protected function getHbElements(string $hbModelName, object $callback)
+	{
+		$data = [];
+
+		$items = \App::model($hbModelName)->getElements(
+			['UF_LINK', 'UF_TEXT', 'UF_CODE']
+		);
+		while ($item = $items->fetch()) {
+			$data[] = [
+				'link' => $item['UF_LINK'],
+				'text' => $item['UF_TEXT'],
+				'code' => $item['UF_CODE'],
+				'selected' => $callback($item['CODE']),
+			];
+		}
+
+		return $data;
+	}
+
+	protected function getIBlockElements(string $ibModelName, string|int $id = '', object $callback)
+	{
+		$data = [];
+
+		$items = \App::model($ibModelName)->getElements(['PROPERTY_LINK', 'NAME', 'CODE', 'IBLOCK_SECTION_ID'], ['IBLOCK_SECTION_ID' => $id], ['LEFT_MARGIN' => 'ASC']);
+		while ($item = $items->fetch()) {
+			$data[] = [
+				'link' => $item['CODE'],
+				'text' => $item['NAME'],
+				'code' => $item['CODE'],
+				'sectionId' => $item['IBLOCK_SECTION_ID'],
+				'selected' => $callback($item['CODE']),
+			];
+		}
+
+		return $data;
+	}
+
+	protected function getIBlockSections(string $ibModelName)
+	{
+		$data = [];
+
+		$items = \App::model($ibModelName)->getSections(
+			['ID', 'CODE', 'NAME', 'DESCRIPTION', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID'],
+			[],
+			['LEFT_MARGIN' => 'ASC']
+		);
+
+		while ($item = $items->fetch()) {
+			$data[] = $item;
+		}
+
+		return $data;
+	}
+
 	/**
-	 * Возвращает массив секций и элементов инфоблока
-	 * Вызывает метод у наследованного класса BaseIblockModel
-	 * Требует указания $className -> Название класса\файла вашей модели
+	 * Возвращает меню построенное на элементах HighLoadBlock'a
+	 * Принимает в себя массив элементов
 	 *
 	 * @return array
 	 */
-	protected function buildMenuByIblockSections()
+	protected function buildMenuByHLBlockElems(string $hbModelName = ''): array
 	{
-		$this->data = \App::model($this->className)->getElementsData()['data'];
+		$this->data = $this->getHbElements(
+			$hbModelName,
+			function($code = '') {
+				return $this->setSelectedMenuElement($code);
+			}
+		);
 
+		return $this->data;
+	}
+
+	/**
+	 * Возвращает массив секций и элементов инфоблока
+	 * Вызывает метод у наследованного класса BaseIblockModel
+	 *
+	 * @return array
+	 */
+	protected function buildMenuByIblockSections(string $ibModelName = '', bool $allowElements = false): array
+	{
+		$this->allowElements = $allowElements;
+		$this->data = $this->getIBlockSections($ibModelName);
+		$this->data = $this->linearBuildTree($ibModelName);
 		// $this->data = $this->recursionBuildTree();
-		$this->data = $this->linearBuildTree();
 
 		return $this->data;
 	}
@@ -194,26 +244,23 @@ abstract class BaseMenu
 	 *
 	 * @return array
 	 */
-	protected function buildMenuByIBlockElems()
+	protected function buildMenuByIBlockElems(string $ibModelName = '', string|int $id = ''): array
 	{
-		$this->data = \App::model($this->className)->getElementsData()['data']['items'];
+		$this->data = $this->getIBlockElements(
+			$ibModelName,
+			$id,
+			function($code = '') {
+				return $this->setSelectedMenuElement($code);
+			}
+		);
 
-		foreach ($this->data as $item) {
-			$data[] = [
-				'link' => $item['PROPERTY_LINK_VALUE'],
-				'text' => $item['NAME'],
-				'code' => $item['CODE'],
-				'selected' => $this->setSelectedMenuElement($item['CODE']),
-			];
-		}
-
-		return $data;
+		return $this->data;
 	}
 
 	/**
-	 * Абстрактный метод, где будет ваша логика
+	 * Метод, где будет ваша логика
 	 *
 	 * @return array
 	 */
-	abstract protected function executeBuildMenu();
+	abstract function build();
 }

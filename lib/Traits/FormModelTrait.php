@@ -75,6 +75,68 @@ trait FormModelTrait
 	}
 
 	/**
+	 * Создает новый результат веб-формы.
+	 * В случае успеха - возвращает ID нового результата, в противном случае - "false"
+	 *
+	 * Работает на основе CFormResult::Add()
+	 *
+	 * @param integer $formID
+	 * @param boolean $values
+	 * @param string $checkRights
+	 * @param boolean $userID
+	 * @return boolean|integer
+	 */
+	public function addFormToWebForm(int $formID, array|bool $values = false, string $checkRights = 'Y', int|bool $userID = false): bool|int
+	{
+		if (\CModule::IncludeModule("form")) {
+			return \CFormResult::Add($formID, $values, $checkRights, $userID);
+		}
+		return false;
+	}
+
+	/**
+	 * Создает почтовое событие для отсылки данных результата по e-mail.
+	 * Возвращает "true" в случае успеха, в противном случае - "false"
+	 *
+	 * Работает на основе CFormResult::Mail()
+	 *
+	 * @param integer $resultID
+	 * @param mixed $templateID
+	 * @return boolean
+	 */
+	public function sendWebFormResultToMail(int $resultID, mixed $templateID = false): bool
+	{
+		if (\CModule::IncludeModule("form")) {
+			return CFormResult::Mail($resultID, $templateID);
+		}
+		return false;
+	}
+
+	/**
+	 * Создает событие в модуле "Статистика".
+	 * Возвращает "true" в случае успеха, в противном случае - "false".
+	 *
+	 * Работает на основе CFormResult::SetEvent()
+	 *
+	 * @param integer $resultID
+	 * @param boolean $event1
+	 * @param boolean $event2
+	 * @param boolean $event3
+	 * @param mixed $money
+	 * @param mixed $currency
+	 * @param mixed $goto
+	 * @param mixed $chargeback
+	 * @return boolean
+	 */
+	public function setEventForWebForm(int $resultID, string|bool $event1 = false,  string|bool $event2 = false,  string|bool $event3 = false, mixed $money = '', mixed $currency = '', mixed $goto = '', mixed $chargeback = 'N' ): bool
+	{
+		if (\CModule::IncludeModule("form")) {
+			return CFormResult::SetEvent($resultID, $event1, $event2, $event3, $money, $currency, $goto, $chargeback);
+		}
+		return false;
+	}
+
+	/**
 	 * На основе Event::send()
 	 * Тригерит эвент формы и перадёт туда данные.
 	 * Имя эвента должно быть указано в public $eventName = ''; модели

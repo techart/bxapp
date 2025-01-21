@@ -297,19 +297,29 @@ class App
 	 */
 	public static function model(string $file = '', bool $collect = true, string $locale = ''): object
 	{
-		$dir = 'Models';
 		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
-		// ______пока отключено, может в дальнейшем для чего-то понадобится_____
-		// если дефолтный режим работы файлов моделей указан как "separated"
-		/*if (Config::get('App.APP_MODEL_LOCALIZATION_FILE_MODE', 'alone') == 'separated') {
-			// если дефолтный язык не равен переданному
-			if (Config::get('App.APP_LANG', 'ru') !== $curLang) {
-				$dir .= '/_Lang/'.$curLang;
-			}
-		}*/
+		return self::get('models', 'Models', $file, $collect, $curLang);
+	}
 
-		return self::get('models', $dir, $file, $collect, $curLang);
+	/**
+	 * Возвращает экземпляр класса модели из файла $file
+	 * Если $collect = false, то не сохраняет экземпляр
+	 * В $locale можно передать требуемый язык: en, ru...
+	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'file' и $locale != APP_LANG
+	 * То модель ищется по пути Modes/_Lang/$locale/$file
+	 * В противном случае модель ищется по стандартному пути
+	 *
+	 * @param string $file
+	 * @param boolean $collect
+	 * @param string $locale
+	 * @return object
+	 */
+	public static function menu(string $file = '', bool $collect = true, string $locale = ''): object
+	{
+		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+
+		return self::get('models', 'Menu', $file, $collect, $curLang);
 	}
 
 	/**
@@ -323,19 +333,6 @@ class App
 	public static function module(string $file = '', bool $collect = true): object
 	{
 		return self::get('modules', 'Modules', $file, $collect);
-	}
-
-	/**
-	 * Возвращает экземпляр класса меню из файла $file
-	 * Если $collect = false, то не сохраняет экземпляр
-	 *
-	 * @param string $file
-	 * @param boolean $collect
-	 * @return object
-	 */
-	public static function menu(string $file = '', bool $collect = true): object
-	{
-		return self::get('menu', 'Menu', $file, $collect);
 	}
 
 	/**
