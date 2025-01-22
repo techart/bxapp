@@ -38,7 +38,7 @@ abstract class BaseMenu
 		if (!empty($this->modelName)) {
 			$this->table = \App::model($this->modelName)->table;
 		} else {
-			$this->table .= 'Menu_'.get_called_class();
+			$this->table .= APP_CACHE_MENU_DIR_NAME.'/'.BXAPP_SITE_ID.'/'.get_called_class();
 		}
 	}
 
@@ -88,7 +88,7 @@ abstract class BaseMenu
 				'level' => $section['DEPTH_LEVEL'],
 				'IBLOCK_SECTION_ID' => $section['IBLOCK_SECTION_ID'],
 				'ID' => $section['ID'],
-				'sub' => $this->allowElements ? $this->getIBlockElements(
+				'elements' => $this->allowElements ? $this->getIBlockElements(
 					$ibModelName,
 					$section['ID'],
 					function($code = '') {
@@ -99,7 +99,7 @@ abstract class BaseMenu
 			if ($newSection['IBLOCK_SECTION_ID'] === $pID) {
 				$child = $this->recursionBuildTree($newSection['ID']);
 				if ($child) {
-					$newSection['child'] = $child;
+					$newSection['sub'] = $child;
 				}
 
 				$branch[$newSection['ID']] = $newSection;
@@ -134,7 +134,7 @@ abstract class BaseMenu
 				'level' => $section['DEPTH_LEVEL'],
 				'IBLOCK_SECTION_ID' => $section['IBLOCK_SECTION_ID'],
 				'ID' => $section['ID'],
-				'sub' => $this->allowElements ? $this->getIBlockElements(
+				'elements' => $this->allowElements ? $this->getIBlockElements(
 					$ibModelName,
 					$section['ID'],
 					function($code = '') {
@@ -143,7 +143,7 @@ abstract class BaseMenu
 			];
 
 			$tree[$section['ID']] = $newSection;
-			$tree[$section['ID']]['child'] = [];
+			$tree[$section['ID']]['sub'] = [];
 		}
 
 		foreach ($tree as &$node) {
@@ -151,7 +151,7 @@ abstract class BaseMenu
 				$branch[] = &$node;
 			} else {
 				$parent = &$tree[$node['IBLOCK_SECTION_ID']];
-				$parent['child'][] = &$node;
+				$parent['sub'][] = &$node;
 			}
 		}
 
@@ -237,7 +237,7 @@ abstract class BaseMenu
 	 *
 	 * @return array
 	 */
-	protected function buildMenuByIblockSections(string $ibModelName = '', bool $allowElements = false): array
+	protected function buildMenuByIBlockSections(string $ibModelName = '', bool $allowElements = false): array
 	{
 		$curModelName = !empty($ibModelName) ? $ibModelName : $this->modelName;
 		$this->allowElements = $allowElements;

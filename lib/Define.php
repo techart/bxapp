@@ -39,6 +39,7 @@ class Define
 		define("SITE_ROOT_DIR", PROJECT_ROOT_DIR.'/www');
 		define("SITE_UPLOAD_DIR", SITE_ROOT_DIR.'/upload');
 		define("APP_CACHE_DIR", SITE_ROOT_DIR.'/local/cache');
+		define("APP_CACHE_MENU_DIR_NAME", '_BxAppMenu');
 		define("APP_FAVICON_FILES_DIR", SITE_ROOT_DIR.'/local/favicon-files');
 		define("APP_PHP_INTERFACE_DIR", SITE_ROOT_DIR.'/local/php_interface');
 	}

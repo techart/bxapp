@@ -82,6 +82,17 @@ class Cache {
 	}
 
 	/**
+	 * Очищает кеш меню
+	 *
+	 * @param string $siteId
+	 * @return void
+	 */
+	public static function clearMenu(string $siteId = ''): void
+	{
+		Directory::deleteDirectory(SITE_ROOT_DIR.'/bitrix/cache/'.APP_CACHE_MENU_DIR_NAME.'/'.$siteId);
+	}
+
+	/**
 	 * Очищает заданный кеш
 	 *
 	 * @param string $cacheName
@@ -114,6 +125,11 @@ class Cache {
 		if ($cacheName === 'static' || $cacheName === 'all') {
 			self::clearStatic($siteId);
 			Logger::info('Cache: Очистка кеша статики');
+		}
+
+		if ($cacheName === 'menu' || $cacheName === 'all') {
+			self::clearMenu($siteId);
+			Logger::info('Cache: Очистка кеша меню');
 		}
 	}
 }
