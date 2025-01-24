@@ -107,7 +107,7 @@ trait FormModelTrait
 	public function sendWebFormResultToMail(int $resultID, mixed $templateID = false): bool
 	{
 		if (\CModule::IncludeModule("form")) {
-			return CFormResult::Mail($resultID, $templateID);
+			return \CFormResult::Mail($resultID, $templateID);
 		}
 		return false;
 	}
@@ -131,7 +131,7 @@ trait FormModelTrait
 	public function setEventForWebForm(int $resultID, string|bool $event1 = false,  string|bool $event2 = false,  string|bool $event3 = false, mixed $money = '', mixed $currency = '', mixed $goto = '', mixed $chargeback = 'N' ): bool
 	{
 		if (\CModule::IncludeModule("form")) {
-			return CFormResult::SetEvent($resultID, $event1, $event2, $event3, $money, $currency, $goto, $chargeback);
+			return \CFormResult::SetEvent($resultID, $event1, $event2, $event3, $money, $currency, $goto, $chargeback);
 		}
 		return false;
 	}
