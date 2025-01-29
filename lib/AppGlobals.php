@@ -8,6 +8,8 @@ class AppGlobals
 	{
 		// сборка
 		\Glob::set('APP_ENV', strval(\Env::get('APP_ENV', 'prod')));
+		// принудительно использовать кэш локально
+		\Glob::set('APP_SETUP_LOCAL_FORCED_CACHE', boolval(\Env::get('APP_LOCAL_FORCED_CACHE', false)));
 		// включено использования кэша в трейте или нет
 		\Glob::set('APP_SETUP_CACHE_TRAIT_USE_CACHE', boolval(\Env::get('APP_TRAIT_CACHE', true)));
 		// выводить ли лог бар на сайт?
@@ -26,13 +28,13 @@ class AppGlobals
 		Glob::set('APP_SETUP_LOG_FRONTEND_TO_FILE', boolval(Env::get('APP_LOG_FRONTEND_TO_FILE', false)));
 		// почта для отправки лога
 		\Glob::set('APP_SETUP_LOG_EMAILS', strval(\Env::get('APP_LOG_SEND_TO', '')));
-		// если true, то капчи локально всегда правильные (не проверяется)
-		\Glob::set('APP_CAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_CAPTCHA_CHECK_LOCAL', true)));
 		// роутер для API активны или нет?
 		\Glob::set('APP_SETUP_API_ROUTER_ACTIVE', boolval(\Env::get('APP_ROUTER_ACTIVE', true)));
 		// роуту надо делать кэш или нет?
 		\Glob::set('APP_SETUP_API_ROUTER_CACHE_ACTIVE', boolval(\Env::get('APP_ROUTER_CACHE_ACTIVE', true)));
 		// роутер должен работать только по https протоколу?
 		\Glob::set('APP_SETUP_API_ROUTER_CHECK_HTTPS', boolval(\Env::get('APP_ROUTER_CHECK_HTTPS', false)));
+		// если true, то капчи локально всегда правильные (не проверяется)
+		\Glob::set('APP_CAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_CAPTCHA_CHECK_LOCAL', true)));
 	}
 }

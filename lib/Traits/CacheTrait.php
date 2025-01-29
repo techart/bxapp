@@ -106,16 +106,19 @@ trait CacheTrait
 	{
 		$status = true;
 
+		if (\H::isLocal() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE')) {
+			return true;
+		}
+
 		// если кэш отключён через APP_SETUP_CACHE_TRAIT_USE_CACHE или в модели через CacheTraitUseCache
 		if (\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === false || $this->CacheTraitUseCache === false) {
 			$status = false;
 		} else {
-			if (strpos($_SERVER['HTTP_HOST'], 'intranet') !== false) {
+			if (\H::isLocal()) {
 				$status = false;
 			}
 		}
 
-		// return false;
 		return $status;
 	}
 

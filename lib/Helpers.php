@@ -185,7 +185,7 @@ class Helpers
 	 */
 	public static function isLocal(): bool
 	{
-		if (strpos($_SERVER['HTTP_HOST'], 'intranet') === false) {
+		if (strpos($_SERVER['HTTP_HOST'], '.intranet') === false) {
 			return false;
 		} else {
 			return true;
@@ -201,6 +201,17 @@ class Helpers
 	public static function isDev(): bool
 	{
 		return in_array(\Glob::get('APP_ENV'), ['dev', 'hot']);
+	}
+
+	/**
+	 * Возвращает true, если APP_ENV равен prod
+	 * Возвращает false в противном случае
+	 *
+	 * @return boolean
+	 */
+	public static function isProd(): bool
+	{
+		return in_array(\Glob::get('APP_ENV'), ['prod']);
 	}
 
 	/**

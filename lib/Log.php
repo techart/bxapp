@@ -155,7 +155,7 @@ class Log
 	 */
 	public static function print(): void
 	{
-		if (strpos($_SERVER['HTTP_HOST'], 'intranet') !== false) {
+		if (\H::isLocal()) {
 			dd(self::$messages);
 		}
 	}
@@ -168,7 +168,7 @@ class Log
 	protected static function showLoggerBar(): void
 	{
 		if (self::$showLoggerBar) {
-			if (strpos($_SERVER['HTTP_HOST'], 'intranet') !== false) {
+			if (!\H::isLocal()) {
 				echo '
 				<style>
 					.debugbar {

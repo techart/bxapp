@@ -8,7 +8,7 @@ namespace Techart\BxApp\Core;
  *
  * 1) В .env файле надо заполнить поля:
  * APP_SMARTCAPTCHA_SITE_KEY и APP_SMARTCAPTCHA_SECRET_KEY
- * 
+ *
  */
 
 class SmartCaptcha
@@ -25,7 +25,7 @@ class SmartCaptcha
 		$return = false;
 
 		if (\Glob::get('APP_CAPTCHA_CHECK_LOCAL', true)) {
-			if (strpos($_SERVER['SERVER_NAME'], '.intranet') !== false) {
+			if (\H::isLocal()) {
 				$return = true;
 			}
 		}

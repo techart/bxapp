@@ -22,7 +22,13 @@ class EventsModel
 	public static function setEvents(): void
 	{
 		// назначать эвенты, если кэш включён
-		if (\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && strpos($_SERVER['HTTP_HOST'], 'intranet') === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true) {
+		// если это intranet и APP_LOCAL_FORCED_CACHE=true
+		// ИЛИ
+		// если это не intranet и APP_TRAIT_CACHE=true и конфиг App.APP_MODEL_CLEAN_CACHE_ON_CHANGE=true
+		if (
+			(\H::isLocal() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE') ) ||
+			(\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && \H::isLocal() === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true)
+		) {
 			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
 			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
 			AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", ["\Techart\BxApp\Events\EventsModel", "ibSectionDelete"]);//id удалённого раздела
