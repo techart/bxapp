@@ -56,6 +56,7 @@ trait ResultTrait
 	{
 		$result = [
 			'status' => 'success',
+			'site' => BXAPP_SITE_ID,
 			'language' => BXAPP_LANGUAGE_ID,
 		];
 

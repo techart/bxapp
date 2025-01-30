@@ -21,7 +21,10 @@ class StaticApi
 				mkdir($cachePath, 0777, true);
 			}
 			if (!file_exists($cachePath .'data.json')) {
-				file_put_contents($cachePath .'data.json', json_encode($data, JSON_UNESCAPED_UNICODE));
+				$dataForCache = $data;
+				$dataForCache['cacheStatus'] = true;
+
+				file_put_contents($cachePath .'data.json', json_encode($dataForCache, JSON_UNESCAPED_UNICODE));
 			}
 		}
 

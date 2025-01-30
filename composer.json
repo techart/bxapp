@@ -1,6 +1,6 @@
 {
   "name": "techart/bxapp",
-  "version": "0.5.17",
+  "version": "0.5.18",
   "description": "Пакет для организации бэка битрикса",
   "license": "Apache-2.0",
   "authors": [
