@@ -73,7 +73,6 @@ class BaseRegistry
 	public function setForCli()
 	{
 		if (defined('BXAPP_CLI_ARGV') && $this->sites[BXAPP_CLI_ARGV[1]]) {
-			define('BXAPP_IS_SITE_PAGE', false);
 			$this->currentSite = BXAPP_CLI_ARGV[1];
 
 			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {

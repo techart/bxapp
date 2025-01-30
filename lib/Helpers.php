@@ -344,6 +344,7 @@ class Helpers
 	{
 		if (
 			(defined('BXAPP_IS_SITE_PAGE') && BXAPP_IS_SITE_PAGE === true) &&
+			defined('BXAPP_CLI_ARGV') === false &&
 			Glob::get('BXAPP_IS_SITE_PAGE', true) === true &&
 			strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false &&
 			strpos($_SERVER['REQUEST_URI'], \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi')) === false &&
