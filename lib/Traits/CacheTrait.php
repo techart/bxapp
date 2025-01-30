@@ -47,16 +47,19 @@ trait CacheTrait
 
 	/**
 	 * Возвращает ID текущего кэша.
-	 * Это или переданная строка $cacheID.
-	 * Или по умолчанию строка состоящая из:
-	 * BXAPP_SITE_ID, BXAPP_LANGUAGE_ID, имени класса модели, имени метода и переданные аргументы метода, где вызывается функция кэша.
+	 * ID кэша это строка состоящая из:
+	 * BXAPP_SITE_ID, BXAPP_LANGUAGE_ID, имени класса модели, имени метода
+	 * и далее, либо переданный $cacheID, либо переданные аргументы метода, где вызывается функция кэша
 	 *
-	 * @param string $cacheID
+	 * @param mixed $cacheID
 	 * @return string
 	 */
-	private function getCacheID(string $cacheID = ''): string
+	private function getCacheID(mixed $cacheID = ''): string
 	{
-		return !empty($cacheID) ? $cacheID : BXAPP_SITE_ID.'_'.BXAPP_LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[2]['function'].'_'.md5(json_encode(debug_backtrace()[2]['args']));
+		$cacheID = !empty($cacheID) ? $cacheID : debug_backtrace()[2]['args'];
+		$cacheIDString = BXAPP_SITE_ID.'_'.BXAPP_LANGUAGE_ID.'_'.get_called_class().'_'.debug_backtrace()[2]['function'].'_'.md5(json_encode($cacheID));
+
+		return $cacheIDString;
 	}
 
 	/**
