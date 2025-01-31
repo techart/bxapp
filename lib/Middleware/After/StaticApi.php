@@ -22,7 +22,7 @@ class StaticApi
 			}
 			if (!file_exists($cachePath .'data.json')) {
 				$dataForCache = $data;
-				$dataForCache['cacheStatus'] = true;
+				$dataForCache['cache'] = true;
 
 				file_put_contents($cachePath .'data.json', json_encode($dataForCache, JSON_UNESCAPED_UNICODE));
 			}

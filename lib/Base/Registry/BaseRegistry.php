@@ -11,6 +11,7 @@ class BaseRegistry
 	protected $sites = [];
 	protected $groups = [];
 	protected $currentServer = null;
+	protected $currentSecretKey = null;
 	protected $currentSite = null;
 	protected $currentLanguage = null;
 
@@ -62,6 +63,10 @@ class BaseRegistry
 			if (isset($_GET['siteid'])) {
 				$this->currentSite = $_GET['siteid'];
 				unset($_GET['siteid']);
+			}
+			if (isset($_GET['secretkey'])) {
+				$this->currentSecretKey = $_GET['secretkey'];
+				unset($_GET['secretkey']);
 			}
 			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
 				$this->currentLanguage = $this->sites[$this->currentSite]['language'];

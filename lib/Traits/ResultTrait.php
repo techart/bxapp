@@ -6,7 +6,7 @@ namespace Techart\BxApp\Traits;
  *
 	status: 'success' | 'fail'
 	language: string
-	cacheStatus?: true | false
+	cache?: true | false
 	errors?: [
 		type: string
 		message: string
@@ -26,7 +26,7 @@ namespace Techart\BxApp\Traits;
 		data: any
 	]
 
-	Если в классе используется CacheTrait у метода, то его статус будет в cacheStatus
+	Если в классе используется CacheTrait у метода, то его статус будет в cache
 
 	Если в классе используется ErrorTrait у метода, то его сообщения будут в ответе разбиты по ключам:
 	errors = critical, error или warning - серьёзная ошибка на бэке
@@ -63,7 +63,7 @@ trait ResultTrait
 		// если в классе используется кэш, то выводим его статус
 		if (isset($this->CacheTraitFromCache)) {
 			$cacheID = $this->getCacheID($cacheID);
-			$result['cacheStatus'] = isset($this->CacheTraitFromCache[$cacheID]) ? $this->CacheTraitFromCache[$cacheID] : false;
+			$result['cache'] = isset($this->CacheTraitFromCache[$cacheID]) ? $this->CacheTraitFromCache[$cacheID] : false;
 		}
 
 		// если в классе используется ErrorTrait, то обрабатываем его ошибки
