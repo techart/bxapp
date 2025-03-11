@@ -74,9 +74,12 @@ class Route
 	private $bundle = '';
 	private $routeBundle = '';
 	private $routeProtector = [];
+	private $routeParams = [];
 	private $group = '';
 	private $groupProtector = [];
+	private $groupParams = [];
 	private $protector = [];
+	private $params = [];
 
 
 
@@ -89,6 +92,17 @@ class Route
 	public static function setBundleProtector(array $protector = []): void
 	{
 		\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', $protector);
+	}
+
+	/**
+	 * Назначает текущему бандлу глобальные протекторы
+	 *
+	 * @param array $params
+	 * @return void
+	 */
+	public static function setBundleParams(array $params = []): void
+	{
+		\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', $params);
 	}
 
 	/**
@@ -130,9 +144,10 @@ class Route
 	 * @param string $requestMethod
 	 * @param string $url
 	 * @param string $classMethod
+	 * @param mixed $props
 	 * @return object
 	 */
-	public function setRoute(string $requestMethod = '', string $url = '', string $classMethod = ''): object
+	public function setRoute(string $requestMethod = '', string $url = '', string $classMethod = '', mixed $props = ''): object
 	{
 		$classMethod = explode('.', $classMethod);
 
@@ -144,6 +159,7 @@ class Route
 			$this->bundle = mb_strtolower(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', ''));
 			$this->routeBundle = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', '');
 			$this->routeProtector = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []);
+			$this->routeParams = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', []);
 
 			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod);
 			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle);
@@ -154,12 +170,21 @@ class Route
 			\Techart\BxApp\RouterConfigurator::setRouteGroup($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->group);
 			\Techart\BxApp\RouterConfigurator::setRouteMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $classMethod[0], $classMethod[1]);
 
+			if ($this->requestMethod == 'get') {
+				\Techart\BxApp\RouterConfigurator::setRouteAllowedQueryParams($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $props);
+			}
+
 			if (!empty($this->routeProtector)) {
 				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeProtector);
 			}
-
 			if (!empty($this->groupProtector)) {
 				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeProtector, $this->groupProtector));
+			}
+			if (!empty($this->routeParams)) {
+				\Techart\BxApp\RouterConfigurator::setRouteParams($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeParams);
+			}
+			if (!empty($this->groupParams)) {
+				\Techart\BxApp\RouterConfigurator::setRouteParams($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeParams, $this->groupParams));
 			}
 		}
 		return $this;
@@ -170,14 +195,17 @@ class Route
 	 *
 	 * $url - урл роута, можно использовать подстановки
 	 * $classMethod - указывается через точку имя файла экшена и метода в нём: "Actions.method"
+	 * $allowedQueryParams - либо массив разрешённых query параметров (названия), либо true|false:
+	 * true - разрешены все (проверка в экшене), false - запрещены все
 	 *
 	 * @param string $url
 	 * @param string $classMethod
+	 * @param string $allowedQueryParams
 	 * @return object
 	 */
-	public function get(string $url = '', string $classMethod = ''): object
+	public function get(string $url = '', string $classMethod = '', bool|array $allowedQueryParams = true): object
 	{
-		$this->setRoute('get', $url, $classMethod);
+		$this->setRoute('get', $url, $classMethod, $allowedQueryParams);
 
 		return $this;
 	}
@@ -302,6 +330,30 @@ class Route
 				$this->protector = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []), $this->groupProtector, $protector);
 
 				\Techart\BxApp\RouterConfigurator::setRouteProtector($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->protector);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Задаёт роуту протекторы.
+	 * Так же можно задать протекторы для группы (они будут ДОБАВЛЕНЫ ко всем роутам группы)
+	 * Перечисленные протекторы выполняются до всех прочих мидлваеров и действий.
+	 * Если хотя бы один протектор возвращает false, то урл роута отдаёт 404.
+	 *
+	 * @param array $params
+	 * @return object
+	 */
+	public function params($params = []): object
+	{
+		if ($this->getCurrentUrl() === false) {
+			$this->groupParams = $params;
+		} else {
+			if (!empty($params)) {
+				$this->params = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', []), $this->groupParams, $params);
+
+				\Techart\BxApp\RouterConfigurator::setRouteParams($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->params);
 			}
 		}
 

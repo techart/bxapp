@@ -147,6 +147,21 @@ class RouterConfigurator
 	}
 
 	/**
+	 * Назначает роуту $controller и $method
+	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
+	 * @param string $url
+	 * @param string $controller
+	 * @param string $method
+	 * @return void
+	 */
+	public static function setRouteAllowedQueryParams(string $requestMethod = '', string $bundle = '', string $url = '', bool|array $allowedQueryParams = true): void
+	{
+		self::$RouterData[$requestMethod][$bundle][$url]['allowedQueryParams'] = $allowedQueryParams;
+	}
+
+	/**
 	 * Назначает роуту $where
 	 *
 	 * @param string $requestMethod
@@ -189,5 +204,19 @@ class RouterConfigurator
 	public static function setRouteProtector(string $requestMethod = '', string $bundle = '', string $url = '', array $protector = []): void
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['protector'] = $protector;
+	}
+
+	/**
+	 *Назначает роуту $params
+	 *
+	 * @param string $requestMethod
+	 * @param string $bundle
+	 * @param string $url
+	 * @param array $params
+	 * @return void
+	 */
+	public static function setRouteParams(string $requestMethod = '', string $bundle = '', string $url = '', array $params = []): void
+	{
+		self::$RouterData[$requestMethod][$bundle][$url]['params'] = $params;
 	}
 }

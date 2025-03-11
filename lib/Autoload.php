@@ -28,6 +28,7 @@ class Autoload
 			'Router' => '\Techart\BxApp\Router',
 			'M' => '\Techart\BxApp\Message',
 			'H' => '\Techart\BxApp\Helpers',
+			'Help' => '\Techart\BxApp\HelpersCustom',
 			'Log' => '\Techart\BxApp\Log',
 			'Logger' => '\Techart\BxApp\Logger',
 			'AppCache' => '\Techart\BxApp\Cache',

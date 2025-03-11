@@ -38,11 +38,12 @@ class BxAppRegistry extends BaseRegistry
 
 	public function apply()
 	{
+		// $this->setForStaticApi(); // для работы staticapi механизма
+		$this->setForCli(); // для правильной работы cli команд
+
+		// Если нужна своя логика определения, то её можно реализовать устанавливая значения ниже
 		// $this->currentServer = '';
 		// $this->currentSite = SITE_ID;
 		// $this->currentLanguage = LANGUAGE_ID;
-
-		// $this->setForStaticApi(); // для работы staticapi механизма
-		$this->setForCli(); // для правильной работы cli команд
 	}
 }

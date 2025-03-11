@@ -43,6 +43,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware before: '.$className);
 								call_user_func_array([$curClass, 'handle'], []);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -92,6 +93,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware specialBefore: '.$className);
 								call_user_func_array([$curClass, 'handle'], []);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -133,6 +135,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware defaultBefore: '.$className);
 								call_user_func_array([$curClass, 'handle'], []);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -146,7 +149,7 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware before');
+			Logger::info('Для роута нет назначенных Middleware defaultBefore');
 		}
 	}
 
@@ -182,6 +185,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware defaultSpecialBefore: '.$className);
 								call_user_func_array([$curClass, 'handle'], []);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -195,7 +199,7 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware specialBefore');
+			Logger::info('Для роута нет назначенных Middleware defaultSpecialBefore');
 		}
 	}
 
@@ -224,6 +228,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware after: '.$className);
 								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -276,6 +281,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware specialAfter: '.$className);
 								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -319,6 +325,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware defaultAfter: '.$className);
 								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -332,7 +339,7 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware after');
+			Logger::info('Для роута нет назначенных Middleware defaultAfter');
 		}
 
 		return $actionData;
@@ -369,6 +376,7 @@ class Middleware
 							$curClass = new $className;
 
 							if (method_exists($curClass, 'handle')) {
+								Logger::info('Middleware defaultSpecialAfter: '.$className);
 								$actionData = call_user_func_array([$curClass, 'handle'], [$actionData]);
 							} else {
 								Logger::info('В классе '.$className.' не найден метод: handle');
@@ -382,7 +390,7 @@ class Middleware
 				}
 			}
 		} else {
-			Logger::info('Для роута нет назначенных Middleware specialBefore');
+			Logger::info('Для роута нет назначенных Middleware defaultSpecialAfter');
 		}
 
 		return $actionData;

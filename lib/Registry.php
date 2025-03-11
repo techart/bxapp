@@ -50,6 +50,8 @@ class Registry
 							define('BXAPP_IS_STATIC', false);
 						}
 
+						Logger::info('Registry::setup (BXAPP_IS_STATIC): '.json_encode(BXAPP_IS_STATIC));
+
 						$settings['servers'] = $registryClass->getServers();
 						$settings['sites'] = $registryClass->getSites();
 						$settings['groups'] = $registryClass->getGroups();

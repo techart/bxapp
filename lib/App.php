@@ -103,6 +103,7 @@ class App
 
 		include_once (APP_ROOT_DIR.'/Traits/AssetsTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
+		include_once (APP_ROOT_DIR.'/Traits/HelpTrait.php');
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
 
@@ -508,6 +509,17 @@ class App
 	public static function setBundleProtector(array $protector = []): void
 	{
 		Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', $protector);
+	}
+
+	/**
+	 * Назначает текущему бандлу параметры
+	 *
+	 * @param array $params
+	 * @return void
+	 */
+	public static function setBundleParams(array $params = []): void
+	{
+		Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', $params);
 	}
 
 	/**

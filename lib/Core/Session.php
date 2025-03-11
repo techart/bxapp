@@ -24,6 +24,90 @@ class Session
 	}
 
 	/**
+	 * Возвращает true, если установлен и не пуст $_COOKIE['PHPSESSID'], а иначе false
+	 *
+	 * @return boolean
+	 */
+	public function phpSessidIsActive():bool
+	{
+		return isset($_COOKIE['PHPSESSID']) && !empty($_COOKIE['PHPSESSID']) ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если $_COOKIE['PHPSESSID'] корректен (равен текущему session_id), а иначе false
+	 *
+	 * @return boolean
+	 */
+	public function phpSessidIsCorrect():bool
+	{
+		return $_COOKIE['PHPSESSID'] === session_id() ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если сессия помечена как destroyed ($_SESSION['destroyed']), а иначе false
+	 *
+	 * @return boolean
+	 */
+	public function isDestroyed():bool
+	{
+		return isset($_SESSION['destroyed']) ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если сессия помеченная как destroyed ($_SESSION['destroyed']) всё ещё активна
+	 * Время жизни destroyed сессии в конфиге - Auth.APP_SESSION_ACTIVE_TIME_AFTER_DESTROYED
+	 * А иначе возвращает false
+	 *
+	 * @return boolean
+	 */
+	public function isAlive():bool
+	{
+
+		return
+		(intval($_SESSION['destroyed']) + intval(\Config::get('Auth.APP_SESSION_ACTIVE_TIME_AFTER_DESTROYED', 120))
+		 < time()) ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно mixed
+	 * А иначе возвращает false
+	 *
+	 * @return boolean
+	 */
+	public function isRequestTypeMixed():bool
+	{
+
+		return
+		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'mixed') ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно public
+	 * А иначе возвращает false
+	 *
+	 * @return boolean
+	 */
+	public function isRequestTypePublic():bool
+	{
+
+		return
+		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'public') ? true : false;
+	}
+
+	/**
+	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно secure
+	 * А иначе возвращает false
+	 *
+	 * @return boolean
+	 */
+	public function isRequestTypeSecure():bool
+	{
+
+		return
+		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'secure') ? true : false;
+	}
+
+	/**
 	 * Возвращает true, если прошла проверка check_bitrix_sessid
 	 *
 	 * @return boolean
@@ -121,7 +205,7 @@ class Session
 
 			// если сессия запрашивается спустя 5 минут как она должна быть уничтожена
 			// это подозрительно, возможно плохой человек, делаем что-то для защиты данных юзера
-			if ($_SESSION['destroyed'] + 300 < time()) {
+			if ($this->isAlive()) {
 				// возможно, тут разлогин юзеров
 				// возможно, тут какой-то лог
 				// throw(new DestroyedSessionAccessException); // возможно, выбросим специальную ошибку

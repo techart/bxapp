@@ -176,6 +176,67 @@ class Protector
 	}
 
 	/**
+	 * Проверяет есть ли установленный $_COOKIE['PHPSESSID']
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkPhpSessidIsActive(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->phpSessidIsActive();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет является ли установленный $_COOKIE['PHPSESSID'] корректным
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkPhpSessidIsCorrect(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->phpSessidIsCorrect();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет помечена ли сессия как destroyed
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkSessionIsDestroyed(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->isDestroyed();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет сессия помеченная как destroyed ($_SESSION['destroyed']) всё ещё активна?
+	 * Время жизни destroyed сессии в конфиге - Auth.APP_SESSION_ACTIVE_TIME_AFTER_DESTROYED
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkSessionIsAlive(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->isAlive();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
 	 * Проверяет есть активная bitrix_sessid или нет
 	 *
 	 * @param bool $reverse
@@ -244,6 +305,76 @@ class Protector
 	public function checkAuth(bool $reverse = false): object
 	{
 		$check = boolval(\App::core('Auth')->isAuthorized());
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно public
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkRequestTypePublic(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->isRequestTypePublic();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно mixed
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkRequestTypeMixed(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->isRequestTypeMixed();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно secure
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkRequestTypeSecure(bool $reverse = false): object
+	{
+		$check = \App::core('Session')->isRequestTypeSecure();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет, что запрос помечен как secure - isRequestTypeSecure(), а так же
+	 * что сессия: phpSessidIsActive(), phpSessidIsCorrect() и isAlive()
+	 *
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkSecure(bool $reverse = false): object
+	{
+		if (
+			\App::core('Session')->isRequestTypeSecure() &&
+			\App::core('Session')->phpSessidIsActive() &&
+			\App::core('Session')->phpSessidIsCorrect() &&
+			\App::core('Session')->isAlive()
+		) {
+			$check = true;
+		} else {
+			$check = false;
+		}
 
 		$this->setFriendship($check, $reverse);
 
@@ -358,20 +489,26 @@ class Protector
 			}
 		}
 
+		\Logger::info('Protector: friend = '.$this->friend);
 		if (!$this->friend) {
 			if ($this->callFile) {
+				\Logger::info('Protector callFile(): '.$this->callableFile);
 				\App::core('Main')->callFile($this->callableFile);
 			}
 			if ($this->call404) {
+				\Logger::info('Protector call404()');
 				\App::core('Main')->call404();
 			}
 			if ($this->do404) {
+				\Logger::info('Protector do404()');
 				\App::core('Main')->do404();
 			}
 			if ($this->doRefresh) {
+				\Logger::info('Protector doRefresh()');
 				\App::core('Main')->doRefresh();
 			}
 			if ($this->doRedirect) {
+				\Logger::info('Protector doRedirect(): '.$this->redirectUrl);
 				\App::core('Main')->doRedirect($this->redirectUrl, $this->redirectSkipSecurityCheck, $this->redirectStatus);
 			}
 			return false;
@@ -455,7 +592,7 @@ class Protector
 
 	/**
 	 * Проверяет не устарел ли ID сессии PHPSESSID в куках
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function checkNextSessionID(): bool

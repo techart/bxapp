@@ -127,7 +127,7 @@ class Assets
 	 * Вставляет svg файл инлайном на страницу
 	 *
 	 * $svgPath - путь к svg файлу (от www сайта)
-	 * $params - массив аттрибутов для svg файла
+	 * $params - массив аттрибутов для svg файла (с учётом ригистра)
 	 *
 	 * App::core('Assets')->inlineSvg(H::getAssetUrl('/svg/bottom-text__img.svg'))
 	 * App::core('Assets')->inlineSvg('/upload/test/bottom-text__img.svg')
@@ -157,11 +157,9 @@ class Assets
 					$svg = new \DOMDocument();
 
 					if ($svg->load($svgRealPath)) {
-						$svgElem = $svg->getElementsByTagName('svg');
-
 						foreach ($currentParams as $attr => $value) {
 							if (!empty($value)) {
-								$svgElem[0]->setAttribute(strtolower($attr), $value);
+								$svg->getElementsByTagName('svg')[0]->setAttribute($attr, $value);
 							}
 						}
 

@@ -163,6 +163,7 @@ class Router
 				if (file_exists(APP_CORE_ROUTER_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
+					App::setBundleParams([]);
 					require_once(APP_CORE_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
@@ -275,6 +276,36 @@ class Router
 	}
 
 	/**
+	 * Проверяет разрешены переданные $requestQuery на основе $allowedQueryParams или нет
+	 *
+	 * $requestQuery - проверяемый массив query параметров
+	 * $allowedQueryParams - массив разрешённых query параметров
+	 *
+	 * Если $allowedQueryParams = true, то любые query параметры разрешены (всегда вернёт true)
+	 * Если $allowedQueryParams = false, то любые query параметры запрещены (вернёт false, если есть параметры)
+	 * Если $allowedQueryParams - массив, то если в $requestQuery есть не перечисленное в $allowedQueryParams, то
+	 * вернёт false, а иначе true
+	 *
+	 * @param array $requestQuery
+	 * @param boolean $allowedQueryParams
+	 * @return boolean
+	 */
+	private static function isRequestQueryAllowed(array $requestQuery = [], bool|array $allowedQueryParams = true): bool
+	{
+		if ($allowedQueryParams === false && !empty($requestQuery)) {
+			return false;
+		}
+
+		if (is_array($allowedQueryParams) && count($allowedQueryParams) > 0) {
+			if (!empty(array_diff(array_keys($requestQuery), $allowedQueryParams))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Ищет роут на основе $routerData
 	 *
 	 * @param array $routerData
@@ -290,11 +321,17 @@ class Router
 			foreach ($routerData[$currentRequestMethod][$prefixBundle['bundle']] as $routeUrl => $routParams) {
 				$pattern = self::buildPattern($routeUrl, $routParams);
 				$pregCase = Config::get('Router.APP_ROUTER_CASE_SENSITIVE', true) ? '' : 'i';
+				$requestQuery = Router::getRequestQuery();
 
 				if (preg_match("#^".$pattern."$#u".$pregCase, $prefixBundle['route'], $match)) {
+					if ($currentRequestMethod == 'get') {
+						if (self::isRequestQueryAllowed($requestQuery, $routParams['allowedQueryParams']) === false) {
+							return false;
+						}
+					}
 					unset($match[0]);
 					$routParams['args'] = $match;
-					$routParams['query'] = Router::getRequestQuery();
+					$routParams['query'] = $requestQuery;
 
 					return $routParams;
 				}
@@ -340,10 +377,17 @@ class Router
 	 */
 	public static function toPageCache(string $url = '', array $pageRouteData = []): void
 	{
+		// dd($url, $pageRouteData, md5(serialize($pageRouteData['query'])));
+
 		$curMethod = self::getRequestMethod();
 		checkCreateDir(APP_CACHE_ROUTER_PAGES_DIR);
+		$cachePath = APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.$url.'/';
 
-		if (file_put_contents(APP_CACHE_ROUTER_PAGES_DIR.'/'.md5($url.'_'.$curMethod).'.txt', serialize($pageRouteData))) {
+		if (!is_dir($cachePath)) {
+			mkdir($cachePath, 0777, true);
+		}
+
+		if (file_put_contents($cachePath.'data.txt', serialize($pageRouteData))) {
 			Logger::info('кэш роута для страницы "'.$url.'" записан');
 		} else {
 			Logger::error('кэш роута для страницы "'.$url.'" записать не удалось');
@@ -359,12 +403,16 @@ class Router
 	public static function getRouteFromPageCacheByUrl(string $url = ''): mixed
 	{
 		$curMethod = self::getRequestMethod();
-		$pageCacheData = file_get_contents(APP_CACHE_ROUTER_PAGES_DIR.'/'.md5($url.'_'.$curMethod).'.txt');
+		$cachePath = APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.$url.'/';
+		$pageCacheData = file_get_contents($cachePath.'data.txt');
 
 		if ($pageCacheData !== false) {
 			$routeData = unserialize($pageCacheData);
 
 			if ($routeData !== false) {
+				if (self::isRequestQueryAllowed(Router::getRequestQuery(), $routeData['allowedQueryParams']) === false) {
+					return false;
+				}
 				return $routeData;
 			} else {
 				Logger::error('Router: данные кэша повреждены для страницы '.$url);

@@ -82,6 +82,11 @@ class Define
 			define("BXAPP_SITE_GROUP_ID", null);
 		}
 
+		Logger::info('defineEnv (BXAPP_SERVER_ID): '.json_encode(BXAPP_SERVER_ID));
+		Logger::info('defineEnv (BXAPP_SITE_ID): '.BXAPP_SITE_ID);
+		Logger::info('defineEnv (BXAPP_LANGUAGE_ID): '.BXAPP_LANGUAGE_ID);
+		Logger::info('defineEnv (BXAPP_SITE_GROUP_ID): '.json_encode(BXAPP_SITE_GROUP_ID));
+
 		// dd(BXAPP_REGISTRY_SERVERS, BXAPP_REGISTRY_SITES, BXAPP_REGISTRY_GROUPS, BXAPP_REGISTRY_CURRENT_SERVER, BXAPP_REGISTRY_CURRENT_SITE, BXAPP_REGISTRY_CURRENT_LANGUAGE, BXAPP_SERVER_ID, BXAPP_SITE_ID, BXAPP_LANGUAGE_ID, BXAPP_SITE_GROUP_ID);
 	}
 
@@ -132,7 +137,7 @@ class Define
 		define("APP_CACHE_BLADE_DIR", APP_CACHE_DIR.'/blade'); // папка кэша блейда
 		define("APP_CACHE_ROUTER_ROOT_DIR", APP_CACHE_DIR.'/router'); // папка кэша роутера
 		define("APP_CACHE_ROUTER_DIR", APP_CACHE_ROUTER_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша роутера сайта
-		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/pages'); // папка кэша роутов (страниц)
+		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/routes'); // папка кэша роутов (страниц)
 		define("APP_CACHE_STATIC_ROOT_DIR", APP_CACHE_DIR.'/static'); // папка кэша статики
 		define("APP_CACHE_STATIC_DIR", APP_CACHE_STATIC_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша статики сайта
 	}

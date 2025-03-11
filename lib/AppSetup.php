@@ -166,6 +166,9 @@ class AppSetup
 		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
 			copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
 		}
+		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php')) {
+			copy(APP_CORE_SETUP_DIR.'/BxAppRouterProcessingProlog.php', APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php');
+		}
 		if (file_exists(APP_PHP_INTERFACE_DIR.'/cli.php')) {
 			unlink(APP_PHP_INTERFACE_DIR.'/cli.php');
 		}
