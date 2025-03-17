@@ -105,7 +105,7 @@ class CliActions
 	public function clearCache(): void
 	{
 		$args = func_get_args();
-		\AppCache::clear($args[0], $args[1]);
+		Cache::clear($args[0], $args[1]);
 
 		echo 'Очистка кэша выполнена!'.PHP_EOL;
 	}
