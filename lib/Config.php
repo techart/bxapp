@@ -35,19 +35,37 @@ class Config
 	{
 		if (!empty($name)) {
 			$configFile = APP_CONFIGS_DIR.'/'.$name.'.php';
+			$configCoreFile = APP_CORE_CONFIGS.'/'.$name.'.php';
+			$configContent = null;
+			$configCoreContent = null;
+			$configAppContent = null;
+
+			if (file_exists($configCoreFile)) {
+				$configCoreContent = include_once($configCoreFile);
+
+				if(is_array($configCoreContent)) {
+					$configContent = $configCoreContent;
+				}
+			}
 
 			if (file_exists($configFile)) {
-				$configContent = include_once($configFile);
+				$configAppContent = include_once($configFile);
 
-				if(is_array($configContent)) {
-					return $configContent;
+				if(is_array($configAppContent)) {
+					$configContent = array_merge($configContent !== null ? $configContent : [], $configAppContent);
 				} else {
 					\Logger::warning('Файл конфига "'.$configFile.'" имеет неправильный формат');
 					return false;
 				}
-			} else {
+			}
+			if ($name === 'MySite' || $name === 'App' || $name === 'MySite') {
+				// dd($name,$configCoreContent, $configAppContent, $configContent);
+			}
+			if ($configContent === null) {
 				\Logger::warning('Файл конфига "'.$configFile.'" не найден');
 				return false;
+			} else {
+				return $configContent;
 			}
 		} else {
 			return false;

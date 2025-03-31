@@ -93,6 +93,18 @@ class Cache {
 	}
 
 	/**
+	 * Очищает весь кеш
+	 *
+	 * @param string $siteId
+	 * @return void
+	 */
+	public static function clearAll(string $siteId = ''): void
+	{
+		self::clear(['all'], $siteId);
+		Logger::info('Cache: Очистка всех кешей' . $siteId !== '' ?? ' для сайта ' . $siteId);
+	}
+
+	/**
 	 * Очищает заданный кеш
 	 *
 	 * @param string $cacheName

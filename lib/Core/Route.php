@@ -160,12 +160,13 @@ class Route
 			$this->routeBundle = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', '');
 			$this->routeProtector = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []);
 			$this->routeParams = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', []);
+			$routeName = strtolower($requestMethod.'_'.$this->bundle.(!empty($this->group) ? '_'.$this->group : '').'_'.str_replace(['/', '{', '}'], '', $this->getCurrentUrl()));
 
 			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod);
 			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle);
 			\Techart\BxApp\RouterConfigurator::setRouteUrl($this->requestMethod, $this->bundle, $this->getCurrentUrl());
 			\Techart\BxApp\RouterConfigurator::setRouteRequestMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl());
-			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), strtolower($this->bundle.'-'.$requestMethod.'-'.$classMethod[0].'-'.$classMethod[1]));
+			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $routeName);
 			\Techart\BxApp\RouterConfigurator::setRouteBundle($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeBundle);
 			\Techart\BxApp\RouterConfigurator::setRouteGroup($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->group);
 			\Techart\BxApp\RouterConfigurator::setRouteMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $classMethod[0], $classMethod[1]);
@@ -203,7 +204,7 @@ class Route
 	 * @param string $allowedQueryParams
 	 * @return object
 	 */
-	public function get(string $url = '', string $classMethod = '', bool|array $allowedQueryParams = true): object
+	public function get(string $url = '', string $classMethod = '', bool|array $allowedQueryParams = []): object
 	{
 		$this->setRoute('get', $url, $classMethod, $allowedQueryParams);
 

@@ -1,5 +1,6 @@
 <?php
-// App::setBundleProtector(['checkDomain]);
+// App::route()->setBundleProtector([]);
+// App::route()->setBundleParams([]); // noQueryParams | noStatic
 
 App::route()->post('/logger/', 'Actions.logger')->name('bxapp-default-logger');
 App::route()->get('/session/getData/?{store}', 'Actions.getSessionData')->name('bxapp-session-getData')->where(['store' => '.*']);

@@ -191,6 +191,7 @@ class Router
 				if (file_exists(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
+					App::setBundleParams([]);
 					require_once(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
@@ -276,30 +277,47 @@ class Router
 	}
 
 	/**
-	 * Проверяет разрешены переданные $requestQuery на основе $allowedQueryParams или нет
+	 * Проверяет разрешены переданные $requestQuery на основе $routeParams или нет
 	 *
 	 * $requestQuery - проверяемый массив query параметров
-	 * $allowedQueryParams - массив разрешённых query параметров
+	 * $routeParams - массив данных роута
 	 *
-	 * Если $allowedQueryParams = true, то любые query параметры разрешены (всегда вернёт true)
-	 * Если $allowedQueryParams = false, то любые query параметры запрещены (вернёт false, если есть параметры)
-	 * Если $allowedQueryParams - массив, то если в $requestQuery есть не перечисленное в $allowedQueryParams, то
-	 * вернёт false, а иначе true
+	 * Проверки делаются в таком порядке (настройки роута важнее настроек в параметрах):
+	 *
+	 * Если $routeParams['allowedQueryParams'] = true, то любые query параметры разрешены (вернёт true)
+	 * Если $routeParams['allowedQueryParams'] = false, то любые query параметры запрещены (вернёт false)
+	 * Если $routeParams['allowedQueryParams'] - массив, то если в $requestQuery есть не перечисленное
+	 * в $routeParams['allowedQueryParams'], то вернёт false, а иначе true
+	 * Если среди $routeParams['params'] - есть 'noQueryParams', то любые query параметры запрещены (вернёт false)
 	 *
 	 * @param array $requestQuery
-	 * @param boolean $allowedQueryParams
+	 * @param array $routeParams
 	 * @return boolean
 	 */
-	private static function isRequestQueryAllowed(array $requestQuery = [], bool|array $allowedQueryParams = true): bool
+	private static function isRequestQueryAllowed(array $requestQuery = [], array $routeParams = []): bool
 	{
-		if ($allowedQueryParams === false && !empty($requestQuery)) {
+		// если у роута разрешены любые параметры строки
+		if ($routeParams['allowedQueryParams'] === true) {
+			return true;
+		}
+		// если у роута запрещены любые параметры строки и они есть в запросе
+		if ($routeParams['allowedQueryParams'] === false && !empty($requestQuery)) {
 			return false;
 		}
-
-		if (is_array($allowedQueryParams) && count($allowedQueryParams) > 0) {
-			if (!empty(array_diff(array_keys($requestQuery), $allowedQueryParams))) {
+		// если у роута перечислены разрешённые параметры строки
+		if (is_array($routeParams['allowedQueryParams']) && count($routeParams['allowedQueryParams']) > 0) {
+			if (!empty(array_diff(array_keys($requestQuery), $routeParams['allowedQueryParams']))) {
+				// если в переданных параметрах строки есть не из разрешённого списка
 				return false;
+			} else {
+				// если все переданные параметры строки разрешены
+				return true;
 			}
+		}
+		// если у роута не назначены персональные настройки allowedQueryParams, то проверяем массив params()
+		// если в параметрах params() запрещены любые параметры строки ("noQueryParams") и они есть в запросе
+		if (isset($routeParams['params']) && is_array($routeParams['params']) && in_array('noQueryParams', $routeParams['params']) && !empty($requestQuery)) {
+			return false;
 		}
 
 		return true;
@@ -325,7 +343,7 @@ class Router
 
 				if (preg_match("#^".$pattern."$#u".$pregCase, $prefixBundle['route'], $match)) {
 					if ($currentRequestMethod == 'get') {
-						if (self::isRequestQueryAllowed($requestQuery, $routParams['allowedQueryParams']) === false) {
+						if (self::isRequestQueryAllowed($requestQuery, $routParams) === false) {
 							return false;
 						}
 					}
@@ -352,7 +370,7 @@ class Router
 	public static function getRouteFromDataByUrl(string $url = ''): mixed
 	{
 		$routerData = RouterConfigurator::get();
-		// dd($_SERVER['REQUEST_URI']);
+
 		if ($routerData !== false) {
 			$currentRouteData = self::findCurrentRoute($routerData);
 
@@ -377,8 +395,6 @@ class Router
 	 */
 	public static function toPageCache(string $url = '', array $pageRouteData = []): void
 	{
-		// dd($url, $pageRouteData, md5(serialize($pageRouteData['query'])));
-
 		$curMethod = self::getRequestMethod();
 		checkCreateDir(APP_CACHE_ROUTER_PAGES_DIR);
 		$cachePath = APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.$url.'/';
@@ -410,7 +426,7 @@ class Router
 			$routeData = unserialize($pageCacheData);
 
 			if ($routeData !== false) {
-				if (self::isRequestQueryAllowed(Router::getRequestQuery(), $routeData['allowedQueryParams']) === false) {
+				if (self::isRequestQueryAllowed(Router::getRequestQuery(), $routeData) === false) {
 					return false;
 				}
 				return $routeData;
