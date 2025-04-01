@@ -133,7 +133,13 @@ abstract class BaseMenu
 		return $branch;
 	}
 
-	public function setSelectedAll($pid = 0) {
+	/**
+	 * Устанавливает selected = true для всех верхних пунктов меню, если активен один из внутренних элементов этих пунктов
+	 * 
+	 * @param string|int $pid
+	 * @return void
+	 */
+	public function setSelectedAll(string|int $pid = 0): void {
 		if ($pid > 0) {
 			if (isset($this->tree[$pid])) {
 				$this->tree[$pid]['selected'] = true;
@@ -291,7 +297,7 @@ abstract class BaseMenu
 
 		$items = \App::model($ibModelName)->getSections(
 			$select,
-			['<=DEPTH_LEVEL' => $this->depth + $offset],
+			['<=DEPTH_LEVEL' => ($this->depth ? $this->depth + $offset : $this->depth)],
 			['LEFT_MARGIN' => 'ASC']
 		);
 
@@ -394,12 +400,24 @@ abstract class BaseMenu
 		return $this;
 	}
 
+	/**
+	 * Устанавливает флаг
+	 * 
+	 * @param string $flag
+	 * @return void
+	 */
 	public function setFlag(string $flag = ''): void
 	{
 		$this->curFlag = $flag;
 	}
 
-	public function genCode(string $code = '')
+	/**
+	 * Генерирует код пункта меню
+	 * 
+	 * @param string $code
+	 * @return string
+	 */
+	public function genCode(string $code = ''): string
 	{
 		$code = mb_strtolower(str_replace('/', '', trim($code))) . '_' . rand(100, 1000000);
 
@@ -407,7 +425,7 @@ abstract class BaseMenu
 	}
 
 	/**
-	 * 
+	 * Формирует меню по вручную заданному массиву
 	 * 
 	 * @param array $menuArray
 	 * @return array
