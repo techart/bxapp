@@ -62,8 +62,8 @@ trait ResultTrait
 
 		// если в классе используется кэш, то выводим его статус
 		if (isset($this->CacheTraitFromCache)) {
-			$cacheID = $this->getCacheID($cacheID);
-			$result['cache'] = isset($this->CacheTraitFromCache[$cacheID]) ? $this->CacheTraitFromCache[$cacheID] : false;
+			$cid = $this->getCacheID($cacheID);
+			$result['cache'] = isset($this->CacheTraitFromCache[$cid]) ? $this->CacheTraitFromCache[$cid] : false;
 		}
 
 		// если в классе используется ErrorTrait, то обрабатываем его ошибки

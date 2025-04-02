@@ -166,14 +166,17 @@ class Validator
 
 		if($check->fails()) {
 			$validatorErrors = $check->errors();
-			foreach($formData as $k => $v){
+
+			foreach($rules as $k => $v){
 				if ($validatorErrors->has($k)) {
 					foreach ($validatorErrors->get($k) as $message) {
 						$errors[$k][] = $message;
 					}
 				} else {
-					if (is_array($v)) {
-						foreach ($v as $key => $val) {
+					$value = $formData[$k];
+
+					if (is_array($value)) {
+						foreach ($value as $key => $val) {
 							if ($validatorErrors->has($k.'.'.$key)) {
 								foreach ($validatorErrors->get($k.'.'.$key) as $message) {
 									$errors[$k][] = $message;
