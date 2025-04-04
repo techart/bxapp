@@ -48,7 +48,7 @@ abstract class BaseMenu
 	/**
 	 * Проходит по массиву, сравнивая url с полем code
 	 * Выставляет selected true при соответствии поля link с текущим url
-	 * 
+	 *
 	 * @param string $code
 	 * @param array $comparable
 	 * @return bool
@@ -62,7 +62,7 @@ abstract class BaseMenu
 				if (!empty($comparable['flag']) && !empty($this->curFlag)) {
 					$result = in_array($this->curFlag, $comparable['flag']);
 				}
-				
+
 				if (!$result && !empty($comparable['match'])) {
 					if (mb_substr($comparable['match'], mb_strlen($comparable['match']) - 1) === '*') {
 						$startUrl = mb_substr($comparable['match'], 0, mb_strlen($comparable['match']) - 1);
@@ -74,7 +74,7 @@ abstract class BaseMenu
 			if (!$result) {
 				$expUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 				$result = $code === $expUrl;
-			} 
+			}
 
 			if ($result) {
 				$this->pid = $pid;
@@ -135,7 +135,7 @@ abstract class BaseMenu
 
 	/**
 	 * Устанавливает selected = true для всех верхних пунктов меню, если активен один из внутренних элементов этих пунктов
-	 * 
+	 *
 	 * @param string|int $pid
 	 * @return void
 	 */
@@ -217,7 +217,7 @@ abstract class BaseMenu
 
 	/**
 	 * Получение элементов хайлоадблока для меню
-	 * 
+	 *
 	 * @param string $hbModelName
 	 * @param object $callback
 	 * @return array
@@ -251,7 +251,7 @@ abstract class BaseMenu
 
 	/**
 	 * Получение элементов инфоблока для меню
-	 * 
+	 *
 	 * @param string $ibModelName
 	 * @param string|int $id
 	 * @param object $callback
@@ -262,7 +262,7 @@ abstract class BaseMenu
 		$data = [];
 		$select = array_merge(['PROPERTY_LINK', 'NAME', 'CODE', 'IBLOCK_SECTION_ID', 'DETAIL_PAGE_URL'], array_values($additionalProps));
 
-		$items = \App::model($ibModelName)->getElements($select, ['IBLOCK_SECTION_ID' => $id], ['LEFT_MARGIN' => 'ASC']);
+		$items = \App::model($ibModelName)->getElements($select, ['IBLOCK_SECTION_ID' => $id, 'ACTIVE' => 'Y'], ['LEFT_MARGIN' => 'ASC']);
 		while ($item = $items->GetNext()) {
 			$newData = [
 				'link' => $item['DETAIL_PAGE_URL'],
@@ -284,7 +284,7 @@ abstract class BaseMenu
 
 	/**
 	 * Получение секций инфоблока для меню
-	 * 
+	 *
 	 * @param string $ibModelName
 	 * @param array $additionalProps
 	 * @param int $offset
@@ -297,7 +297,7 @@ abstract class BaseMenu
 
 		$items = \App::model($ibModelName)->getSections(
 			$select,
-			['<=DEPTH_LEVEL' => ($this->depth ? $this->depth + $offset : $this->depth)],
+			['<=DEPTH_LEVEL' => ($this->depth ? $this->depth + $offset : $this->depth), 'ACTIVE' => 'Y'],
 			['LEFT_MARGIN' => 'ASC']
 		);
 
@@ -334,14 +334,14 @@ abstract class BaseMenu
 		return $this->data;
 	}
 
-	/**	
+	/**
 	 * Возвращает массив секций и элементов инфоблока
 	 * Вызывает метод у наследованного класса BaseIblockModel
 	 *
 	 * @param string $ibModelName
 	 * @param bool $allowElements
 	 * @return array
-	 */ 
+	 */
 	protected function buildMenuByIBlockSections(string $ibModelName = '', array $props = []): array
 	{
 		$curModelName = !empty($ibModelName) ? $ibModelName : $this->modelName;
@@ -376,7 +376,7 @@ abstract class BaseMenu
 
 	/**
 	 * Устанавливает глубину добавления разделов в меню
-	 * 
+	 *
 	 * @param int $depth
 	 * @return object
 	 */
@@ -389,7 +389,7 @@ abstract class BaseMenu
 
 	/**
 	 * Включает добавление элементов инфоблоков в меню
-	 * 
+	 *
 	 * @param bool $allowElements
 	 * @return object
 	 */
@@ -402,7 +402,7 @@ abstract class BaseMenu
 
 	/**
 	 * Устанавливает флаг
-	 * 
+	 *
 	 * @param string $flag
 	 * @return void
 	 */
@@ -413,7 +413,7 @@ abstract class BaseMenu
 
 	/**
 	 * Генерирует код пункта меню
-	 * 
+	 *
 	 * @param string $code
 	 * @return string
 	 */
@@ -426,7 +426,7 @@ abstract class BaseMenu
 
 	/**
 	 * Формирует меню по вручную заданному массиву
-	 * 
+	 *
 	 * @param array $menuArray
 	 * @return array
 	 */
@@ -486,12 +486,10 @@ abstract class BaseMenu
 						}
 					}
 				}
-
 			}
 		}
 
 		$this->data = $data;
-
 		$this->data = $this->linearBuildTree();
 
 		return $this->data;
