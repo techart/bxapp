@@ -367,7 +367,7 @@ class Helpers
 	public static function genCode(mixed $code = ''): string
 	{
 		$code = str_replace('/', '', trim(self::removeBOM(strval($code))));
-		$code = Cutil::translit(
+		$code = \Cutil::translit(
 			$code,
 			'ru',
 			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-']
