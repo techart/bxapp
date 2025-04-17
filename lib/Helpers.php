@@ -370,7 +370,7 @@ class Helpers
 		$code = \Cutil::translit(
 			$code,
 			'ru',
-			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-']
+			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-', 'replace_other' => '-']
 		).'_'.rand(1000000, 10000000);
 
 		return $code;
