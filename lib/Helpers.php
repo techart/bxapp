@@ -355,4 +355,24 @@ class Helpers
 			return false;
 		}
 	}
+
+	/**
+	 * Генерирует уникальный строковый код на оснвое переданного $code:
+	 * strval, trim, translit, lower case, max_len=25, replacer
+	 * добавляет в конец рандомное число
+	 *
+	 * @param mixed $code
+	 * @return string
+	 */
+	public static function genCode(mixed $code = ''): string
+	{
+		$code = str_replace('/', '', trim(self::removeBOM(strval($code))));
+		$code = Cutil::translit(
+			$code,
+			'ru',
+			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-']
+		).'_'.rand(1000000, 10000000);
+
+		return $code;
+	}
 }

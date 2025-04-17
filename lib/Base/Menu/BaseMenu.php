@@ -419,7 +419,12 @@ abstract class BaseMenu
 	 */
 	public function genCode(string $code = ''): string
 	{
-		$code = mb_strtolower(str_replace('/', '', trim($code))) . '_' . rand(100, 1000000);
+		$code = str_replace('/', '', trim(\H::removeBOM(strval($code))));
+		$code = Cutil::translit(
+			$code,
+			'ru',
+			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-']
+		).'_'.rand(1000000, 10000000);
 
 		return $code;
 	}
