@@ -9,6 +9,7 @@ class RouterConfigurator
 {
 	private static $RouterData = [];
 	private static $namesData = [];
+	private static $defaultRouteParams = ['noQueryParams', 'noStatic'];
 
 	/**
 	 * Возвращает массив даных конфигуратора
@@ -99,6 +100,7 @@ class RouterConfigurator
 	{
 		self::$RouterData[$requestMethod][$bundle][$url]['requestMethod'] = $requestMethod;
 		self::$RouterData[$requestMethod][$bundle][$url]['url'] = $url;
+		self::$RouterData[$requestMethod][$bundle][$url]['params'] = [];
 		self::$RouterData[$requestMethod][$bundle][$url]['routeUrl'] = '/'.(string)Config::get('Router.APP_ROUTER_PREFIX', 'siteapi').'/'.$bundle.$url;
 	}
 
@@ -217,6 +219,9 @@ class RouterConfigurator
 	 */
 	public static function setRouteParams(string $requestMethod = '', string $bundle = '', string $url = '', array $params = []): void
 	{
-		self::$RouterData[$requestMethod][$bundle][$url]['params'] = $params;
+		$allowedParams = array_merge(self::$defaultRouteParams, Config::get('Router.APP_ROUTER_PARAMS', []));
+		$currentParams = array_intersect($allowedParams, $params);
+
+		self::$RouterData[$requestMethod][$bundle][$url]['params'] = $currentParams;
 	}
 }

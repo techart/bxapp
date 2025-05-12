@@ -163,12 +163,19 @@ class AppSetup
 		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', $rootDir . '/Traits');
 		recurseCopy(APP_CORE_SETUP_DIR.'/Views', $rootDir . '/Views');
 
+		recurseCopy(APP_CORE_SETUP_DIR.'/BitrixEvents', APP_PHP_INTERFACE_DIR.'/BitrixEvents');
+		recurseCopy(APP_CORE_SETUP_DIR.'/Lib', APP_PHP_INTERFACE_DIR.'/Lib');
+
 		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
 			copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
 		}
 		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php')) {
 			copy(APP_CORE_SETUP_DIR.'/BxAppRouterProcessingProlog.php', APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php');
 		}
+		if (file_exists(APP_PHP_INTERFACE_DIR.'/init.php')) {
+			unlink(APP_PHP_INTERFACE_DIR.'/init.php');
+		}
+		copy(APP_CORE_SETUP_DIR.'/init.php', APP_PHP_INTERFACE_DIR.'/init.php');
 		if (file_exists(APP_PHP_INTERFACE_DIR.'/cli.php')) {
 			unlink(APP_PHP_INTERFACE_DIR.'/cli.php');
 		}
