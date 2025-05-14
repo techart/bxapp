@@ -100,6 +100,7 @@ class Define
 		// Пути vendor
 		define("APP_VENDOR_DIR", SITE_ROOT_DIR.'/local/vendor/techart/bxapp');
 		define("APP_CORE_SETUP_DIR", APP_VENDOR_DIR.'/Setup');
+		define("APP_CORE_BXAPP_SETUP_DIR", APP_VENDOR_DIR.'/Setup/BxApp');
 		define("APP_SELF_DIR", APP_VENDOR_DIR.'/lib');
 		define("APP_CORE_BASE_DIR", APP_SELF_DIR.'/Base');
 		define("APP_CORE_CONFIGS", APP_SELF_DIR.'/Configs');

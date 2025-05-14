@@ -150,20 +150,20 @@ class AppSetup
 			mkdir($rootDir);
 		}
 
-		recurseCopy(APP_CORE_SETUP_DIR.'/Cli', $rootDir . '/Cli');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Configs', $rootDir . '/Configs');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Localization', $rootDir . '/Localization');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Logs', $rootDir . '/Logs');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Menu', $rootDir . '/Menu');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Middleware', $rootDir . '/Middleware');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Models', $rootDir . '/Models');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Modules', $rootDir . '/Modules');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Router', $rootDir . '/Router');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Services', $rootDir . '/Services');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Traits', $rootDir . '/Traits');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Views', $rootDir . '/Views');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Cli', $rootDir . '/Cli');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Configs', $rootDir . '/Configs');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Localization', $rootDir . '/Localization');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Logs', $rootDir . '/Logs');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Menu', $rootDir . '/Menu');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Middleware', $rootDir . '/Middleware');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Models', $rootDir . '/Models');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Modules', $rootDir . '/Modules');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Router', $rootDir . '/Router');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Services', $rootDir . '/Services');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Traits', $rootDir . '/Traits');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Views', $rootDir . '/Views');
 
-		recurseCopy(APP_CORE_SETUP_DIR.'/BitrixEvents', APP_PHP_INTERFACE_DIR.'/BitrixEvents');
+		recurseCopy(APP_CORE_SETUP_DIR.'/Events', APP_PHP_INTERFACE_DIR.'/Events');
 		recurseCopy(APP_CORE_SETUP_DIR.'/Lib', APP_PHP_INTERFACE_DIR.'/Lib');
 
 		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {

@@ -48,25 +48,25 @@ class BaseRegistry
 
 	public function setForStaticApi()
 	{
-		if (isset($_GET['staticapi']) && $_GET['staticapi'] == true) {
+		if (isset($_GET['bxapp_staticapi']) && $_GET['bxapp_staticapi'] == true) {
 			define('BXAPP_IS_STATIC', true);
 			define('BXAPP_IS_SITE_PAGE', false);
-			define('BXAPP_ROUTER_CURRENT_REQUEST_METHOD', $_GET['method']);
-			define('BXAPP_ROUTER_CURRENT_REQUEST_URL', $_GET['url']);
-			unset($_GET['staticapi']);
-			unset($_GET['method']);
-			unset($_GET['url']);
-			if (isset($_GET['serverid'])) {
-				$this->currentServer = $_GET['serverid'];
-				unset($_GET['serverid']);
+			define('BXAPP_ROUTER_CURRENT_REQUEST_METHOD', $_GET['bxapp_method']);
+			define('BXAPP_ROUTER_CURRENT_REQUEST_URL', $_GET['bxapp_url']);
+			unset($_GET['bxapp_staticapi']);
+			unset($_GET['bxapp_method']);
+			unset($_GET['bxapp_url']);
+			if (isset($_GET['bxapp_serverid'])) {
+				$this->currentServer = $_GET['bxapp_serverid'];
+				unset($_GET['bxapp_serverid']);
 			}
-			if (isset($_GET['siteid'])) {
-				$this->currentSite = $_GET['siteid'];
-				unset($_GET['siteid']);
+			if (isset($_GET['bxapp_siteid'])) {
+				$this->currentSite = $_GET['bxapp_siteid'];
+				unset($_GET['bxapp_siteid']);
 			}
-			if (isset($_GET['secretkey'])) {
-				$this->currentSecretKey = $_GET['secretkey'];
-				unset($_GET['secretkey']);
+			if (isset($_GET['bxapp_secretkey'])) {
+				$this->currentSecretKey = $_GET['bxapp_secretkey'];
+				unset($_GET['bxapp_secretkey']);
 			}
 			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
 				$this->currentLanguage = $this->sites[$this->currentSite]['language'];
