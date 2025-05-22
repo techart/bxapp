@@ -60,6 +60,12 @@ class Router
 	 */
 	public static function getRequestMethod(): string
 	{
+		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) && !empty($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) &&
+			strpos($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'], 'isswagger') !== false && isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']) &&
+			!empty($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+				return $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
+		}
+
 		return defined('BXAPP_ROUTER_CURRENT_REQUEST_METHOD') ? BXAPP_ROUTER_CURRENT_REQUEST_METHOD : Application::getInstance()->getContext()->getRequest()->getRequestMethod();
 	}
 

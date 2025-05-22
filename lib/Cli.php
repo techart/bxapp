@@ -21,6 +21,7 @@ class Cli
 		'create:middlewareAfter' => 'createMiddlewareAfter',
 		'create:middlewareBefore' => 'createMiddlewareBefore',
 		'create:sitemap' => 'createSitemap',
+		'openapi:create' => 'createOpenAPI',
 	);
 	static $siteId = '';
 	static $action = '';

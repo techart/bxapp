@@ -114,10 +114,12 @@ abstract class BaseMenu
 				'ID' => $section['ID'],
 				'elements' => $this->allowElements ? $this->getIBlockElements(
 					$ibModelName,
-					$section['ID'],
 					function($code = '') {
 						return $this->setSelectedMenuElement($code);
 					})['data'] : '',
+					[
+						'id' => $section['ID'],
+					]
 			];
 
 			if ($newSection['IBLOCK_SECTION_ID'] === $pID) {
@@ -191,10 +193,12 @@ abstract class BaseMenu
 				'ID' => $section['ID'],
 				'elements' => $this->allowElements && !empty($section['IBLOCK_CODE']) ? $this->getIBlockElements(
 					!empty($ibModelName) ? $ibModelName : $currentModel,
-					$section['ID'],
 					function($code = '', $sectionId = '', $comp = []) {
 						return $this->setSelectedMenuElement($code, $sectionId ?? '');
 					}) : '',
+					[
+						'id' => $section['ID'],
+					]
 			];
 
 			$this->tree[$section['ID']] = $newSection;
@@ -257,12 +261,16 @@ abstract class BaseMenu
 	 * @param object $callback
 	 * @return array
 	 */
-	public function getIBlockElements(string $ibModelName, string|int $id = '', object $callback, array $additionalProps = []): array
+	public function getIBlockElements(string $ibModelName, object $callback, array $additionalProps = []): array
 	{
 		$data = [];
-		$select = array_merge(['PROPERTY_LINK', 'NAME', 'CODE', 'IBLOCK_SECTION_ID', 'DETAIL_PAGE_URL'], array_values($additionalProps));
+		$select = ['PROPERTY_LINK', 'NAME', 'CODE', 'IBLOCK_SECTION_ID', 'DETAIL_PAGE_URL'];
 
-		$items = \App::model($ibModelName)->getElements($select, ['IBLOCK_SECTION_ID' => $id, 'ACTIVE' => 'Y'], ['LEFT_MARGIN' => 'ASC']);
+		if (isset($additionalProps['addElemProps']) && is_array($additionalProps['addElemProps'])) {
+			$select = array_merge($select, array_values($additionalProps['addElemProps']));
+		}
+		
+		$items = \App::model($ibModelName)->getElements($select, ['IBLOCK_SECTION_ID' => $additionalProps['id'], 'ACTIVE' => 'Y'], ['LEFT_MARGIN' => 'ASC']);
 		while ($item = $items->GetNext()) {
 			$newData = [
 				'link' => $item['DETAIL_PAGE_URL'],
@@ -272,7 +280,7 @@ abstract class BaseMenu
 				'selected' => $callback($item['DETAIL_PAGE_URL'], $item['IBLOCK_SECTION_ID']),
 			];
 
-			foreach($additionalProps as $key => $prop) {
+			foreach($additionalProps['addElemProps'] as $key => $prop) {
 				$newData[$key] = $item[$prop];
 			}
 
@@ -360,15 +368,15 @@ abstract class BaseMenu
 	 * @param string|int $id
 	 * @return array
 	 */
-	protected function buildMenuByIBlockElems(string $ibModelName = '', string|int $id = ''): array
+	protected function buildMenuByIBlockElems(string $ibModelName = '', array $props = []): array
 	{
 		$curModelName = !empty($ibModelName) ? $ibModelName : $this->modelName;
 		$this->data = $this->getIBlockElements(
 			$curModelName,
-			$id,
 			function($code = '', $pid = null) {
 				return $this->setSelectedMenuElement($code, $pid);
-			}
+			},
+			$props
 		);
 
 		return $this->data;

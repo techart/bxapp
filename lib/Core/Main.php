@@ -128,6 +128,13 @@ class Main
 	 */
 	public function jsonResponse(mixed $data = ''): string
 	{
+		if (isset($_SERVER['HTTP_ISSWAGGER']) || strpos($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'], 'isswagger') !== false) {
+			header('Access-Control-Allow-Headers:*');
+			header('Access-Control-Allow-Origin:*');
+			header('Access-Control-Allow-Methods:*');
+			header('Access-Control-Allow-Credentials:true');
+		}
+
 		header('Content-Type: application/json');
 		return json_encode($data);
 	}

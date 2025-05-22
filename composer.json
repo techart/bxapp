@@ -1,6 +1,6 @@
 {
   "name": "techart/bxapp",
-  "version": "0.6.91",
+  "version": "0.6.92",
   "description": "Пакет для организации бэка битрикса",
   "license": "Apache-2.0",
   "authors": [
@@ -21,7 +21,8 @@
 	"phpoffice/phpspreadsheet": "^2.1",
 	"ovidigital/js-object-to-json": ">=1.1",
 	"symfony/var-dumper": "^7.0",
-	"icamys/php-sitemap-generator": "^5.0"
+	"icamys/php-sitemap-generator": "^5.0",
+	"symfony/yaml": "^7.0"
   },
   "autoload": {
     "psr-4": {"Techart\\BxApp\\": "lib/"}
