@@ -269,9 +269,10 @@ abstract class BaseMenu
 		if (isset($additionalProps['addElemProps']) && is_array($additionalProps['addElemProps'])) {
 			$select = array_merge($select, array_values($additionalProps['addElemProps']));
 		}
-		
+
 		$items = \App::model($ibModelName)->getElements($select, ['IBLOCK_SECTION_ID' => $additionalProps['id'], 'ACTIVE' => 'Y'], ['LEFT_MARGIN' => 'ASC']);
 		while ($item = $items->GetNext()) {
+
 			$newData = [
 				'link' => $item['DETAIL_PAGE_URL'],
 				'text' => $item['NAME'],
@@ -281,7 +282,11 @@ abstract class BaseMenu
 			];
 
 			foreach($additionalProps['addElemProps'] as $key => $prop) {
-				$newData[$key] = $item[$prop];
+				if (strpos($prop, 'PROPERTY_') === false) {
+					$newData[$key] = $item[$prop];
+				} else {
+					$newData[$key] = $item[$prop.'_VALUE'];
+				}
 			}
 
 			$data[] = $newData;
@@ -379,6 +384,7 @@ abstract class BaseMenu
 			$props
 		);
 
+		$this->data = $this->linearBuildTree($curModelName);
 		return $this->data;
 	}
 
