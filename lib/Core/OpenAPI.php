@@ -184,7 +184,19 @@ class OpenAPI
 
 					$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['tags'] = [$route['bundle']];
 
-					if (!empty($this->routesApiData[$route['bundle']])) {
+					if (empty($this->routesApiData[$route['bundle']][$route['name']]['requestBody']) && $route['requestMethod'] !== 'get') {
+						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['requestBody'] = [
+							'content' => [
+								'application/json' => [
+									'schema' => [
+										'type' => 'object'
+									]
+								]
+							]
+						];
+					}
+
+					if (isset($this->routesApiData[$route['bundle']]) && $this->routesApiData[$route['bundle']] !== false) {
 						// Формируем схему ответа
 						$schemaRef = $this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'];
 						if (!empty($schemaRef)) {
