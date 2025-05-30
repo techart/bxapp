@@ -18,6 +18,20 @@ class RouterConfigurator
 	 */
 	public static function get(): array
 	{
+		foreach (self::$RouterData as $method => $bundles) {
+			foreach ($bundles as $bundle => $routes) {
+				foreach ($routes as $route => $params) {
+					if (preg_match_all('/\{(.*?)\}/', $route, $matches) !== false) {
+						foreach ($matches[1] as $pathParam) {
+							if (empty($params['where'][$pathParam])) {
+								self::$RouterData[$method][$bundle][$route]['where'][$pathParam] = '.*';
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return self::$RouterData;
 	}
 
@@ -223,5 +237,19 @@ class RouterConfigurator
 		$currentParams = array_intersect($allowedParams, $params);
 
 		self::$RouterData[$requestMethod][$bundle][$url]['params'] = $currentParams;
+	}
+
+	/**
+	 * Назначает роуту $models
+	 * 
+	 * @param string $requestMethod
+	 * @param string $bundle
+	 * @param string $url
+	 * @param array $models
+	 * @return void
+	 */
+	public static function setRouteModels(string $requestMethod = '', string $bundle = '', string $url = '', array $models = []): void
+	{
+		self::$RouterData[$requestMethod][$bundle][$url]['models'] = $models;
 	}
 }

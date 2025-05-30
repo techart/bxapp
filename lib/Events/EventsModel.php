@@ -62,6 +62,50 @@ class EventsModel
 		}
 	}
 
+	private static function clearModelsCache(string $tableName = '')
+	{
+		if (!empty($tableName)) {
+			if (is_dir(APP_CACHE_MODELS_DIR . '/' . $tableName)) {
+				$filePath = APP_CACHE_MODELS_DIR . '/' . $tableName . '/router.json';
+
+				if (file_exists($filePath)) {
+					$data = json_decode(file_get_contents($filePath), true);
+					$models = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+					$routeNames = array_keys($data);
+					$tables = [];
+
+					if ($data !== false) {
+						if ($models !== false) {
+							foreach ($data as $name => $routes) {
+								$tables = $tables + $models[$name];
+		
+								foreach ($routes as $route) {
+									\H::deleteFile($route . 'data.json', 'static');
+								}
+							}
+							unlink($filePath);
+							unset($tables[array_search($tableName, $tables)]);
+
+							foreach ($tables as $table) {
+								if (file_exists(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json')) {
+									$tableData = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
+									$tableData = array_diff_key($tableData, array_flip($routeNames));
+									if (file_put_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($tableData)) === false) {
+										\Logger::info('Router: Не удалось записать файл router.json в папке ' . $table);
+									}
+								}
+							}
+						} else {
+							\Logger::info('Router: Не удалось прочитать файл models.json');
+						}
+					} else {
+						\Logger::info('Router: Не удалось прочитать файл router.json из папки ' . $tableName);
+					}
+				}
+			}
+		}
+	}
+
 	public static function hbChanged(\Bitrix\Main\Entity\Event $event): void
 	{
 		$name = $event->getEntity()->getName();
@@ -69,6 +113,10 @@ class EventsModel
 		if (isset($name) && !empty($name)) {
 			$cache = Cache::createInstance();
 			$cache->CleanDir($name);
+
+			if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+				self::clearModelsCache('h_'.$name);
+			}
 		}
 	}
 
@@ -80,6 +128,10 @@ class EventsModel
 			if (isset($ar['CODE']) && !empty($ar['CODE'])) {
 				$cache = Cache::createInstance();
 				$cache->CleanDir($ar['CODE']);
+			
+				if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+					self::clearModelsCache('i_'.$ar['CODE']);
+				}
 			}
 
 			// if (\Config::get('Sitemap.ACTIVE', false)) {
@@ -135,6 +187,10 @@ class EventsModel
 				if (isset($ar['CODE']) && !empty($ar['CODE'])) {
 					$cache = Cache::createInstance();
 					$cache->CleanDir($ar['CODE']);
+
+					if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+						self::clearModelsCache('i_'.$ar['CODE']);
+					}
 				}
 			}
 		}

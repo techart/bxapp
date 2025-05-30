@@ -111,6 +111,26 @@ class CliActions
 	}
 
 	/**
+	 * vphp cli.php cache:generateModels
+	 *
+	 * @return void
+	 */
+	public function generateModels(): void
+	{
+		if (!\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+			echo 'Генерация кеша роутов с привязкой к моделям выключена параметром APP_ROUTER_CACHE_MODELS_TAGS в конфиге роутера!'.PHP_EOL;
+			exit();
+		}
+
+		$args = func_get_args();
+
+		\Router::generateModels();
+
+		echo 'Генерация файла с привязками таблиц к роутам завершена.' . PHP_EOL;
+		echo 'Кеш изменившихся роутов очищен!' . PHP_EOL;
+	}
+
+	/**
 	 * vphp cli.php create:sitemap
 	 *
 	 * @return void
@@ -154,7 +174,12 @@ class CliActions
 			exit;
 		}
 
-		App::core('OpenAPI')->withDefaultRoutes($args[0][0])->generate();
+		$withDefault = 0;
+		if (!empty($args[0][0])) {
+			$withDefault = $args[0][0];
+		}
+
+		App::core('OpenAPI')->withDefaultRoutes($withDefault)->generate();
 
 		echo 'Open API файл сгенерирован!'.PHP_EOL;
 	}

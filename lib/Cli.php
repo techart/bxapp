@@ -15,6 +15,7 @@ class Cli
 		'setup:app' => 'setup',
 		'setup:template' => 'setupTemplate',
 		'cache:clear' => 'clearCache',
+		'cache:generateModels' => 'generateModels',
 		'create:model' => 'createModel',
 		'create:cli' => 'createCli',
 		'create:bundle' => 'createBundle',

@@ -142,5 +142,6 @@ class Define
 		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/routes'); // папка кэша роутов (страниц)
 		define("APP_CACHE_STATIC_ROOT_DIR", APP_CACHE_DIR.'/static'); // папка кэша статики
 		define("APP_CACHE_STATIC_DIR", APP_CACHE_STATIC_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша статики сайта
+		define("APP_CACHE_MODELS_DIR", APP_CACHE_DIR.'/models/'.BXAPP_SITE_ID); // папка кэша роутов моделей
 	}
 }

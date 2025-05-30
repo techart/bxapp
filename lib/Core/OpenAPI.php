@@ -106,6 +106,42 @@ class OpenAPI
 	}
 
 	/**
+	 * Формирует регулярку в зависимости от BxApp параметра
+	 */
+	private function buildPattern(string|array $pattern = ''): string
+	{
+		if ($pattern == 'int') {
+			$pattern = '[0-9]+';
+		}
+		if ($pattern == 'string') {
+			$pattern = '[a-zа-я-]+';
+		}
+		if ($pattern == 'stringCase') {
+			$pattern = '[a-zA-Zа-яА-Я-]+';
+		}
+		if ($pattern == 'stringEn') {
+			$pattern = '[a-z-]+';
+		}
+		if ($pattern == 'stringEnCase') {
+			$pattern = '[a-zA-Z-]+';
+		}
+		if ($pattern == 'stringRu') {
+			$pattern = '[а-я-]+';
+		}
+		if ($pattern == 'stringRuCase') {
+			$pattern = '[а-яА-Я-]+';
+		}
+		if ($pattern == 'code') {
+			$pattern = '[a-zA-Z0-9-]+';
+		}
+		if (is_array($pattern)) {
+			$pattern = '['.implode('|', $pattern).']+';
+		}
+
+		return $pattern;
+	}
+
+	/**
 	 * Формирует урлы роутов, соединяя их с данными из RoutesAPI.php файлов каждого бандла
 	 * 
 	 * @return void
@@ -134,12 +170,16 @@ class OpenAPI
 					// Формируем path параметры
 					if (!empty($route['where'])) {
 						foreach ($route['where'] as $param => $type) {
+							$pattern = $this->buildPattern($type);
+
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
 								'name' => $param,
 								'in' => 'path',
 								'required' => true,
+								'description' => 'Pattern: ' . $pattern,
 								'schema' => [
-									'type' => $type === 'int' ? 'integer' : 'string'
+									'type' => $type === 'int' ? 'integer' : 'string',
+									'pattern' => $pattern
 								]
 							];
 						}

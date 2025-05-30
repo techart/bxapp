@@ -162,6 +162,11 @@ class Router
 		}
 	}
 
+	/**
+	 * Строит роутер дефолтных bxapp урлов
+	 * 
+	 * @return boolean
+	 */
 	public static function buildDefault(): bool
 	{
 		if (count(self::$defaultRoutes) > 0) {
@@ -170,6 +175,7 @@ class Router
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
 					App::setBundleParams([]);
+					App::setBundleModels([]);
 					require_once(APP_CORE_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
@@ -198,6 +204,7 @@ class Router
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
 					App::setBundleParams([]);
+					App::setBundleModels([]);
 					require_once(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
@@ -558,5 +565,144 @@ class Router
 		}
 
 		App::core('Main')->do404();
+	}
+
+	/**
+	 * Формирует массив используемых моделей для каждого урла
+	 * 
+	 * @return array
+	 */
+	public static function generateModelsForRouter(): array
+	{
+		Router::build();
+
+		$routes = \Techart\BxApp\RouterConfigurator::get();
+		$models = [];
+
+		foreach ($routes as $method) {
+			foreach ($method as $group) {
+				foreach ($group as $route) {
+					if ($route['requestMethod'] === 'get' && !empty($route['models'])) {
+						foreach ($route['models'] as $model) {
+							$model = App::model($model);
+
+							if (is_subclass_of($model, 'BaseIblockModel')) {
+								$models[$route['name']][] = 'i_' . $model->table;
+							} else {
+								$models[$route['name']][] = 'h_' . $model->table;
+							}
+						}
+
+						$models[$route['name']] = array_unique($models[$route['name']]);
+					}
+				}
+			}
+		}
+
+		return $models;
+	}
+	
+	/**
+	 * Генерирует актуальный список привязанных моделей к роутам
+	 * Cтатик кеши изменённых роутов будут очищены
+	 * 
+	 * @return void
+	 */
+	public static function generateModels(): void
+	{
+		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+			$currentModels = [];
+			Cache::clearRouter();
+			$models = self::generateModelsForRouter();
+
+			if (!is_dir(APP_CACHE_MODELS_DIR)) {
+				mkdir(APP_CACHE_MODELS_DIR, 0777, true);
+			}
+
+			if (file_exists(APP_CACHE_MODELS_DIR . '/default.json')) {
+				$default = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/default.json'), true);
+
+				if ($default !== false) {
+					foreach (array_keys($models) as $name) {
+						if (!empty($default[$name])) {
+							foreach ($default[$name] as $route) {
+								\H::deleteFile($route . 'data.json', 'static');
+							}
+		
+							unset($default[$name]);
+						}
+					}
+
+					if (file_put_contents(APP_CACHE_MODELS_DIR . '/default.json', json_encode($default)) === false) {
+						\Logger::info('Router: Не удалось записать файл default.json');
+					}
+				} else {
+					\Logger::info('Router: Не получилось считать файл default.json');
+				}
+
+			}
+
+			if (file_exists(APP_CACHE_MODELS_DIR . '/models.json')) {
+				$currentModels = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+				$tables = [];
+				$routeNames = [];
+
+				if ($currentModels !== false) {
+					$keys = array_unique(array_merge(array_keys($models), array_keys($currentModels)));
+	
+					foreach ($keys as $name) {
+						if (!empty($currentModels[$name])) {
+							if (empty($models[$name])) {
+								$routeNames[] = $name;
+								$tables = array_merge($tables, $currentModels[$name]);
+							} else {
+								if (array_diff($currentModels[$name], $models[$name]) ||
+									array_diff($models[$name], $currentModels[$name])) {
+										$routeNames[] = $name;
+										$tables = array_merge($tables, $currentModels[$name], $models[$name]);
+								}
+							}
+						}
+					}
+	
+					$tables = array_unique($tables);
+					$deletedStatic = [];
+	
+					foreach ($tables as $table) {
+						if (file_exists(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json')) {
+							$data = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
+	
+							if ($data !== false) {
+								foreach ($routeNames as $name) {
+									if (!empty($data[$name])) {
+										if (!in_array($name, $deletedStatic)) {
+											foreach ($data[$name] as $staticRoute) {
+												\H::deleteFile($staticRoute . 'data.json', 'static');
+											}
+		
+											$deletedStatic[] = $name;
+										}
+		
+										unset($data[$name]);
+									}
+								}
+		
+								if (file_put_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($data)) === false) {
+									\Logger::info('Router: Не удалось записать файл router.json в папке ' . $table);
+								}
+							} else {
+								\Logger::info('Router: Не удалось прочитать файл router.json из папки ' . $table);
+							}
+						}
+					}
+				} else {
+					\Logger::info('Router: Не удалось прочитать файл ');
+				}
+		
+				if (file_put_contents(APP_CACHE_MODELS_DIR . '/models.json', json_encode($models)) === false) {
+					\Logger::info('Router: Не удалось записать файл models.json');
+				}
+			}
+		}
 	}
 }

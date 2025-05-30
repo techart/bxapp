@@ -93,6 +93,43 @@ class Cache {
 	}
 
 	/**
+	 * Очищает кеш привязки моделей к роутам
+	 */
+	public static function clearRouterModels(string $siteId = ''): void
+	{
+		$routes = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+		$tables = [];
+		$staticRoutes = [];
+
+		if ($routes !== false) {
+			foreach ($routes as $models) {
+				$tables = array_merge($tables, $models);
+			}
+
+			foreach (array_unique($tables) as $table) {
+				$data = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'));
+
+				if ($data !== false) {
+					foreach ($data as $routeData) {
+						$staticRoutes = array_merge($staticRoutes, $routeData);
+					}
+				} else {
+					\Logger::info('Не удалось прочитать файл router.json из папки ' . $table);
+				}
+			}
+
+			$staticRoutes = array_unique($staticRoutes);
+			Directory::deleteDirectory(APP_CACHE_MODELS_DIR);
+
+			foreach ($staticRoutes as $route) {
+				\H::deleteFile($route . 'data.json', 'static');
+			}
+		} else {
+			\Logger::info('Не удалось прочитать файл models.json');
+		}
+	}
+
+	/**
 	 * Очищает весь кеш
 	 *
 	 * @param string $siteId
@@ -142,6 +179,11 @@ class Cache {
 		if ($cacheName === 'menu' || $cacheName === 'all') {
 			self::clearMenu($siteId);
 			Logger::info('Cache: Очистка кеша меню');
+		}
+
+		if ($cacheName === 'routerModels' || $cacheName === 'all') {
+			self::clearRouterModels($siteId);
+			Logger::info('Cache: Очистка кеша роутов привязанных к моделям');
 		}
 	}
 }

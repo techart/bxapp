@@ -375,4 +375,36 @@ class Helpers
 
 		return $code;
 	}
+
+	/**
+	 *  Удаляет переданный файл и очищает пустые папки поверх него
+	 * 
+	 * @param string $path
+	 * @param string $stop
+	 * @return bool
+	 */
+	public static function deleteFile(string $path = '', string $stop = ''): bool
+	{
+		if (empty($path) || !file_exists($path) || !is_file($path)) {
+			return false;
+		}
+
+		unlink($path);
+		$parts = explode('/', ltrim($path, '/'));
+		array_pop($parts);
+
+		while (count($parts) > 0) {
+			$scanPath = '/' . implode('/', $parts);
+			$dir = array_diff(scandir($scanPath), ['..', '.']);
+
+			if (empty($dir) && (empty($stop) || end($parts) !== $stop)) {
+				rmdir($scanPath);
+				array_pop($parts);
+			} else {
+				break;
+			}
+		}
+
+		return true;
+	}
 }

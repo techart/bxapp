@@ -168,7 +168,7 @@ class Log
 	protected static function showLoggerBar(): void
 	{
 		if (self::$showLoggerBar) {
-			if (!\H::isLocal()) {
+			if (\H::isLocal()) {
 				echo '
 				<style>
 					.debugbar {

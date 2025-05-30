@@ -523,6 +523,17 @@ class App
 	}
 
 	/**
+	 * Назначает текущему бандлу модели
+	 *
+	 * @param array $models
+	 * @return void
+	 */
+	public static function setBundleModels(array $models = []): void
+	{
+		Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', $models);
+	}
+
+	/**
 	 * Возвращает массив с текущими языками битиркса
 	 *
 	 * @return array
