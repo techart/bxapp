@@ -69,6 +69,12 @@ class Cache
 		\Techart\BxApp\Cache::clearRouter(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
 	}
 
+	/**
+	 * Очищает кеш привязки роутов к моделям
+	 * 
+	 * @param string $siteId
+	 * @return void
+	 */
 	public function clearRouterModels(string $siteId = ''): void
 	{
 		\Techart\BxApp\Cache::clearRouterModels(!empty($siteId) ? $siteId : BXAPP_SITE_ID);

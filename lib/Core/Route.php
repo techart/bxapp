@@ -76,6 +76,7 @@ class Route
 	private $routeProtector = [];
 	private $routeParams = [];
 	private $routeModels = [];
+	private $defaultRouteName = '';
 	private $group = '';
 	private $groupProtector = [];
 	private $groupParams = [];
@@ -175,13 +176,13 @@ class Route
 			$this->routeProtector = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []);
 			$this->routeParams = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', []);
 			$this->routeModels = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []);
-			$routeName = strtolower($requestMethod.'_'.$this->bundle.(!empty($this->group) ? '_'.$this->group : '').'_'.str_replace(['/', '{', '}'], '', $this->getCurrentUrl()));
+			$this->defaultRouteName = strtolower($requestMethod.'-'.$this->bundle.(!empty($this->group) ? '-'.$this->group : '').'-'.str_replace(['{', '}'], '', str_replace('/', '-', trim($this->getCurrentUrl(), '/'))));
 
 			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod);
 			\Techart\BxApp\RouterConfigurator::setBundle($this->requestMethod, $this->bundle);
 			\Techart\BxApp\RouterConfigurator::setRouteUrl($this->requestMethod, $this->bundle, $this->getCurrentUrl());
 			\Techart\BxApp\RouterConfigurator::setRouteRequestMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl());
-			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $routeName);
+			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->defaultRouteName);
 			\Techart\BxApp\RouterConfigurator::setRouteBundle($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeBundle);
 			\Techart\BxApp\RouterConfigurator::setRouteGroup($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->group);
 			\Techart\BxApp\RouterConfigurator::setRouteMethod($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $classMethod[0], $classMethod[1]);
@@ -207,6 +208,22 @@ class Route
 			}
 			if (!empty($this->groupModels)) {
 				\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeModels, $this->groupModels));
+			}
+			if (!empty($this->routeBundle)) {
+				if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+					if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+					}
+
+					if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+						$data = \Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle];
+						if (isset($data[$this->defaultRouteName]) && !empty($data[$this->defaultRouteName]['models'])) {
+							$this->models = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []), $this->groupModels, $data[$this->defaultRouteName]['models']);
+
+							\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
+						}
+					}
+				}
 			}
 		}
 		return $this;
@@ -329,6 +346,36 @@ class Route
 	{
 		if ($this->getCurrentUrl() !== false) {
 			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $name);
+			\Techart\BxApp\RouterConfigurator::removeRouteName($this->defaultRouteName);
+		}
+
+		if (!empty($this->routeBundle)) {
+			if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+				if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+				}
+
+				if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+					$data = \Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle];
+
+					if (isset($data[$name]['models']) && !empty($data[$name]['models'])) {
+						$this->models = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []), $this->groupModels, $data[$name]['models']);
+
+						\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
+					} else {
+						if (isset($data[$this->defaultRouteName]['models']) && !empty($data[$this->defaultRouteName]['models'])) {
+							$this->models = [];
+							if (!empty(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []))) {
+								$this->models = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []);
+							}
+							if (!empty($this->groupModels)) {
+								$this->models = array_merge($this->models, $this->groupModels);
+							}
+							\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
+						}
+					}
+				}
+			}
 		}
 
 		return $this;
@@ -393,13 +440,13 @@ class Route
 	{
 		if ($this->getCurrentUrl() === false) {
 			$this->groupModels = $models;
-		} else {
+		} /*else {
 			if (!empty($models)) {
 				$this->models = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []), $this->groupModels, $models);
 
 				\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
 			}
-		}
+		}*/
 
 		return $this;
 	}

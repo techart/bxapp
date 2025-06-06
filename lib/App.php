@@ -425,6 +425,113 @@ class App
 	}
 
 	/**
+	 * Показывает в графическом виде статистику по роутеру
+	 *
+	 * @return string
+	 */
+	protected static function showRouterStatistic():string
+	{
+		$stat = [];
+		$text =  '<h2>Router Statistic</h2>';
+		\Router::build();
+		\Router::buildDefault();
+		$routes = RouterConfigurator::get();
+		$names = RouterConfigurator::getNames();
+		$routerBundles = Config::get('Router.APP_ROUTER_BUNDLES', []);
+
+		if (\Router::isActive()) {
+			$text .= '<p>Router включен</p>';
+
+			if (Router::isCacheActive()) {
+				$text .= '<p>Кеш роутера включен</p>';
+			} else {
+				$text .= '<p style="color: red">Кеш роутера выключен настройками в файле .env (APP_ROUTER_CACHE_ACTIVE)</p>';
+			}
+		} else {
+			$text .= '<p style="color: red">Router выключен настройками в файле .env (APP_ROUTER_ACTIVE)</p>';
+		}
+
+		$pathsBundles = [];
+		foreach (array_diff(scandir(APP_ROUTER_DIR), ['.', '..']) as $path) {
+			if (is_dir(APP_ROUTER_DIR . '/' . $path)) {
+				$pathsBundles[] = $path;
+			}
+		}
+
+		$incorrect = array_diff($routerBundles, $pathsBundles);
+
+		if (!empty($incorrect)) {
+			$text .= '<p style="color: red">В конфиге роутера указаны несуществующие бандлы: ' . implode(', ', $incorrect) . '</p>';
+		}
+
+		$none = array_diff($pathsBundles, $routerBundles);
+
+		if (!empty($none)) {
+			$text .= '<p style="color: red">В конфиге роутера не указаны существующие бандлы: ' . implode(', ', $none) . '</p>';
+		}
+
+		if (file_exists(APP_CACHE_ROUTER_DIR . '/routerNames.txt')) {
+			$namesCache = unserialize(file_get_contents(APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
+
+			if ($namesCache !== false) {
+				if (!\H::isArrayEquals($namesCache, $names)) {
+					$text .= '<p style="color: red">Файл cache/router/routerNames.txt неактуален!</p>';
+				}
+			} else {
+				$text .= '<p style="color: red">Не удалось прочитать файл cache/router/routerNames.txt!</p>';
+			}
+		} else {
+			$text .= '<p style="color: red">Файл cache/router/routerNames.txt отсутствует!</p>';
+		}
+
+		if (file_exists(APP_CACHE_ROUTER_DIR . '/routerConfig.txt')) {
+			$configCache = unserialize(file_get_contents(APP_CACHE_ROUTER_DIR . '/routerConfig.txt'));
+	
+			if ($configCache !== false) {
+				if (!\H::isArrayEquals($configCache, $routes)) {
+					$text .= '<p style="color: red">Файл cache/router/routerConfig.txt неактуален!</p>';
+				}
+			} else {
+				$text .= '<p style="color: red">Не удалось прочитать файл cache/router/routerConfig.txt!</p>';
+			}
+		} else {
+			$configCache = false;
+			$text .= '<p style="color: red">Файл cache/router/routerConfig.txt отсутствует!</p>';
+		}
+
+		foreach ($routes as $bundles) {
+			foreach ($bundles as $bundle => $routes) {
+				foreach ($routes as $route => $data) {
+					if ($data['bundle'] !== 'BxappDefault') {
+						$stat[$data['bundle']][$data['name']] = $data;
+					}
+				}
+			}
+		}
+
+		if (!empty($stat)) {
+			foreach ($stat as $bundle => $routes) {
+				$text .= '<h3>'.$bundle.' ('.count($routes).')</h3>';
+				$diff = array_diff_key(RouterConfigurator::$bundles[$bundle], $stat[$bundle]);
+
+				if (!empty($diff)) {
+					$text .= '<p style="color: red"> В бандле ' . $bundle . ' в файле RoutesAPI.php описаны несуществующие роуты: ' . implode(', ', array_keys($diff)) . '</p>';
+				}
+
+				foreach ($routes as $route) {
+					$text .= '<p>' . $route['name'] . ' - ' . strtoupper($route['requestMethod']) . ' - ' . $route['url'];
+					if (!empty($route['models'])) {
+						$text .= ' - Models: [ ' . implode(', ', $route['models']) . ' ]';
+					}
+					$text .= '</p>';
+				}
+			}
+		}
+
+		return $text;
+	}
+
+	/**
 	 * Выводит статистику по переданному в $type типа сущности
 	 *
 	 * @param string $type
@@ -436,6 +543,9 @@ class App
 
 		if ($type == 'Models') {
 			$stat = self::showModelsStatistic();
+		}
+		if ($type == 'Router') {
+			$stat = self::showRouterStatistic();
 		}
 
 		echo $stat;

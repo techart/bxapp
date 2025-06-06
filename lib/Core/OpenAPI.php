@@ -250,6 +250,7 @@ class OpenAPI
 
 						// Совмещаем то что сгенерировалось и то что написано в файле RoutesAPI.php
 						if (!empty($this->routesApiData[$route['bundle']][$route['name']])) {
+							unset($this->routesApiData[$route['bundle']][$route['name']]['models']);
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']] = array_merge_recursive($this->routesApiData[$route['bundle']][$route['name']], $this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]);
 						}
 					} else {

@@ -50,7 +50,8 @@ class StaticApi
 						mkdir(APP_CACHE_MODELS_DIR, 0777, true);
 					}
 					if (!file_exists(APP_CACHE_MODELS_DIR . '/models.json')) {
-						$models = \Router::generateModelsForRouter();
+						$routesCurrent = \Techart\BxApp\RouterConfigurator::get();
+						$models = \Router::generateModelsForRouter($routesCurrent);
 
 						if (file_put_contents(APP_CACHE_MODELS_DIR . '/models.json', json_encode($models)) === false) {
 							\Logger::info('StaticApi: Не удалось записать файл models.json');

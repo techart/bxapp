@@ -410,7 +410,7 @@ class Router
 	{
 		$curMethod = self::getRequestMethod();
 		checkCreateDir(APP_CACHE_ROUTER_PAGES_DIR);
-		$cachePath = APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.$url.'/';
+		$cachePath = APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.trim($url, '/').'/';
 
 		if (!is_dir($cachePath)) {
 			mkdir($cachePath, 0777, true);
@@ -420,6 +420,50 @@ class Router
 			Logger::info('кэш роута для страницы "'.$url.'" записан');
 		} else {
 			Logger::error('кэш роута для страницы "'.$url.'" записать не удалось');
+		}
+
+		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+			$cacheRoutesPath = APP_CACHE_ROUTER_DIR . '/paths/'; 
+			$data = [];
+
+			if (!is_dir($cacheRoutesPath)) {
+				mkdir($cacheRoutesPath, 0777, true);
+			}
+
+			$cacheRouteNamePath = $cacheRoutesPath . $pageRouteData['name'] . '/';
+			if (!is_dir($cacheRouteNamePath)) {
+				mkdir($cacheRouteNamePath, 0777, true);
+			}
+
+			$filePath = $cacheRouteNamePath . 'data.json';
+			if (file_exists($filePath)) {
+				$data = json_decode(file_get_contents($filePath), true);
+			}
+
+			if ($data !== false) {
+				$data[] = $cachePath;
+			} else {
+				\Logger::info('Router: Не удалось прочитать файл: ' . $filePath);
+			}
+
+			if (file_put_contents($filePath, json_encode($data)) === false) {
+				\Logger::info('Router: Не удалось записать файл: ' . $filePath);
+			}
+
+			if (!is_dir(APP_CACHE_MODELS_DIR)) {
+				mkdir(APP_CACHE_MODELS_DIR, 0777, true);
+			}
+
+			if (!file_exists(APP_CACHE_MODELS_DIR . '/models.json')) {
+				Router::build();
+				Router::buildDefault();
+				$routesCurrent = \Techart\BxApp\RouterConfigurator::get();
+				$models = Router::generateModelsForRouter($routesCurrent);
+
+				if (file_put_contents(APP_CACHE_MODELS_DIR . '/models.json', json_encode($models)) === false) {
+					\Logger::info('StaticApi: Не удалось записать файл models.json');
+				}
+			}
 		}
 	}
 
@@ -511,13 +555,48 @@ class Router
 	{
 		checkChaineCreateDir(APP_CACHE_ROUTER_DIR);
 
-		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile, serialize(RouterConfigurator::get()))) {
+		self::routerConfigToCache();
+		self::routerNamesToCache();
+	}
+
+	/**
+	 * Записывает кэш routerConfig.txt
+	 *
+	 * @return void
+	 */
+	public static function routerConfigToCache(array $data = []): void
+	{
+		Router::build();
+		Router::buildDefault();
+		checkChaineCreateDir(APP_CACHE_ROUTER_DIR);
+
+		if (empty($data)) {
+			$data = RouterConfigurator::get();
+		}
+
+		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile, serialize($data))) {
 			Logger::info('кэш роутера записан');
 		} else {
 			Logger::error('кэш роутера записать не удалось');
 		}
+	}
 
-		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile, serialize(RouterConfigurator::getNames()))) {
+	/**
+	 * Записывает кэш routerNames.txt
+	 *
+	 * @return void
+	 */
+	public static function routerNamesToCache(array $data = []): void
+	{
+		Router::build();
+		Router::buildDefault();
+		checkChaineCreateDir(APP_CACHE_ROUTER_DIR);
+
+		if (empty($data)) {
+			$data = RouterConfigurator::getNames();
+		}
+
+		if (file_put_contents(APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile, serialize($data))) {
 			Logger::info('кэш имён роутера записан');
 		} else {
 			Logger::error('кэш имён роутера записать не удалось');
@@ -572,17 +651,14 @@ class Router
 	 * 
 	 * @return array
 	 */
-	public static function generateModelsForRouter(): array
+	public static function generateModelsForRouter(array $routes =  []): array
 	{
-		Router::build();
-
-		$routes = \Techart\BxApp\RouterConfigurator::get();
 		$models = [];
 
 		foreach ($routes as $method) {
 			foreach ($method as $group) {
 				foreach ($group as $route) {
-					if ($route['requestMethod'] === 'get' && !empty($route['models'])) {
+					if (!empty($route['models'])) {
 						foreach ($route['models'] as $model) {
 							$model = App::model($model);
 
@@ -611,9 +687,36 @@ class Router
 	public static function generateModels(): void
 	{
 		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+			Router::build();
+			Router::buildDefault();
+			$routesCurrent = \Techart\BxApp\RouterConfigurator::get();
+			$namesCurrent = \Techart\BxApp\RouterConfigurator::getNames();
+			$models = self::generateModelsForRouter($routesCurrent);
+			$namesCache = unserialize(file_get_contents(APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
 			$currentModels = [];
-			Cache::clearRouter();
-			$models = self::generateModelsForRouter();
+			$deletedRoutes = [];
+
+			// Проверяем есть ли описание несуществующих роутов в RoutesAPI.php файлах
+			foreach (\Techart\BxApp\RouterConfigurator::$bundles as $name => $bundle) {
+				$diff = array_diff_key($bundle, $namesCurrent['names']);
+
+				if (!empty($diff)) {
+					echo "\033[0;31mВ RoutesAPI.php бандла " . $name . " найдено описание несуществующих роутов: " . implode(', ', array_keys($diff)) . "\033[0m" . PHP_EOL;
+				}
+			}
+
+			if ($namesCache !== false) {
+				$newRoutes = array_diff_key($namesCurrent['names'], $namesCache['names']);
+				$deletedRoutes = array_diff_key($namesCache['names'], $namesCurrent['names']);
+
+				if (!empty($newRoutes) || !empty($deletedRoutes)) {
+					self::routerNamesToCache($namesCurrent);
+				}
+			} else {
+				self::routerNamesToCache($namesCurrent);
+			}
+
+			self::routerConfigToCache($routesCurrent);
 
 			if (!is_dir(APP_CACHE_MODELS_DIR)) {
 				mkdir(APP_CACHE_MODELS_DIR, 0777, true);
@@ -623,13 +726,27 @@ class Router
 				$default = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/default.json'), true);
 
 				if ($default !== false) {
-					foreach (array_keys($models) as $name) {
-						if (!empty($default[$name])) {
+					$names = array_keys($namesCurrent['names']);
+
+					foreach (array_keys($default) as $name) {
+						if (!empty($models[$name]) || !in_array($name, $names) || !empty($deletedRoutes[$name])) {
 							foreach ($default[$name] as $route) {
 								\H::deleteFile($route . 'data.json', 'static');
 							}
-		
+
 							unset($default[$name]);
+
+							$routeData = json_decode(file_get_contents(APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json'), true);
+
+							if ($routeData !== false) {
+								foreach ($routeData as $route) {
+									\H::deleteFile($route . 'data.txt', 'router');
+								}
+							} else {
+								\Logger::info('Router: Не удалось прочитать файл '. APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json');
+							}
+
+							\H::deleteFile(APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json', 'paths');
 						}
 					}
 
@@ -639,7 +756,6 @@ class Router
 				} else {
 					\Logger::info('Router: Не получилось считать файл default.json');
 				}
-
 			}
 
 			if (file_exists(APP_CACHE_MODELS_DIR . '/models.json')) {
@@ -649,7 +765,7 @@ class Router
 
 				if ($currentModels !== false) {
 					$keys = array_unique(array_merge(array_keys($models), array_keys($currentModels)));
-	
+
 					foreach ($keys as $name) {
 						if (!empty($currentModels[$name])) {
 							if (empty($models[$name])) {
@@ -664,44 +780,58 @@ class Router
 							}
 						}
 					}
-	
-					$tables = array_unique($tables);
-					$deletedStatic = [];
-	
-					foreach ($tables as $table) {
-						if (file_exists(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json')) {
-							$data = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
-	
-							if ($data !== false) {
-								foreach ($routeNames as $name) {
-									if (!empty($data[$name])) {
-										if (!in_array($name, $deletedStatic)) {
-											foreach ($data[$name] as $staticRoute) {
-												\H::deleteFile($staticRoute . 'data.json', 'static');
+
+					if (!empty($tables) || !empty($routeNames)) {
+						$tables = array_unique($tables);
+						$deletedStatic = [];
+
+						foreach ($tables as $table) {
+							if (file_exists(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json')) {
+								$data = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
+
+								if ($data !== false) {
+									foreach ($routeNames as $name) {
+										if (!empty($data[$name])) {
+											if (!in_array($name, $deletedStatic)) {
+												foreach ($data[$name] as $staticRoute) {
+													\H::deleteFile($staticRoute . 'data.json', 'static');
+												}
+
+												$deletedStatic[] = $name;
 											}
-		
-											$deletedStatic[] = $name;
+			
+											unset($data[$name]);
 										}
-		
-										unset($data[$name]);
+
+										$routeData = json_decode(file_get_contents(APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json'), true);
+
+										if ($routeData !== false) {
+											foreach ($routeData as $route) {
+												\H::deleteFile($route . 'data.txt', 'router');
+											}
+										} else {
+											\Logger::info('Router: Не удалось прочитать файл '. APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json');
+										}
+
+										\H::deleteFile(APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json', 'paths');
 									}
+			
+									if (file_put_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($data)) === false) {
+										\Logger::info('Router: Не удалось записать файл router.json в папке ' . $table);
+									}
+								} else {
+									\Logger::info('Router: Не удалось прочитать файл router.json из папки ' . $table);
 								}
-		
-								if (file_put_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($data)) === false) {
-									\Logger::info('Router: Не удалось записать файл router.json в папке ' . $table);
-								}
-							} else {
-								\Logger::info('Router: Не удалось прочитать файл router.json из папки ' . $table);
 							}
 						}
 					}
 				} else {
 					\Logger::info('Router: Не удалось прочитать файл ');
 				}
-		
-				if (file_put_contents(APP_CACHE_MODELS_DIR . '/models.json', json_encode($models)) === false) {
-					\Logger::info('Router: Не удалось записать файл models.json');
-				}
+			}
+
+			if (file_put_contents(APP_CACHE_MODELS_DIR . '/models.json', json_encode($models)) === false) {
+				\Logger::info('Router: Не удалось записать файл models.json');
 			}
 		}
 	}

@@ -10,6 +10,7 @@ class RouterConfigurator
 	private static $RouterData = [];
 	private static $namesData = [];
 	private static $defaultRouteParams = ['noQueryParams', 'noStatic'];
+	public static $bundles = [];
 
 	/**
 	 * Возвращает массив даных конфигуратора
@@ -205,6 +206,19 @@ class RouterConfigurator
 		if (!empty($name)) {
 			self::$RouterData[$requestMethod][$bundle][$url]['name'] = $name;
 			self::$namesData['names'][$name] = self::$RouterData[$requestMethod][$bundle][$url]['routeUrl'];
+		}
+	}
+
+	/**
+	 * Удаляет имя роута из массива $namesData
+	 * 
+	 * @param string $name
+	 * @return void
+	 */
+	public static function removeRouteName(string $name = ''): void
+	{
+		if (!empty($name) && isset(self::$namesData['names'][$name])) {
+			unset(self::$namesData['names'][$name]);
 		}
 	}
 

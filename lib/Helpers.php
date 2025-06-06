@@ -395,13 +395,54 @@ class Helpers
 
 		while (count($parts) > 0) {
 			$scanPath = '/' . implode('/', $parts);
-			$dir = array_diff(scandir($scanPath), ['..', '.']);
 
-			if (empty($dir) && (empty($stop) || end($parts) !== $stop)) {
-				rmdir($scanPath);
-				array_pop($parts);
+			if (is_dir($scanPath)) {
+				$dirs = scandir($scanPath);
+
+				if (is_array($dirs)) {
+					$dir = array_diff(scandir($scanPath), ['..', '.']);
+
+					if (empty($dir) && (empty($stop) || end($parts) !== $stop)) {
+						rmdir($scanPath);
+						array_pop($parts);
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
 			} else {
 				break;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Рекурсивно проходит 2 массива и проверяет являются ли они идентичными
+	 * 
+	 * @param array $first
+	 * @param array $second
+	 * @return bool
+	 */
+	public static function isArrayEquals(array $first, array $second): bool
+	{
+		if (count($first) !== count($second)) {
+			return false;
+		}
+
+		foreach (array_keys($first) as $key) {
+			if (!array_key_exists($key, $second)) {
+				return false;
+			}
+
+			if (is_array($first[$key]) && is_array($second[$key])) {
+				if (!self::isArrayEquals($first[$key], $second[$key])) {
+					return false;
+				}
+			} elseif ($first[$key] !== $second[$key]) {
+				return false;
 			}
 		}
 

@@ -13,6 +13,11 @@ class Cache {
 	public static function clearRouter(string $siteId = ''): void
 	{
 		Directory::deleteDirectory(APP_CACHE_ROUTER_ROOT_DIR.'/'.$siteId);
+
+		if (\Config::get('Router.APP_ROUTER_CACHE_REBUILD', false) === false) {
+			Router::routerNamesToCache();
+			Router::routerConfigToCache();
+		}
 	}
 
 	private static function collectModels(string $path, string $subpath = ''): array
@@ -94,6 +99,9 @@ class Cache {
 
 	/**
 	 * Очищает кеш привязки моделей к роутам
+	 * 
+	 * @param string $siteId
+	 * @return void
 	 */
 	public static function clearRouterModels(string $siteId = ''): void
 	{
