@@ -345,8 +345,8 @@ class Route
 	public function name($name = ''): object
 	{
 		if ($this->getCurrentUrl() !== false) {
-			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $name);
 			\Techart\BxApp\RouterConfigurator::removeRouteName($this->defaultRouteName);
+			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $name);
 		}
 
 		if (!empty($this->routeBundle)) {
