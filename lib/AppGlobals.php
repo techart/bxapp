@@ -8,6 +8,8 @@ class AppGlobals
 	{
 		// сборка
 		\Glob::set('APP_ENV', strval(\Env::get('APP_ENV', 'prod')));
+		// нужно делать статик кэш или нет
+		\Glob::set('APP_SETUP_STATIC_API_ACTIVE', boolval(\Env::get('APP_STATIC_API_ACTIVE', true)));
 		// принудительно использовать кэш локально
 		\Glob::set('APP_SETUP_LOCAL_FORCED_CACHE', boolval(\Env::get('APP_LOCAL_FORCED_CACHE', false)));
 		// включено использования кэша в трейте или нет

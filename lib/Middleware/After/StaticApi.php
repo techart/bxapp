@@ -11,8 +11,8 @@ class StaticApi
 	 */
 	function handle($data)
 	{
-		// Если запрос помечен как staticapi
-		if (defined('BXAPP_IS_STATIC') && BXAPP_IS_STATIC === true && defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') && !empty(BXAPP_ROUTER_CURRENT_REQUEST_URL)) {
+		// Если статик кэш включён и если запрос помечен как staticapi
+		if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && defined('BXAPP_IS_STATIC') && BXAPP_IS_STATIC === true && defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') && !empty(BXAPP_ROUTER_CURRENT_REQUEST_URL)) {
 			$putCache = true;
 
 			// Если среди протекторов роута есть checkSecure или checkAuth, то записывать статик кэш не надо
@@ -64,7 +64,7 @@ class StaticApi
 						if (!empty($models[\App::getRoute('name')])) {
 							foreach ($models[\App::getRoute('name')] as $table) {
 								$dataModel = [];
-		
+
 								if (!is_dir(APP_CACHE_MODELS_DIR . '/' . $table)) {
 									mkdir(APP_CACHE_MODELS_DIR . '/' . $table, 0777, true);
 								}
@@ -72,7 +72,7 @@ class StaticApi
 									$dataModel = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
 								}
 								if ($dataModel !== false) {
-									if (!empty($dataModel[\App::getRoute('name')]) && 
+									if (!empty($dataModel[\App::getRoute('name')]) &&
 										!in_array(APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL, $dataModel[\App::getRoute('name')]) ||
 										empty($dataModel[\App::getRoute('name')])) {
 											$dataModel[\App::getRoute('name')][] = APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL;
