@@ -101,7 +101,7 @@ class Router
 		if (Glob::get('APP_SETUP_API_ROUTER_ACTIVE', true)) {
 			if (
 				Glob::get('APP_SETUP_API_ROUTER_CHECK_HTTPS', false) === false ||
-				(Glob::get('APP_SETUP_API_ROUTER_CHECK_HTTPS', false) === true && CMain::IsHTTPS() === true)
+				(Glob::get('APP_SETUP_API_ROUTER_CHECK_HTTPS', false) === true && \CMain::IsHTTPS() === true)
 			) {
 				if (!empty(Config::get('Router.APP_ROUTER_BUNDLES', [])) || !empty(self::$defaultRoutes)) {
 					return true;
@@ -164,7 +164,7 @@ class Router
 
 	/**
 	 * Строит роутер дефолтных bxapp урлов
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public static function buildDefault(): bool
@@ -423,7 +423,7 @@ class Router
 		}
 
 		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
-			$cacheRoutesPath = APP_CACHE_ROUTER_DIR . '/paths/'; 
+			$cacheRoutesPath = APP_CACHE_ROUTER_DIR . '/paths/';
 			$data = [];
 
 			if (!is_dir($cacheRoutesPath)) {
@@ -648,7 +648,7 @@ class Router
 
 	/**
 	 * Формирует массив используемых моделей для каждого урла
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function generateModelsForRouter(array $routes =  []): array
@@ -677,11 +677,11 @@ class Router
 
 		return $models;
 	}
-	
+
 	/**
 	 * Генерирует актуальный список привязанных моделей к роутам
 	 * Cтатик кеши изменённых роутов будут очищены
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function generateModels(): void
@@ -799,7 +799,7 @@ class Router
 
 												$deletedStatic[] = $name;
 											}
-			
+
 											unset($data[$name]);
 										}
 
@@ -815,7 +815,7 @@ class Router
 
 										\H::deleteFile(APP_CACHE_ROUTER_DIR . '/paths/' . $name . '/data.json', 'paths');
 									}
-			
+
 									if (file_put_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($data)) === false) {
 										\Logger::info('Router: Не удалось записать файл router.json в папке ' . $table);
 									}
