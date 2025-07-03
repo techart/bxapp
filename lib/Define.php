@@ -123,6 +123,7 @@ class Define
 		define("APP_ROOT_DIR", APP_PHP_INTERFACE_DIR.'/'.$bxAppPaths['bxAppDir']); // путь к папке BxApp (или её переопределению)
 		define("APP_CLI_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['cliDir']); // папка Cli
 		define("APP_CONFIGS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['configsDir']); // папка Configs
+		define("APP_ENTITIES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['entitiesDir']); // папка Entities
 		define("APP_LOCALIZATION_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['localizationDir']); // папка Localization
 		define("APP_LOGS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['logsDir']); // папка Logs
 		define("APP_MENU_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['menuDir']); // папка Menu

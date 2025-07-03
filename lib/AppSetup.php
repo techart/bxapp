@@ -152,6 +152,7 @@ class AppSetup
 
 		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Cli', $rootDir . '/Cli');
 		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Configs', $rootDir . '/Configs');
+		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Entities', $rootDir . '/Entities');
 		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Localization', $rootDir . '/Localization');
 		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Logs', $rootDir . '/Logs');
 		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Menu', $rootDir . '/Menu');

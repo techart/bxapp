@@ -151,118 +151,125 @@ class OpenAPI
 		foreach ($this->routes as $method) {
 			foreach ($method as $group) {
 				foreach ($group as $route) {
-					if (!empty($this->tags[$route['bundle']]) && empty($this->apiFile['tags'][$route['bundle']])) {
-						$this->apiFile['tags'][$route['bundle']] = [
-							'name' => $route['bundle'],
-							...$this->tags[$route['bundle']]
-						];
-					}
-
-					// Получаем данные для бандла из RoutesAPI.php
-					if (empty($this->routesApiData[$route['bundle']])) {
-						if ($route['bundle'] === 'BxappDefault') {
-							$this->routesApiData[$route['bundle']] = include_once(APP_VENDOR_DIR . '/lib/Router/BxappDefault/RoutesAPI.php');
-						} else {
-							$this->routesApiData[$route['bundle']] = include_once(APP_ROUTER_DIR . '/' . $route['bundle'] . '/' . 'RoutesAPI.php');
-						}
-					}
-
-					// Формируем path параметры
-					if (!empty($route['where'])) {
-						foreach ($route['where'] as $param => $type) {
-							$pattern = $this->buildPattern($type);
-
-							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
-								'name' => $param,
-								'in' => 'path',
-								'required' => true,
-								'description' => 'Pattern: ' . $pattern,
-								'schema' => [
-									'type' => $type === 'int' ? 'integer' : 'string',
-									'pattern' => $pattern
-								]
+					if (!in_array('noSwagger', $route['params'])) {
+						if (!empty($this->tags[$route['bundle']]) && empty($this->apiFile['tags'][$route['bundle']])) {
+							$this->apiFile['tags'][$route['bundle']] = [
+								'name' => $route['bundle'],
+								...$this->tags[$route['bundle']]
 							];
 						}
-					}
 
-					// Формируем get параметры
-					if (!empty($route['allowedQueryParams'])) {
-						if (is_array($route['allowedQueryParams'])) {
-							foreach ($route['allowedQueryParams'] as $param) {
-								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
-									'name' => $param,
-									'in' => 'query',
-									'required' => false
-								];
-							} 
-						} elseif ($route['allowedQueryParams'] === true) {
-							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
-								'name' => 'params',
-								'in' => 'query',
-								'schema' => [
-									'type' => 'object',
-									'additionalProperties' => [
-										'type' => 'string'
-									]
-								],
-								'style' => 'form',
-								'explode' => true,
-								'example' => []
-							];
-						}
-					}
-
-					$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
-						'name' => 'IsSwagger',
-						'in' => 'header',
-						'required' => true,
-						'schema' => [
-							'type' => 'string'
-						],
-						'example' => 'true'
-					];
-
-					$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['tags'] = [$route['bundle']];
-
-					if (empty($this->routesApiData[$route['bundle']][$route['name']]['requestBody']) && $route['requestMethod'] !== 'get') {
-						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['requestBody'] = [
-							'content' => [
-								'application/json' => [
-									'schema' => [
-										'type' => 'object'
-									]
-								]
-							]
-						];
-					}
-
-					if (isset($this->routesApiData[$route['bundle']]) && $this->routesApiData[$route['bundle']] !== false) {
-						// Формируем схему ответа
-						$schemaRef = $this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'];
-						if (!empty($schemaRef)) {
-							if (!empty($schemaRef['bxappResult']) && $schemaRef['bxappResult']) {
-								$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $this->schemaDefault['SCHEMAS']['Response'];
-								$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema']['properties']['result']['properties']['data'] = $schemaRef['data'];
+						// Получаем данные для бандла из RoutesAPI.php
+						if (empty($this->routesApiData[$route['bundle']])) {
+							if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$route['bundle']])) {
+								$this->routesApiData[$route['bundle']] = \Techart\BxApp\RouterConfigurator::$bundles[$route['bundle']];
 							} else {
-								$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $schemaRef['data'];
+								if ($route['bundle'] === 'BxappDefault') {
+									$this->routesApiData[$route['bundle']] = include_once(APP_VENDOR_DIR . '/lib/Router/BxappDefault/RoutesAPI.php');
+								} else {
+									$this->routesApiData[$route['bundle']] = include_once(APP_ROUTER_DIR . '/' . $route['bundle'] . '/' . 'RoutesAPI.php');
+								}
 							}
 						}
 
-						// Совмещаем то что сгенерировалось и то что написано в файле RoutesAPI.php
-						if (!empty($this->routesApiData[$route['bundle']][$route['name']])) {
-							unset($this->routesApiData[$route['bundle']][$route['name']]['models']);
-							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']] = array_merge_recursive($this->routesApiData[$route['bundle']][$route['name']], $this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]);
-						}
-					} else {
-						echo "\033[0;31mДля бандла " . $route['bundle'] . " не существует файла RoutesAPI.php\033[0m".PHP_EOL;
-					}
+						// Формируем path параметры
+						if (!empty($route['where'])) {
+							foreach ($route['where'] as $param => $type) {
+								$pattern = $this->buildPattern($type);
 
-					// Если не заполнены 200 и 404, то по дефолту выставляем заглушки
-					if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['200'])) {
-						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['200']['description'] = 'Успешно';
-					}
-					if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['404'])) {
-						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['404']['description'] = 'Доступ закрыт';
+								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+									'name' => $param,
+									'in' => 'path',
+									'required' => true,
+									'description' => 'Pattern: ' . $pattern,
+									'schema' => [
+										'type' => $type === 'int' ? 'integer' : 'string',
+										'pattern' => $pattern
+									]
+								];
+							}
+						}
+
+						// Формируем get параметры
+						if (!empty($route['allowedQueryParams'])) {
+							if (is_array($route['allowedQueryParams'])) {
+								foreach ($route['allowedQueryParams'] as $param) {
+									$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+										'name' => $param,
+										'in' => 'query',
+										'required' => false
+									];
+								} 
+							} elseif ($route['allowedQueryParams'] === true) {
+								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+									'name' => 'params',
+									'in' => 'query',
+									'schema' => [
+										'type' => 'object',
+										'additionalProperties' => [
+											'type' => 'string'
+										]
+									],
+									'style' => 'form',
+									'explode' => true,
+									'example' => []
+								];
+							}
+						}
+
+						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+							'name' => 'IsSwagger',
+							'in' => 'header',
+							'required' => true,
+							'schema' => [
+								'type' => 'string'
+							],
+							'example' => 'true'
+						];
+
+						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['tags'] = [$route['bundle']];
+						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['operationId'] = $route['name'];
+
+						if (empty($this->routesApiData[$route['bundle']][$route['name']]['requestBody']) && $route['requestMethod'] !== 'get') {
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['requestBody'] = [
+								'content' => [
+									'application/json' => [
+										'schema' => [
+											'type' => 'object'
+										]
+									]
+								]
+							];
+						}
+
+						if (isset($this->routesApiData[$route['bundle']]) && $this->routesApiData[$route['bundle']] !== false) {
+							// Формируем схему ответа
+							$schemaRef = $this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'];
+							if (!empty($schemaRef)) {
+								if (!empty($schemaRef['bxappResult']) && $schemaRef['bxappResult']) {
+									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $this->schemaDefault['SCHEMAS']['Response'];
+									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema']['properties']['result']['properties']['data'] = $schemaRef['data'];
+								} else {
+									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $schemaRef['data'];
+								}
+							}
+
+							// Совмещаем то что сгенерировалось и то что написано в файле RoutesAPI.php
+							if (!empty($this->routesApiData[$route['bundle']][$route['name']])) {
+								unset($this->routesApiData[$route['bundle']][$route['name']]['models']);
+								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']] = array_merge_recursive($this->routesApiData[$route['bundle']][$route['name']], $this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]);
+							}
+						} else {
+							echo "\033[0;31mДля бандла " . $route['bundle'] . " не существует файла RoutesAPI.php\033[0m".PHP_EOL;
+						}
+
+						// Если не заполнены 200 и 404, то по дефолту выставляем заглушки
+						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['200'])) {
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['200']['description'] = 'Успешно';
+						}
+						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['404'])) {
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['404']['description'] = 'Доступ закрыт';
+						}
 					}
 				}
 			}

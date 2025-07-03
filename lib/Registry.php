@@ -87,6 +87,7 @@ class Registry
 				'bxAppDir' => 'BxApp',
 				'cliDir' => 'Cli',
 				'configsDir' => 'Configs',
+				'entitiesDir' => 'Entities',
 				'localizationDir' => 'Localization',
 				'logsDir' => 'Logs',
 				'menuDir' => 'Menu',
@@ -107,6 +108,9 @@ class Registry
 			}
 			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Configs', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
 				$bxAppEntitiesDirs['configsDir'] .= '_'.$bxappSiteId;
+			}
+			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Entities', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+				$bxAppEntitiesDirs['entitiesDir'] .= '_'.$bxappSiteId;
 			}
 			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Localization', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
 				$bxAppEntitiesDirs['localizationDir'] .= '_'.$bxappSiteId;

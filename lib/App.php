@@ -28,6 +28,9 @@ namespace Techart\BxApp;
  * App::service()
  * Файлы моделей ищутся в php_interface/BxApp/Services/{$file}.php
  *
+ * App::entity()
+ * Файлы энтити ищутся в php_interface/BxApp/Entities/{$file}.php
+ * 
  * App::form()
  * Файлы битрикс форм ищутся в php_interface/BxApp/Forms/{$file}.php
  *
@@ -67,6 +70,7 @@ class App
 		'models' => [],
 		'modules' => [],
 		'services' => [],
+		'entities' => [],
 		'forms' => [],
 	]; // массив с экземплярами всех вызванных типов
 
@@ -350,6 +354,19 @@ class App
 	}
 
 	/**
+	 * Возвращает экземпляр класса энтити из файла $file
+	 * Если $collect = false, то не сохраняет экземпляр
+	 * 
+	 * @param string $file
+	 * @param boolean $collect
+	 * @return object
+	 */
+	public static function entity(string $file = '', bool $collect = true): object
+	{
+		return self::get('entities', 'Entities', $file, $collect);
+	}
+
+	/**
 	 * --------
 	 * Это задел на случай, если будут реализовываться БИТРИКС ФОРМЫ
 	 * В данный момент это ни как не используется
@@ -522,6 +539,14 @@ class App
 					$text .= '<p>' . $route['name'] . ' - ' . strtoupper($route['requestMethod']) . ' - ' . $route['url'];
 					if (!empty($route['models'])) {
 						$text .= ' - Models: [ ' . implode(', ', $route['models']) . ' ]';
+					}
+					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
+					require_once($controllerFile);
+					$controllerClass = 'Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];
+					if (class_exists($controllerClass)) {
+						if (!method_exists($controllerClass, $route['method'])) {
+							$text .= ' | <span style="color: red">Указан несуществующий метод контроллера - ' . $route['controller'] . '.' . $route['method'] . '</span>';
+						}
 					}
 					$text .= '</p>';
 				}

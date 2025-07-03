@@ -9,7 +9,7 @@ class RouterConfigurator
 {
 	private static $RouterData = [];
 	private static $namesData = [];
-	private static $defaultRouteParams = ['noQueryParams', 'noStatic'];
+	private static $defaultRouteParams = ['noQueryParams', 'noStatic', 'noSwagger'];
 	public static $bundles = [];
 
 	/**
