@@ -17,7 +17,9 @@
 
 return [
 	'TITLE' => 'title', // Заголовок API файла
-	'DESCRIPTION' => 'description', // Описание API файла
+	'DESCRIPTION' => 'Файл формируется на основе данных в <b>BxApp/Router</b>.</br>
+ В файле <b>.env</b> надо заполнить переменную <b>APP_OPENAPI_DOMAIN</b> указав через запятую список доменов (например, локальный и титан).</br>
+ Файл формируется при вызове <b>./update.sh</b>. Так же можно сформировать CLI командой: <b>vphp cli.php openapi:create</b>', // Описание API файла
 	'VERSION' => '1.0', // Версия API файла
 	'TAGS' => [ // Тэги роутов
 		// 'Test' => [

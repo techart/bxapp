@@ -1,6 +1,6 @@
 <?php
 // App::route()->setBundleProtector([]);
-// App::route()->setBundleParams([]); // noQueryParams | noStatic
+// App::route()->setBundleParams([]); // noQueryParams | noStatic | noSwagger
 // App::route()->setBundleModels([]);
 
 App::route()->post('/logger/', 'Actions.logger')->name('bxapp-default-logger');

@@ -1,5 +1,5 @@
 <?php
-namespace Router\{{BundleName}}\Controllers;
+namespace TechartBxApp\Router\{{BundleName}}\Controllers;
 
 class Actions extends \BaseRouterController
 {

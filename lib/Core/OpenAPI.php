@@ -88,9 +88,11 @@ class OpenAPI
 				'description' => $this->schema['DESCRIPTION'],
 				'version' => $this->schema['VERSION'],
 			],
-			'servers' => [
-				['url' => \Env::get('APP_OPENAPI_DOMAIN', '')]
-			],
+			'servers' => array_map(function ($v) {
+				return [
+					'url' => trim($v)
+				];
+			}, explode(',', \Env::get('APP_OPENAPI_DOMAIN', ''))),
 			'tags' => [],
 			'paths' => [],
 			'components' => [

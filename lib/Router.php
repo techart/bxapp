@@ -620,7 +620,7 @@ class Router
 				}
 				if (file_exists($controllerFile)) {
 					require_once($controllerFile);
-					$controllerClass = 'Router\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];
+					$controllerClass = 'TechartBxApp\Router\\'.$routeData['bundle'].'\\Controllers\\'.$routeData['controller'];
 
 					if (class_exists($controllerClass)) {
 						$controller = new $controllerClass();

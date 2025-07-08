@@ -37,7 +37,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Site\\Middleware\\Before\\".$className;
+						$className = "TechartBxApp\\Middleware\\Before\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -87,7 +87,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Site\\Middleware\\Before\\".$className;
+						$className = "TechartBxApp\\Middleware\\Before\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -129,7 +129,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Middleware\\Before\\".$className;
+						$className = "Techart\\BxApp\\Middleware\\Before\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -179,7 +179,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Middleware\\Before\\".$className;
+						$className = "Techart\\BxApp\\Middleware\\Before\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -222,7 +222,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Site\\Middleware\\After\\".$className;
+						$className = "TechartBxApp\\Middleware\\After\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -275,7 +275,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Site\\Middleware\\After\\".$className;
+						$className = "TechartBxApp\\Middleware\\After\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -319,7 +319,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Middleware\\After\\".$className;
+						$className = "Techart\\BxApp\\Middleware\\After\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;
@@ -370,7 +370,7 @@ class Middleware
 					if (file_exists($classFile)) {
 						require_once($classFile);
 
-						$className = "Middleware\\After\\".$className;
+						$className = "Techart\\BxApp\\Middleware\\After\\".$className;
 
 						if (class_exists($className)) {
 							$curClass = new $className;

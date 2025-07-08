@@ -1,5 +1,5 @@
 <?php
-namespace Site\Cli{{cli_namespace}};
+namespace TechartBxApp\Cli{{cli_namespace}};
 
 /**
  * Пример вызова метода класса через консоль (в папке php_interface):

@@ -1,5 +1,5 @@
 <?php
-namespace Site\Middleware\Before;
+namespace TechartBxApp\Middleware\Before;
 
 class ChangeHeaders
 {

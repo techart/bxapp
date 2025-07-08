@@ -542,7 +542,7 @@ class App
 					}
 					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
 					require_once($controllerFile);
-					$controllerClass = 'Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];
+					$controllerClass = 'TechartBxApp\Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];
 					if (class_exists($controllerClass)) {
 						if (!method_exists($controllerClass, $route['method'])) {
 							$text .= ' | <span style="color: red">Указан несуществующий метод контроллера - ' . $route['controller'] . '.' . $route['method'] . '</span>';

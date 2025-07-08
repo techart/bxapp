@@ -14,7 +14,7 @@ return [
 	'APP_ROUTER_CASE_SENSITIVE' => true, // регулярка роутера должна учитывать регистр?
 	'APP_ROUTER_CACHE_REBUILD' => true, // ____ЧИТАТЬ_ЗАМЕЧАНИЕ_ВЫШЕ____
 	'APP_ROUTER_BUNDLES' => [], // какие бандлы нужно обрабатывать (подпапки в папке Router)
-	'APP_ROUTER_PARAMS' => [], // кастомные параметры для роутов (дефолтные: noQueryParams, noStatic)
+	'APP_ROUTER_PARAMS' => [], // кастомные параметры для роутов (дефолтные: noQueryParams, noStatic, noSwagger)
 	'APP_ROUTER_CACHE_TYPE' => 'file', // file | memcache - на данный момент работает только __file__ кэш
 	'APP_ROUTER_CACHE_MODELS_TAGS' => false, // генерация кеша роутов с привязкой к моделям
 ];

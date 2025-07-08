@@ -1,5 +1,5 @@
 <?php
-namespace Site\Middleware\After;
+namespace TechartBxApp\Middleware\After;
 
 class {{middleware_name}}
 {

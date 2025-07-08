@@ -1,5 +1,5 @@
 <?php
-namespace Middleware\After;
+namespace Techart\BxApp\Middleware\After;
 
 class StaticApi
 {
