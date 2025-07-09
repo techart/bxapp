@@ -2,23 +2,25 @@
 
 return [
 	'bxapp-default-logger' => [
-		'summary' => 'Добавить сообщение в лог',
-		'requestBody' => [
-			'content' => [
-				'multipart/form-data' => [
-					'schema' => [
-						'type' => 'object',
-						'properties' => [
-							'type' => [
-								'type' => 'string',
-								'description' => 'Тип',
-								'example' => 'info'
-							],
-							'text' => [
-								'type' => 'string',
-								'description' => 'Текст',
-								'example' => 'Текст'
-							],
+		'openapi' => [
+			'summary' => 'Добавить сообщение в лог',
+			'requestBody' => [
+				'content' => [
+					'multipart/form-data' => [
+						'schema' => [
+							'type' => 'object',
+							'properties' => [
+								'type' => [
+									'type' => 'string',
+									'description' => 'Тип',
+									'example' => 'info'
+								],
+								'text' => [
+									'type' => 'string',
+									'description' => 'Текст',
+									'example' => 'Текст'
+								],
+							]
 						]
 					]
 				]
@@ -26,26 +28,30 @@ return [
 		]
 	],
 	'bxapp-session-getData' => [
-		'summary' => 'Получить сохранённые данные из сессии'
+		'openapi' => [
+			'summary' => 'Получить сохранённые данные из сессии'
+		]
 	],
 	'bxapp-session-updateData' => [
-		'summary' => 'Обновить данные в сессии',
-		'requestBody' => [
-			'content' => [
-				'multipart/form-data' => [
-					'schema' => [
-						'type' => 'object',
-						'properties' => [
-							'key' => [
-								'type' => 'string',
-								'description' => 'Ключ',
-								'example' => 'key'
-							],
-							'data' => [
-								'type' => 'array',
-								'description' => 'Данные',
-								'example' => []
-							],
+		'openapi' => [
+			'summary' => 'Обновить данные в сессии',
+			'requestBody' => [
+				'content' => [
+					'multipart/form-data' => [
+						'schema' => [
+							'type' => 'object',
+							'properties' => [
+								'key' => [
+									'type' => 'string',
+									'description' => 'Ключ',
+									'example' => 'key'
+								],
+								'data' => [
+									'type' => 'array',
+									'description' => 'Данные',
+									'example' => []
+								],
+							]
 						]
 					]
 				]
@@ -53,12 +59,18 @@ return [
 		]
 	],
 	'bxapp-session-removeData' => [
-		'summary' => 'Удалить данные из сессии',
+		'openapi' => [
+			'summary' => 'Удалить данные из сессии',
+		]
 	],
 	'bxapp-session-createNextSession' => [
-		'summary' => 'Создание сессии некста'
+		'openapi' => [
+			'summary' => 'Создание сессии некста'
+		]
 	],
 	'bxapp-session-checkNextSession' => [
-		'summary' => 'Проверка сессии некста'
+		'openapi' => [
+			'summary' => 'Проверка сессии некста'
+		]
 	]
 ];

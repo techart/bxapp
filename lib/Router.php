@@ -422,7 +422,8 @@ class Router
 			Logger::error('кэш роута для страницы "'.$url.'" записать не удалось');
 		}
 
-		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+		// NOTE: Удалить если не нужна cli команда cache:generateModels
+		/*if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
 			$cacheRoutesPath = APP_CACHE_ROUTER_DIR . '/paths/';
 			$data = [];
 
@@ -464,7 +465,7 @@ class Router
 					\Logger::info('StaticApi: Не удалось записать файл models.json');
 				}
 			}
-		}
+		}*/
 	}
 
 	/**

@@ -52,13 +52,22 @@ class RouterConfigurator
 	 * @param string $url
 	 * @return mixed
 	 */
-	public static function getRouteByUrl(string $url = ''): mixed
+	public static function getRouteByUrl(string $url = '', string $method = 'get'): mixed
 	{
-		if (isset(self::$RouterData[$url])) {
-			return self::$RouterData[$url];
+		$currentRequestMethod = mb_strtolower($method);
+		$prefixBundle = Router::explodeUrl($url);
+		$routerData = self::get();
+
+		if (isset($routerData[$currentRequestMethod][$prefixBundle['bundle']])) {//[$prefixBundle['route']]
+			foreach ($routerData[$currentRequestMethod][$prefixBundle['bundle']] as $routeUrl => $routParams) {
+				if ($prefixBundle['route'] === $routeUrl) {
+					return $routParams;
+				}
+			}
 		} else {
-			return false;
+			Logger::info('не найден роутер с данными: '.implode('; ', $prefixBundle));
 		}
+		return false;
 	}
 
 	/**
@@ -211,7 +220,7 @@ class RouterConfigurator
 
 	/**
 	 * Удаляет имя роута из массива $namesData
-	 * 
+	 *
 	 * @param string $name
 	 * @return void
 	 */
@@ -253,17 +262,32 @@ class RouterConfigurator
 		self::$RouterData[$requestMethod][$bundle][$url]['params'] = $currentParams;
 	}
 
+	// NOTE: Удалить если не надо хранить модели в конфиге роута
+	// /**
+	//  * Назначает роуту $models
+	//  *
+	//  * @param string $requestMethod
+	//  * @param string $bundle
+	//  * @param string $url
+	//  * @param array $models
+	//  * @return void
+	//  */
+	// public static function setRouteModels(string $requestMethod = '', string $bundle = '', string $url = '', array $models = []): void
+	// {
+	// 	self::$RouterData[$requestMethod][$bundle][$url][] = $models;
+	// }
+
 	/**
-	 * Назначает роуту $models
-	 * 
+	 * Назначает роуту данные $data
+	 *
 	 * @param string $requestMethod
 	 * @param string $bundle
 	 * @param string $url
-	 * @param array $models
+	 * @param array $data
 	 * @return void
 	 */
-	public static function setRouteModels(string $requestMethod = '', string $bundle = '', string $url = '', array $models = []): void
+	public static function setRouteData(string $requestMethod = '', string $bundle = '', string $url = '', array $data = []): void
 	{
-		self::$RouterData[$requestMethod][$bundle][$url]['models'] = $models;
+		self::$RouterData[$requestMethod][$bundle][$url]['data'] = $data;
 	}
 }

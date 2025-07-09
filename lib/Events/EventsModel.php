@@ -10,7 +10,7 @@ namespace Techart\BxApp\Events;
  *
  * В битриксе у хайлоадблоков нету общих эвентов. Нужно назначать для каждого самостоятельно. Типа:
  *
- * AddEventHandler('', 'WebinarOptionsOnAfterAdd', 'OnAfterAdd'); //где "WebinarOptions" название highload блока
+ * AddEventHandler('', 'WebinarOptionsOnAfterAdd', 'OnAfterAdd', 1); //где "WebinarOptions" название highload блока
  *
  * поэтому назначаем для тех, которые перечислены в конфиге App - в ключе APP_HIGHLOAD_BLOCKS_LIST
  */
@@ -29,12 +29,12 @@ class EventsModel
 			(\H::isLocal() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE') ) ||
 			(\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && \H::isLocal() === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true)
 		) {
-			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", ["\Techart\BxApp\Events\EventsModel", "ibSectionDelete"]);//id удалённого раздела
-			AddEventHandler("iblock", "OnAfterIBlockElementAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockElementUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
-			AddEventHandler("iblock", "OnAfterIBlockElementDelete", ["\Techart\BxApp\Events\EventsModel", "ibChanged"]);//arr
+			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
+			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
+			AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", ["\Techart\BxApp\Events\EventsModel", "ibSectionDelete"], 1);//id удалённого раздела
+			AddEventHandler("iblock", "OnAfterIBlockElementAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
+			AddEventHandler("iblock", "OnAfterIBlockElementUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
+			AddEventHandler("iblock", "OnAfterIBlockElementDelete", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
 
 			// У хайлоадблоков нету общих эвентов, поэтому назначаем только для тех, которые перечислены в конфиге App
 			// в ключе APP_HIGHLOAD_BLOCKS_LIST
@@ -53,9 +53,9 @@ class EventsModel
 							$code = $table.\H::ucfirst($lang['LANGUAGE_ID']);
 						}
 
-						$eventManager->AddEventHandler("", $code."OnAfterDelete", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
-						$eventManager->AddEventHandler("", $code."OnAfterAdd", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
-						$eventManager->AddEventHandler("", $code."OnAfterUpdate", ["\Techart\BxApp\Events\EventsModel", "hbChanged"]);
+						$eventManager->AddEventHandler("", $code."OnAfterDelete", ["\Techart\BxApp\Events\EventsModel", "hbChanged"], false, 1);
+						$eventManager->AddEventHandler("", $code."OnAfterAdd", ["\Techart\BxApp\Events\EventsModel", "hbChanged"], false, 1);
+						$eventManager->AddEventHandler("", $code."OnAfterUpdate", ["\Techart\BxApp\Events\EventsModel", "hbChanged"], false, 1);
 					}
 				}
 			}
@@ -73,19 +73,25 @@ class EventsModel
 					$models = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
 					$routeNames = array_keys($data);
 					$tables = [];
-
+					
 					if ($data !== false) {
 						if ($models !== false) {
+							$paths = [];
+
 							foreach ($data as $name => $routes) {
-								$tables = $tables + $models[$name];
-		
+								$paths[] = $name;
+								$tables = [];
+								if (isset($models) && !empty($models[$name])) {
+									$tables = $tables + $models[$name];
+								}
+
 								foreach ($routes as $route) {
 									\H::deleteFile($route . 'data.json', 'static');
 								}
 							}
+
 							unlink($filePath);
 							unset($tables[array_search($tableName, $tables)]);
-
 							foreach ($tables as $table) {
 								if (file_exists(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json')) {
 									$tableData = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'), true);
@@ -95,6 +101,8 @@ class EventsModel
 									}
 								}
 							}
+
+							\Glob::set('EVENTS_MODEL_CLEARED_ROUTE_NAMES', $paths);
 						} else {
 							\Logger::info('Router: Не удалось прочитать файл models.json');
 						}

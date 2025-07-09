@@ -27,7 +27,8 @@ class BaseRouterController
 
 	protected $request = []; // объект битрикс getRequest()
 	protected $args = []; // параметры вызова контроллера в роуте
-	protected $models = []; // модели роута
+	// NOTE: Удалить если доступ к моделям через $this->models в экшене роутера точно не нужен
+	// protected $models = []; // модели роута
 
 
 
@@ -142,19 +143,20 @@ class BaseRouterController
 			}
 		}
 
-		foreach (\App::getRoute('models') as $k => $v) {
+		// NOTE: Удалить если доступ к моделям через $this->models в экшене роутера точно не нужен
+		/*foreach (\App::getRoute('models') as $k => $v) {
 			$curModel = \App::model($v, true);
 
 			if (is_numeric($k)) {
 				$k = str_replace('/', '', $v);
 			}
 			$this->models[$k] = $curModel;
-		}
+		}*/
 
 		// $fullActionArgs = array_merge($this->args, $this->models);
 
 		$this->collectRequest();
 
-		return call_user_func_array(array($this, \App::getRoute('method')), $this->models);
+		return call_user_func_array(array($this, \App::getRoute('method')), \App::getRoute('args'));
 	}
 }

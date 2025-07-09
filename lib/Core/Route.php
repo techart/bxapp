@@ -75,15 +75,15 @@ class Route
 	private $routeBundle = '';
 	private $routeProtector = [];
 	private $routeParams = [];
-	private $routeModels = [];
+	// private $routeModels = [];
 	private $defaultRouteName = '';
 	private $group = '';
 	private $groupProtector = [];
 	private $groupParams = [];
-	private $groupModels = [];
+	// private $groupModels = [];
 	private $protector = [];
 	private $params = [];
-	private $models = [];
+	// private $models = [];
 
 
 
@@ -109,16 +109,17 @@ class Route
 		\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', $params);
 	}
 
-	/**
-	 * Назначает текущему бандлу глобальные модели
-	 *
-	 * @param array $models
-	 * @return void
-	 */
-	public static function setBundleModels(array $models = []): void
-	{
-		\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', $models);
-	}
+	// NOTE: Удалить если не нужно выставлять модели в конфиге роута
+	// /**
+	//  * Назначает текущему бандлу глобальные модели
+	//  *
+	//  * @param array $models
+	//  * @return void
+	//  */
+	// public static function setBundleModels(array $models = []): void
+	// {
+	// 	\Techart\BxApp\Glob::set('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', $models);
+	// }
 
 	/**
 	 * Оборачивает несколько роутов в группу.
@@ -175,7 +176,8 @@ class Route
 			$this->routeBundle = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE', '');
 			$this->routeProtector = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PROTECTOR', []);
 			$this->routeParams = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_PARAMS', []);
-			$this->routeModels = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []);
+			// NOTE: Удалить если не нужно выставлять модели в конфиге роута
+			// $this->routeModels = \Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []);
 			$this->defaultRouteName = strtolower($requestMethod.'-'.$this->bundle.(!empty($this->group) ? '-'.$this->group : '').'-'.str_replace(['{', '}'], '', str_replace('/', '-', trim($this->getCurrentUrl(), '/'))));
 
 			\Techart\BxApp\RouterConfigurator::setRequestMethod($requestMethod);
@@ -203,7 +205,8 @@ class Route
 			if (!empty($this->groupParams)) {
 				\Techart\BxApp\RouterConfigurator::setRouteParams($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeParams, $this->groupParams));
 			}
-			if (!empty($this->routeModels)) {
+			// NOTE: Удалить если не нужно выставлять модели в конфиге роута
+			/*if (!empty($this->routeModels)) {
 				\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->routeModels);
 			}
 			if (!empty($this->groupModels)) {
@@ -221,6 +224,21 @@ class Route
 							$this->models = array_merge(\Glob::get('ROUTER_BUILD_CURRENT_BUNDLE_MODELS', []), $this->groupModels, $data[$this->defaultRouteName]['models']);
 
 							\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
+						}
+					}
+				}
+			}*/
+			if (!empty($this->routeBundle)) {
+				if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+					if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+					}
+
+					if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+						$data = \Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle];
+
+						if (isset($data[$this->defaultRouteName]) && !empty($data[$this->defaultRouteName]['data'])) {
+							\Techart\BxApp\RouterConfigurator::setRouteData($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $data[$this->defaultRouteName]['data']);
 						}
 					}
 				}
@@ -349,7 +367,8 @@ class Route
 			\Techart\BxApp\RouterConfigurator::setRouteName($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $name);
 		}
 
-		if (!empty($this->routeBundle)) {
+		// NOTE: Удалить если не нужны модели в конфиге роута
+		/*if (!empty($this->routeBundle)) {
 			if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
 				if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
 					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
@@ -373,6 +392,21 @@ class Route
 							}
 							\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
 						}
+					}
+				}
+			}
+		}*/
+		if (!empty($this->routeBundle)) {
+			if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+				if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+				}
+
+				if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
+					$data = \Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle];
+
+					if (isset($data[$name]['data']) && !empty($data[$name]['data'])) {
+						\Techart\BxApp\RouterConfigurator::setRouteData($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $data[$name]['data']);
 					}
 				}
 			}
@@ -429,13 +463,15 @@ class Route
 		return $this;
 	}
 
+	// NOTE: Удалить если не нужны модели в конфиге роута
+	/*
 	/**
 	 * Задаёт роуту модели.
 	 * Так же можно задать модели для группы (они будут ДОБАВЛЕНЫ ко всем роутам группы)
 	 * 
 	 * @param array $models
 	 * @return object
-	 */
+	 
 	public function models($models = []): object
 	{
 		if ($this->getCurrentUrl() === false) {
@@ -446,8 +482,8 @@ class Route
 
 				\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), $this->models);
 			}
-		}*/
+		}
 
 		return $this;
-	}
+	}*/
 }

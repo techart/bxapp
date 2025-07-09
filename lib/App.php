@@ -74,6 +74,15 @@ class App
 		'forms' => [],
 	]; // массив с экземплярами всех вызванных типов
 
+	protected static $called = [
+		'core' => [],
+		'menu' => [],
+		'models' => [],
+		'modules' => [],
+		'services' => [],
+		'entities' => [],
+		'forms' => [],
+	]; // массив с экземплярами всех вызванных типов
 
 	/**
 	 * Запускатор BxApp
@@ -111,7 +120,9 @@ class App
 		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
 
-		\Techart\BxApp\Events\EventsModel::setEvents();
+		if (\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
+			\Techart\BxApp\Events\EventsModel::setEvents();
+		}
 		ExtraAuth::setup();
 		\Techart\BxApp\Events\BitrixEpilog::setup();
 	}
@@ -182,6 +193,22 @@ class App
 	}
 
 	/**
+	 * Возвращает массив с путями всех вызывавшихся сущностей по типам
+	 *
+	 * @param string $type
+	 * @return array
+	 */
+	public static function called(string $type = ''): array
+	{
+		if (empty($type)) {
+			return self::$called;
+		}
+		if (isset(self::$called[$type])) {
+			return self::$called[$type];
+		}
+	}
+
+	/**
 	 * Возввращает путь к файлу класса. Ищет в двух местах:
 	 * по прямому имени, как было передано
 	 * если по прямому пути нет, то ищет в одноимённой папке с классом
@@ -245,6 +272,7 @@ class App
 				}
 
 				if (class_exists($className)) {
+					self::$called[$type][] = $file;
 					if ($collect) {
 						self::$instances[$type][$fullEntityName] = new $className($locale);
 					} else {

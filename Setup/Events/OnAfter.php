@@ -4,12 +4,12 @@
  * Подключается в init.php
  */
 
-AddEventHandler("iblock", "OnAfterIBlockSectionAdd", "ibChangedAfter");//arr
-AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", "ibChangedAfter");//arr
-AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", "ibSectionDeleteAfter");//id удалённого раздела
-AddEventHandler("iblock", "OnAfterIBlockElementAdd", "ibChangedAfter");//arr
-AddEventHandler("iblock", "OnAfterIBlockElementUpdate", "ibChangedAfter");//arr
-AddEventHandler("iblock", "OnAfterIBlockElementDelete", "ibChangedAfter");//arr
+AddEventHandler("iblock", "OnAfterIBlockSectionAdd", "ibChangedAfter", 100);//arr
+AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", "ibChangedAfter", 100);//arr
+AddEventHandler("iblock", "OnBeforeIBlockSectionDelete", "ibSectionDeleteAfter", 100);//id удалённого раздела
+AddEventHandler("iblock", "OnAfterIBlockElementAdd", "ibChangedAfter", 100);//arr
+AddEventHandler("iblock", "OnAfterIBlockElementUpdate", "ibChangedAfter", 100);//arr
+AddEventHandler("iblock", "OnAfterIBlockElementDelete", "ibChangedAfter", 100);//arr
 
 
 function ibChangedAfter(&$arFields): void {
@@ -37,9 +37,9 @@ if (count(\Config::get('App.APP_HIGHLOAD_BLOCKS_LIST', [])) > 0 ) {
 				$code = $table.\H::ucfirst($lang['LANGUAGE_ID']);
 			}
 
-			$eventManager->AddEventHandler("", $code."OnAfterDelete", "hbChangedAfter");
-			$eventManager->AddEventHandler("", $code."OnAfterAdd", "hbChangedAfter");
-			$eventManager->AddEventHandler("", $code."OnAfterUpdate", "hbChangedAfter");
+			$eventManager->AddEventHandler("", $code."OnAfterDelete", "hbChangedAfter", false, 100);
+			$eventManager->AddEventHandler("", $code."OnAfterAdd", "hbChangedAfter", false, 100);
+			$eventManager->AddEventHandler("", $code."OnAfterUpdate", "hbChangedAfter", false, 100);
 		}
 	}
 }

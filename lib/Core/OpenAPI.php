@@ -232,7 +232,7 @@ class OpenAPI
 						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['tags'] = [$route['bundle']];
 						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['operationId'] = $route['name'];
 
-						if (empty($this->routesApiData[$route['bundle']][$route['name']]['requestBody']) && $route['requestMethod'] !== 'get') {
+						if (empty($this->routesApiData[$route['bundle']][$route['name']]['openapi']['requestBody']) && $route['requestMethod'] !== 'get') {
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['requestBody'] = [
 								'content' => [
 									'application/json' => [
@@ -246,30 +246,29 @@ class OpenAPI
 
 						if (isset($this->routesApiData[$route['bundle']]) && $this->routesApiData[$route['bundle']] !== false) {
 							// Формируем схему ответа
-							$schemaRef = $this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'];
+							$schemaRef = $this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['200']['content']['application/json']['schema'];
 							if (!empty($schemaRef)) {
 								if (!empty($schemaRef['bxappResult']) && $schemaRef['bxappResult']) {
-									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $this->schemaDefault['SCHEMAS']['Response'];
-									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema']['properties']['result']['properties']['data'] = $schemaRef['data'];
+									$this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['200']['content']['application/json']['schema'] = $this->schemaDefault['SCHEMAS']['Response'];
+									$this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['200']['content']['application/json']['schema']['properties']['result']['properties']['data'] = $schemaRef['data'];
 								} else {
-									$this->routesApiData[$route['bundle']][$route['name']]['responses']['200']['content']['application/json']['schema'] = $schemaRef['data'];
+									$this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['200']['content']['application/json']['schema'] = $schemaRef['data'];
 								}
 							}
 
 							// Совмещаем то что сгенерировалось и то что написано в файле RoutesAPI.php
-							if (!empty($this->routesApiData[$route['bundle']][$route['name']])) {
-								unset($this->routesApiData[$route['bundle']][$route['name']]['models']);
-								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']] = array_merge_recursive($this->routesApiData[$route['bundle']][$route['name']], $this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]);
+							if (!empty($this->routesApiData[$route['bundle']][$route['name']]['openapi'])) {
+								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']] = array_merge_recursive($this->routesApiData[$route['bundle']][$route['name']]['openapi'], $this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]);
 							}
 						} else {
 							echo "\033[0;31mДля бандла " . $route['bundle'] . " не существует файла RoutesAPI.php\033[0m".PHP_EOL;
 						}
 
 						// Если не заполнены 200 и 404, то по дефолту выставляем заглушки
-						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['200'])) {
+						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['200'])) {
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['200']['description'] = 'Успешно';
 						}
-						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['responses']['404'])) {
+						if (!isset($this->routesApiData[$route['bundle']]) || empty($this->routesApiData[$route['bundle']][$route['name']]['openapi']['responses']['404'])) {
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['responses']['404']['description'] = 'Доступ закрыт';
 						}
 					}
