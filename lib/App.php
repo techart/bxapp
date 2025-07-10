@@ -320,7 +320,7 @@ class App
 	 * Если $collect = false, то не сохраняет экземпляр
 	 * В $locale можно передать требуемый язык: en, ru...
 	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'file' и $locale != APP_LANG
-	 * То модель ищется по пути Modes/_Lang/$locale/$file
+	 * То модель ищется по пути Models/_Lang/$locale/$file
 	 * В противном случае модель ищется по стандартному пути
 	 *
 	 * @param string $file
@@ -336,12 +336,12 @@ class App
 	}
 
 	/**
-	 * Возвращает экземпляр класса модели из файла $file
+	 * Возвращает экземпляр класса меню из файла $file
 	 * Если $collect = false, то не сохраняет экземпляр
 	 * В $locale можно передать требуемый язык: en, ru...
 	 * Если $locale указана и если APP_MODEL_LOCALIZATION_MODE = 'file' и $locale != APP_LANG
-	 * То модель ищется по пути Modes/_Lang/$locale/$file
-	 * В противном случае модель ищется по стандартному пути
+	 * То меню ищется по пути Menu/_Lang/$locale/$file
+	 * В противном случае меню ищется по стандартному пути
 	 *
 	 * @param string $file
 	 * @param boolean $collect
@@ -352,7 +352,7 @@ class App
 	{
 		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
 
-		return self::get('models', 'Menu', $file, $collect, $curLang);
+		return self::get('menu', 'Menu', $file, $collect, $curLang);
 	}
 
 	/**
@@ -565,9 +565,6 @@ class App
 
 				foreach ($routes as $route) {
 					$text .= '<p>' . $route['name'] . ' - ' . strtoupper($route['requestMethod']) . ' - ' . $route['url'];
-					if (!empty($route['models'])) {
-						$text .= ' - Models: [ ' . implode(', ', $route['models']) . ' ]';
-					}
 					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
 					require_once($controllerFile);
 					$controllerClass = 'TechartBxApp\Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];
