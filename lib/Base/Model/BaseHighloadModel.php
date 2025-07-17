@@ -66,12 +66,12 @@ class BaseHighloadModel
 			$locMode = $this->getLocalizationMode();
 
 			if ($locMode !== 'none') {
-				$this->lid = \H::ucfirst($curLang); // обновляем указатель языка модели
-				$this->pid = \H::ucfirst(trim(__GID__, '_')).$this->lid;
+				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+				$this->pid = __GID__.$this->lid;
 
 				// если режим локализации моделей указан как "code"
 				if ($locMode == 'code') {
-					$this->table .= ''.\H::ucfirst($this->pid);
+					$this->table .= \H::ucfirst(trim(__GID__, '_'), lowerStrEnd: true).\H::ucfirst(trim($this->lid, '_'), lowerStrEnd: true);
 				}
 			}
 
