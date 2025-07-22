@@ -19,6 +19,8 @@ class OpenAPI
 	protected $apiFile = []; // Массив с данными для Open API файла
 	protected $withDefaultRoutes = false; // Учитывать или нет дефолтные урлы при генерации Open API файла
 	protected $siteId = 's1'; // ID сайта
+	protected $servers = []; // ID серверов
+	protected $secretkeys = []; // Секретные ключи серверов
 	protected $tags = []; // Описание бандлов
 
 	/**
@@ -153,6 +155,10 @@ class OpenAPI
 		foreach ($this->routes as $method) {
 			foreach ($method as $group) {
 				foreach ($group as $route) {
+					if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && $route['requestMethod'] === 'get') {
+						$route['routeUrl'] = str_replace('/' . \Config::get('Router.APP_ROUTER_PREFIX', 'siteapi') . '/', '/{RouterPrefix}/', $route['routeUrl']);
+					}
+
 					if (!in_array('noSwagger', $route['params'])) {
 						if (!empty($this->tags[$route['bundle']]) && empty($this->apiFile['tags'][$route['bundle']])) {
 							$this->apiFile['tags'][$route['bundle']] = [
@@ -201,7 +207,7 @@ class OpenAPI
 										'in' => 'query',
 										'required' => false
 									];
-								} 
+								}
 							} elseif ($route['allowedQueryParams'] === true) {
 								$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
 									'name' => 'params',
@@ -224,10 +230,68 @@ class OpenAPI
 							'in' => 'header',
 							'required' => true,
 							'schema' => [
-								'type' => 'string'
+								'type' => 'string',
+								'enum' => ['true']
 							],
-							'example' => 'true'
 						];
+
+						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+							'name' => 'SITEID',
+							'in' => 'header',
+							'required' => true,
+							'schema' => [
+								'type' => 'string',
+								'enum' => [$this->siteId]
+							],
+						];
+
+						if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && $route['requestMethod'] === 'get') {
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+								'name' => 'RouterPrefix',
+								'in' => 'path',
+								'required' => true,
+								'schema' => [
+									'type' => 'string',
+									'enum' => [\Config::get('Router.APP_ROUTER_PREFIX', 'siteapi'), 'staticapi']
+								],
+							];
+						}
+
+						if ($this->schema['ADD_SERVER_ID']) {
+							if (isset(BXAPP_REGISTRY_SITES[$this->siteId]['server']) && !empty(BXAPP_REGISTRY_SITES[$this->siteId]['server'])) {
+								$this->servers = BXAPP_REGISTRY_SITES[$this->siteId]['server'];
+							}
+
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+								'name' => 'SERVERID',
+								'in' => 'header',
+								'required' => true,
+								'schema' => [
+									'type' => 'string',
+									'enum' => array_merge([''], $this->servers),
+									'default' => current($this->servers) ?? ''
+								],
+							];
+						}
+
+						if ($this->schema['ADD_SECRET_KEY']) {
+							if (!empty($this->servers)) {
+								foreach ($this->servers as $server) {
+									$this->secretkeys[] = BXAPP_REGISTRY_SERVERS[$server]['secretKey'];
+								}
+							}
+
+							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
+								'name' => 'SECRETKEY',
+								'in' => 'header',
+								'required' => true,
+								'schema' => [
+									'type' => 'string',
+									'enum' => array_merge([''], $this->secretkeys),
+									'default' => current($this->secretkeys) ?? ''
+								],
+							];
+						}
 
 						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['tags'] = [$route['bundle']];
 						$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['operationId'] = $route['name'];

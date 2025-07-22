@@ -21,6 +21,8 @@ return [
  В файле <b>.env</b> надо заполнить переменную <b>APP_OPENAPI_DOMAIN</b> указав через запятую список доменов (например, локальный и титан).</br>
  Файл формируется при вызове <b>./update.sh</b>. Так же можно сформировать CLI командой: <b>vphp cli.php openapi:create</b>', // Описание API файла
 	'VERSION' => '1.0', // Версия API файла
+	'ADD_SERVER_ID' => false,
+	'ADD_SECRET_KEY' => false,
 	'TAGS' => [ // Тэги роутов
 		// 'Test' => [
 		// 	'description' => 'test'

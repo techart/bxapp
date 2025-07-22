@@ -483,6 +483,11 @@ class App
 		$routes = RouterConfigurator::get();
 		$names = RouterConfigurator::getNames();
 		$routerBundles = Config::get('Router.APP_ROUTER_BUNDLES', []);
+		$models = false;
+
+		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
+			$models = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+		}
 
 		if (\Router::isActive()) {
 			$text .= '<p>Router включен</p>';
@@ -565,6 +570,9 @@ class App
 
 				foreach ($routes as $route) {
 					$text .= '<p>' . $route['name'] . ' - ' . strtoupper($route['requestMethod']) . ' - ' . $route['url'];
+					if ($models && isset($models[$route['name']])) {
+						$text .= ' - Models: [ ' . implode(', ', $models[$route['name']]) . ' ]';
+					}
 					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
 					require_once($controllerFile);
 					$controllerClass = 'TechartBxApp\Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];

@@ -13,6 +13,10 @@ class StaticApi
 	{
 		// Если статик кэш включён и если запрос помечен как staticapi
 		if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && defined('BXAPP_IS_STATIC') && BXAPP_IS_STATIC === true && defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') && !empty(BXAPP_ROUTER_CURRENT_REQUEST_URL)) {
+			if (\App::getRoute('requestMethod') !== 'get') {
+				\App::core('Main')->do404();
+			}
+
 			$putCache = true;
 
 			// Если среди протекторов роута есть checkSecure или checkAuth, то записывать статик кэш не надо

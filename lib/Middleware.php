@@ -15,7 +15,9 @@ class Middleware
 		'(.*)' => ['StaticApi'],
 	];
 	private static $defaultMiddlewareBefore = [];
-	private static $defaultMiddlewareSpecialBefore = [];
+	private static $defaultMiddlewareSpecialBefore = [
+		'(.*)' => ['OpenApiHeaders'],
+	];
 
 
 

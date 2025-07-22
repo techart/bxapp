@@ -179,7 +179,7 @@ class CliActions
 			$withDefault = $args[0][0];
 		}
 
-		App::core('OpenAPI')->withDefaultRoutes($withDefault)->generate();
+		App::core('OpenAPI')->site(BXAPP_SITE_ID)->withDefaultRoutes($withDefault)->generate();
 
 		echo 'Open API файл сгенерирован!'.PHP_EOL;
 	}
