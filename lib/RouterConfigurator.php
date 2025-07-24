@@ -37,6 +37,17 @@ class RouterConfigurator
 	}
 
 	/**
+	 * Очищает собранные роуты
+	 *
+	 * @return void
+	 */
+	public static function clear(): void
+	{
+		self::$RouterData = [];
+		self::$namesData = [];
+	}
+
+	/**
 	 * Возвращает массив имён даных
 	 *
 	 * @return array

@@ -103,44 +103,46 @@ class Registry
 			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir']) && !empty(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir'])) {
 				$bxAppEntitiesDirs['bxAppDir'] = BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir'];
 			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Cli', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['cliDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Configs', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['configsDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Entities', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['entitiesDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Localization', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['localizationDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Logs', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['logsDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Menu', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['menuDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Middleware', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['middlewareDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Models', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['modelsDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Modules', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['modulesDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Router', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['routerDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Services', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['servicesDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Traits', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['traitsDir'] .= '_'.$bxappSiteId;
-			}
-			if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Views', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
-				$bxAppEntitiesDirs['viewsDir'] .= '_'.$bxappSiteId;
+			if (!isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappDir'])) {
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Cli', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['cliDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Configs', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['configsDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Entities', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['entitiesDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Localization', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['localizationDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Logs', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['logsDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Menu', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['menuDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Middleware', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['middlewareDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Models', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['modelsDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Modules', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['modulesDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Router', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['routerDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Services', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['servicesDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Traits', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['traitsDir'] .= '_'.$bxappSiteId;
+				}
+				if (isset(BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities']) && in_array('Views', BXAPP_REGISTRY_SITES[$bxappSiteId]['bxappEntities'])) {
+					$bxAppEntitiesDirs['viewsDir'] .= '_'.$bxappSiteId;
+				}
 			}
 
 			self::$bxAppEntitiesDirs[$bxappSiteId] = $bxAppEntitiesDirs;

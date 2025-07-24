@@ -192,20 +192,23 @@ class Router
 	/**
 	 * Строит роутер
 	 *
+	 * @param array $bundles
+	 * @param string $routerDir
 	 * @return boolean
 	 */
-	public static function build(): bool
+	public static function build($bundles = [], $routerDir = ''): bool
 	{
-		$bundles = Config::get('Router.APP_ROUTER_BUNDLES', []);
+		$bundles = !empty($bundles) ? $bundles : Config::get('Router.APP_ROUTER_BUNDLES', []);
+		$routerDir = !empty($routerDir) ? $routerDir : APP_ROUTER_DIR;
 
 		if (count($bundles) > 0) {
 			foreach ($bundles as $bundle) {
-				if (file_exists(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php')) {
+				if (file_exists($routerDir.'/'.$bundle.'/Routes.php')) {
 					Glob::set('ROUTER_BUILD_CURRENT_BUNDLE', $bundle);
 					App::setBundleProtector([]);
 					App::setBundleParams([]);
 					App::setBundleModels([]);
-					require_once(APP_ROUTER_DIR.'/'.$bundle.'/Routes.php');
+					require_once($routerDir.'/'.$bundle.'/Routes.php');
 				} else {
 					Logger::error('Router: нет файла группы роутов '.$bundle);
 				}
