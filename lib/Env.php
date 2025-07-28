@@ -38,7 +38,7 @@ class Env
 			$envPath = PROJECT_ROOT_DIR.'/'.$envFile;
 
 			if (file_exists($envPath)) {
-				self::$env = Dotenv::createImmutable(PROJECT_ROOT_DIR, $envFile)->load();
+				self::$env = Dotenv::createImmutable([APP_CORE_SETUP_DIR, PROJECT_ROOT_DIR], [$envFile, '.env.default'], false)->load();
 			} else {
 				self::$env = [];
 			}

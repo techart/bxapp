@@ -25,7 +25,7 @@ class SmartCaptcha
 		$return = false;
 
 		if (\Glob::get('APP_CAPTCHA_CHECK_LOCAL', true)) {
-			if (\H::isLocal()) {
+			if (\H::isLocalHost()) {
 				$return = true;
 			}
 		}

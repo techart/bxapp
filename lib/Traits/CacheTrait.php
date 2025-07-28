@@ -109,7 +109,7 @@ trait CacheTrait
 	{
 		$status = true;
 
-		if (\H::isLocal() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE')) {
+		if (\H::isLocalHost() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE')) {
 			return true;
 		}
 
@@ -117,7 +117,7 @@ trait CacheTrait
 		if (\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === false || $this->CacheTraitUseCache === false) {
 			$status = false;
 		} else {
-			if (\H::isLocal()) {
+			if (\H::isLocalHost()) {
 				$status = false;
 			}
 		}

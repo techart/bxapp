@@ -155,7 +155,7 @@ class Log
 	 */
 	public static function print(): void
 	{
-		if (\H::isLocal()) {
+		if (\H::isLocalHost()) {
 			dd(self::$messages);
 		}
 	}
@@ -168,7 +168,7 @@ class Log
 	protected static function showLoggerBar(): void
 	{
 		if (self::$showLoggerBar) {
-			if (\H::isLocal()) {
+			if (\H::isLocalHost()) {
 				echo '
 				<style>
 					.debugbar {

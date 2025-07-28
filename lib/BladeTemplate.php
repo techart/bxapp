@@ -35,6 +35,6 @@ class BladeTemplate
 			self::$blade = $blade;
 		}
 
-		return self::$blade;
+		return (object) self::$blade;
 	}
 }

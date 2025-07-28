@@ -125,6 +125,7 @@ class BaseIblockModel
 	use \BuildResultTrait;
 	use \CacheTrait;
 	use \ErrorTrait;
+	use \LocalizationMessageTrait;
 
 
 	public $table = ''; // код инфоблока

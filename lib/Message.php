@@ -194,7 +194,6 @@ class Message
 			$fileLoader->load($curLang, $parse['group'], 'lang');
 			$translator = new Translator($fileLoader, $curLang);
 			$translator->setLocale($curLang);
-			$translator->setLocale($curLang);
 			$translator->setFallback($curLang);
 
 			// сохраняем уже загруженный ранее файл

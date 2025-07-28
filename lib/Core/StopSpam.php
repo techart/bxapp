@@ -70,7 +70,7 @@ class StopSpam
 	 */
 	public function checkWhiteList(): bool
 	{
-		if (\H::isLocal() || in_array($this->сurIP, $this->whiteList)) {
+		if (\H::isLocalHost() || in_array($this->сurIP, $this->whiteList)) {
 			return true;
 		} else {
 			return false;

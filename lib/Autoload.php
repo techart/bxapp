@@ -37,6 +37,7 @@ class Autoload
 			'ErrorTrait' => '\Techart\BxApp\Traits\ErrorTrait',
 			'CacheTrait' => '\Techart\BxApp\Traits\CacheTrait',
 			'BuildResultTrait' => '\Techart\BxApp\Traits\BuildResultTrait',
+			'LocalizationMessageTrait' => '\Techart\BxApp\Traits\LocalizationMessageTrait',
 
 			'BaseForm' => '\Techart\BxApp\Base\Form\BaseForm',
 			'BaseIblockModel' => '\Techart\BxApp\Base\Model\BaseIblockModel',

@@ -199,7 +199,7 @@ class AppSetup
 			mkdir(APP_CACHE_ROUTER_DIR);
 		}
 		if (!file_exists(PROJECT_ROOT_DIR.'/.env')) {
-			copy(APP_CORE_SETUP_DIR.'/.env', PROJECT_ROOT_DIR.'/.env');
+			copy(APP_CORE_SETUP_DIR.'/.env.default', PROJECT_ROOT_DIR.'/.env');
 		}
 		if (!file_exists(PROJECT_ROOT_DIR.'/.env.example')) {
 			copy(APP_CORE_SETUP_DIR.'/.env.example', PROJECT_ROOT_DIR.'/.env.example');

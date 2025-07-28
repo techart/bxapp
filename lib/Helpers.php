@@ -155,7 +155,11 @@ class Helpers
 	 */
 	public static function isDevHost(): bool
 	{
-		if (strpos($_SERVER['HTTP_HOST'], 'intranet') === false && strpos($_SERVER['HTTP_HOST'], '.projects.') === false) {
+		if (method_exists('\Techart\BxApp\HelpersCustom', 'bxappIsDevHost')) {
+			return Help::bxappIsDevHost();
+		}
+
+		if (self::isLocalHost() === false && self::isTestHost() === false) {
 			return false;
 		} else {
 			return true;
@@ -168,8 +172,12 @@ class Helpers
 	 *
 	 * @return boolean
 	 */
-	public static function isTitan(): bool
+	public static function isTestHost(): bool
 	{
+		if (method_exists('\Techart\BxApp\HelpersCustom', 'bxappIsTestHost')) {
+			return Help::bxappIsTestHost();
+		}
+
 		if (strpos($_SERVER['HTTP_HOST'], '.projects.') === false) {
 			return false;
 		} else {
@@ -183,8 +191,12 @@ class Helpers
 	 *
 	 * @return boolean
 	 */
-	public static function isLocal(): bool
+	public static function isLocalHost(): bool
 	{
+		if (method_exists('\Techart\BxApp\HelpersCustom', 'bxappIsLocalHost')) {
+			return \Help::bxappIsLocalHost();
+		}
+
 		if (strpos($_SERVER['HTTP_HOST'], '.intranet') === false) {
 			return false;
 		} else {

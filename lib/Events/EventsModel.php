@@ -26,8 +26,8 @@ class EventsModel
 		// ИЛИ
 		// если это не intranet и APP_TRAIT_CACHE=true и конфиг App.APP_MODEL_CLEAN_CACHE_ON_CHANGE=true
 		if (
-			(\H::isLocal() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE') ) ||
-			(\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && \H::isLocal() === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true)
+			(\H::isLocalHost() && \Glob::get('APP_SETUP_LOCAL_FORCED_CACHE') ) ||
+			(\Glob::get('APP_SETUP_CACHE_TRAIT_USE_CACHE') === true && \H::isLocalHost() === false && \Config::get('App.APP_MODEL_CLEAN_CACHE_ON_CHANGE', true) === true)
 		) {
 			AddEventHandler("iblock", "OnAfterIBlockSectionAdd", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
 			AddEventHandler("iblock", "OnAfterIBlockSectionUpdate", ["\Techart\BxApp\Events\EventsModel", "ibChanged"], 1);//arr
