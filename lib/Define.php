@@ -33,7 +33,6 @@ class Define
 			throw new \LogicException('В \Techart\BxApp\App::init() не передан $initPath!');
 			exit();
 		}
-
 		// общее
 		define("PROJECT_ROOT_DIR", realpath($initPath.'/../../../'));
 		define("SITE_ROOT_DIR", PROJECT_ROOT_DIR.'/www');
