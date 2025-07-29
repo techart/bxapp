@@ -138,6 +138,17 @@ class Cache {
 	}
 
 	/**
+	 * Очищает HTML-кеш страниц
+	 * 
+	 * @param string $siteId
+	 * @return void
+	 */
+	public static function clearHtml(string $siteId = ''): void
+	{
+		Directory::deleteDirectory(SITE_ROOT_DIR.\Config::get('App.APP_HTML_CACHE_PATH'));
+	}
+
+	/**
 	 * Очищает весь кеш
 	 *
 	 * @param string $siteId
@@ -187,6 +198,10 @@ class Cache {
 		if ($cacheName === 'menu' || $cacheName === 'all') {
 			self::clearMenu($siteId);
 			Logger::info('Cache: Очистка кеша меню');
+		}
+
+		if ($cacheName === 'html' || $cacheName === 'all') {
+			self::clearHtml($siteId);
 		}
 
 		if ($cacheName === 'routerModels' || $cacheName === 'all') {

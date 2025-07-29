@@ -81,6 +81,17 @@ class Cache
 	}
 
 	/**
+	 * Очищает HTML-кеш страниц
+	 * 
+	 * @param string $siteId
+	 * @return void
+	 */
+	public function clearHtml(string $siteId = ''): void
+	{
+		\Techart\BxApp\Cache::clearHtml(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+	}
+
+	/**
 	 * Очищает весь кеш
 	 *
 	 * @param string $siteId

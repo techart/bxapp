@@ -123,6 +123,11 @@ class App
 		if (\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
 			\Techart\BxApp\Events\EventsModel::setEvents();
 		}
+		if (\Glob::get('APP_SETUP_HTML_PAGE_CACHE') === true) {
+			if (!\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
+				\Techart\BxApp\Events\BitrixEndBufferContent::setEvent();
+			}
+		}
 		ExtraAuth::setup();
 		\Techart\BxApp\Events\BitrixEpilog::setup();
 	}
