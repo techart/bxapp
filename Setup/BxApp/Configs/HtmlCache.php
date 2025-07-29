@@ -32,7 +32,7 @@
 
 return [
 	'APP_HTML_CACHE_HEADERS' => 'Header set Cache-Control "public, max-age=8640550, s-maxage=86400, stale-while-revalidate=300"', // хедеры в .htaccess кеша
-	'APP_HTML_CACHE_PATH' => '/bitrix/cache/htmlPages', // папка куда сохраняется HTML-кеш страниц
+	'APP_HTML_CACHE_PATH' => '/htmlPages', // папка куда сохраняется HTML-кеш страниц (относительно /bitrix/cache)
 	'APP_HTML_CACHE_HTML_MIN_PARAMS' => [ // параметры формирования кеша через пакет HtmlMin
 		'doOptimizeViaHtmlDomParser' => true,
 		'doRemoveComments' => true,

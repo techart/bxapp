@@ -49,7 +49,7 @@ class Cache {
 		$models = self::collectModels(APP_MODELS_DIR);
 
 		foreach($models as $model) {
-			Directory::deleteDirectory(SITE_ROOT_DIR."/bitrix/cache/" . App::model($model)->table);
+			Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'. App::model($model)->table);
 		}
 	}
 
@@ -72,7 +72,7 @@ class Cache {
 	 */
 	public static function clearComponents(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(SITE_ROOT_DIR."/bitrix/cache/".$siteId);
+		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'.$siteId);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Cache {
 	 */
 	public static function clearMenu(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(SITE_ROOT_DIR.'/bitrix/cache/'.APP_CACHE_MENU_DIR_NAME.'/'.$siteId);
+		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'.APP_CACHE_MENU_DIR_NAME.'/'.$siteId);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Cache {
 	 */
 	public static function clearHtml(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(SITE_ROOT_DIR.\Config::get('App.APP_HTML_CACHE_PATH'));
+		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH'));
 	}
 
 	/**
