@@ -34,7 +34,7 @@ class Middleware
 		if (isset($curBeforeArray[App::getRoute('name')])) {
 			if (count($curBeforeArray[App::getRoute('name')]) > 0) {
 				foreach ($curBeforeArray[App::getRoute('name')] as $className) {
-					$classFile = APP_MIDDLEWARE_BEFORE_DIR.'/'.$className.'.php';
+					$classFile = TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -84,7 +84,7 @@ class Middleware
 		if (isset($classes[$uri])) {
 			if (count($classes[$uri]) > 0) {
 				foreach ($classes[$uri] as $className) {
-					$classFile = APP_MIDDLEWARE_BEFORE_DIR.'/'.$className.'.php';
+					$classFile = TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -126,7 +126,7 @@ class Middleware
 		if (isset($curBeforeArray[App::getRoute('name')])) {
 			if (count($curBeforeArray[App::getRoute('name')]) > 0) {
 				foreach ($curBeforeArray[App::getRoute('name')] as $className) {
-					$classFile = APP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
+					$classFile = TECHART_BXAPP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -176,7 +176,7 @@ class Middleware
 		if (isset($classes[$uri])) {
 			if (count($classes[$uri]) > 0) {
 				foreach ($classes[$uri] as $className) {
-					$classFile = APP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
+					$classFile = TECHART_BXAPP_CORE_MIDDLEWARE_DIR.'/Before/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -219,7 +219,7 @@ class Middleware
 		if (isset($curMiddleware[App::getRoute('name')])) {
 			if (count($curMiddleware[App::getRoute('name')]) > 0) {
 				foreach ($curMiddleware[App::getRoute('name')] as $className) {
-					$classFile = APP_MIDDLEWARE_AFTER_DIR.'/'.$className.'.php';
+					$classFile = TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -272,7 +272,7 @@ class Middleware
 		if (isset($classes[$uri])) {
 			if (count($classes[$uri]) > 0) {
 				foreach ($classes[$uri] as $className) {
-					$classFile = APP_MIDDLEWARE_AFTER_DIR.'/'.$className.'.php';
+					$classFile = TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -316,7 +316,7 @@ class Middleware
 		if (isset($curMiddleware[App::getRoute('name')])) {
 			if (count($curMiddleware[App::getRoute('name')]) > 0) {
 				foreach ($curMiddleware[App::getRoute('name')] as $className) {
-					$classFile = APP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
+					$classFile = TECHART_BXAPP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);
@@ -367,7 +367,7 @@ class Middleware
 		if (isset($classes[$uri])) {
 			if (count($classes[$uri]) > 0) {
 				foreach ($classes[$uri] as $className) {
-					$classFile = APP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
+					$classFile = TECHART_BXAPP_CORE_MIDDLEWARE_DIR.'/After/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);

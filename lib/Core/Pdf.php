@@ -15,7 +15,7 @@ namespace Techart\BxApp\Core;
 	);
 	if ($pdf) {
 		$pdf->render();
-		file_put_contents(APP_VIEWS_PDF_DIR.'/test.pdf', $pdf->output());
+		file_put_contents(TBA_APP_VIEWS_PDF_DIR.'/test.pdf', $pdf->output());
 	}
  *
  * В getView() первым параметром файл шаблона из Views/Pdf, а вторым массив переменных шаблона
@@ -95,9 +95,9 @@ class Pdf
 	private function getTemplate(string $template = '', array $vars = []): mixed
 	{
 		if (\Config::get('Pdf.APP_PDF_USE_BLADE', true)) {
-			$templatePath = APP_VIEWS_PDF_DIR.'/'.$template.'.blade.php';
+			$templatePath = TBA_APP_VIEWS_PDF_DIR.'/'.$template.'.blade.php';
 		} else {
-			$templatePath = APP_VIEWS_PDF_DIR.'/'.$template.'.php';
+			$templatePath = TBA_APP_VIEWS_PDF_DIR.'/'.$template.'.php';
 		}
 
 		if (file_exists($templatePath)) {

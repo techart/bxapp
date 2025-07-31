@@ -34,8 +34,8 @@ class Config
 	private static function read(string $name = ''): mixed
 	{
 		if (!empty($name)) {
-			$configFile = APP_CONFIGS_DIR.'/'.$name.'.php';
-			$configCoreFile = APP_CORE_CONFIGS.'/'.$name.'.php';
+			$configFile = TBA_APP_CONFIGS_DIR.'/'.$name.'.php';
+			$configCoreFile = TECHART_BXAPP_CORE_CONFIGS.'/'.$name.'.php';
 			$configContent = null;
 			$configCoreContent = null;
 			$configAppContent = null;

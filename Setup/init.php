@@ -13,5 +13,5 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/local/vendor/autoload.php');
 
 // Обработчики событий админки
 // if (\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
-// 	include_once SITE_ROOT_DIR.'/local/php_interface/Events/OnAfter.php';
+// 	include_once TBA_SITE_ROOT_DIR.'/local/php_interface/Events/OnAfter.php';
 // }

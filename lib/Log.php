@@ -34,7 +34,7 @@ namespace Techart\BxApp;
  * однако, если вместо имени файла указать путь, то работа будет происходить с данным файлом
 
  * добавит в корневую папку сайта файл MyLog.log и в него текст 'text' с указанием текущей даты
- * Log::toFile(SITE_ROOT_DIR.'/MyLog', 'text')
+ * Log::toFile(TBA_SITE_ROOT_DIR.'/MyLog', 'text')
 
  */
 
@@ -303,7 +303,7 @@ class Log
 					foreach ($data as $v) {
 						if ($v['typeID'] <= $typeID) {
 							if (!in_array($file, $titleFiles) && $for != $file) {
-								$text .= $lineBreak.'['.$file.'.log] ('.APP_LOGS_DIR.'/'.$file.'.log)'.$lineBreak;
+								$text .= $lineBreak.'['.$file.'.log] ('.TBA_APP_LOGS_DIR.'/'.$file.'.log)'.$lineBreak;
 								$titleFiles[] = $file;
 							}
 
@@ -335,13 +335,13 @@ class Log
 	protected static function write(string $fileName = '', string $text = '', bool $append = true): bool|int
 	{
 		if (strpos($fileName, '/') === false) {
-			$fileName = APP_LOGS_DIR.'/'.$fileName.'.log';
+			$fileName = TBA_APP_LOGS_DIR.'/'.$fileName.'.log';
 		} else {
 			$fileName .= '.log';
 		}
 
-		if (!is_dir(APP_LOGS_DIR)) {
-			mkdir(APP_LOGS_DIR);
+		if (!is_dir(TBA_APP_LOGS_DIR)) {
+			mkdir(TBA_APP_LOGS_DIR);
 		}
 
 		return file_put_contents($fileName, $text.PHP_EOL, $append ? FILE_APPEND : 0);

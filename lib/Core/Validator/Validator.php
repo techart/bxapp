@@ -53,14 +53,14 @@ class Validator
 
 	/**
 	 * Возвращает инстанс валидатора для указанной локали $locale
-	 * Если $locale не указана, то берётся из константы BXAPP_LANGUAGE_ID
+	 * Если $locale не указана, то берётся из константы TBA_LANGUAGE_ID
 	 *
 	 * @param string $locale
 	 * @return object
 	 */
 	public function get(string $locale = ''): object
 	{
-		$loc = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$loc = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		if (!$this->$validator[$loc]) {
 			$this->$validator[$loc] = new Factory($this->trans($loc));
@@ -129,7 +129,7 @@ class Validator
 	{
 		$translationDir = [
 			realpath(__DIR__.'/lang'), // языковые App файлы
-			APP_LOCALIZATION_DIR.'/Validator', // уникальные языковые файлы сайта
+			TBA_APP_LOCALIZATION_DIR.'/Validator', // уникальные языковые файлы сайта
 		];
 		$fileLoader = new FileLoader(new Filesystem(), $translationDir);
 		$fileLoader->addNamespace('lang', $translationDir);

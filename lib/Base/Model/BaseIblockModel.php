@@ -150,7 +150,7 @@ class BaseIblockModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 
@@ -373,7 +373,7 @@ class BaseIblockModel
 			$res = \CIBlock::GetList(
 				[],
 				[
-					"SITE_ID" => BXAPP_SITE_ID,
+					"SITE_ID" => TBA_SITE_ID,
 					"CODE" => $this->table
 				],
 				false

@@ -41,7 +41,7 @@ abstract class BaseMenu
 		if (!empty($this->modelName)) {
 			$this->table = \App::model($this->modelName)->table;
 		} else {
-			$this->table .= APP_CACHE_MENU_DIR_NAME.'/'.BXAPP_SITE_ID.'/'.get_called_class();
+			$this->table .= TBA_APP_CACHE_MENU_DIR_NAME.'/'.TBA_SITE_ID.'/'.get_called_class();
 		}
 	}
 

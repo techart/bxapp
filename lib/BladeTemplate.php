@@ -18,12 +18,12 @@ class BladeTemplate
 	public static function getBlade(): object
 	{
 		if (!self::$blade) {
-			$frontendBlocksPath = SITE_ROOT_DIR.'/'.trim($GLOBALS['APPLICATION']->GetTemplatePath('frontend'), '/').'/src/block/';
+			$frontendBlocksPath = TBA_SITE_ROOT_DIR.'/'.trim($GLOBALS['APPLICATION']->GetTemplatePath('frontend'), '/').'/src/block/';
 
 			$blade = new BladeOne(
 				[$frontendBlocksPath,
-				APP_VIEWS_PDF_DIR],
-				SITE_ROOT_DIR.'/local/cache/blade'
+				TBA_APP_VIEWS_PDF_DIR],
+				TBA_SITE_ROOT_DIR.'/local/cache/blade'
 			);
 			$blade->setCompileTypeFileName('md5');
 

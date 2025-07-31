@@ -42,8 +42,8 @@ class BitrixEndBufferContent
 
 						// если не апи и не статик запрос
 						if (strpos($curUri, '/'.\Config::get('Router.APP_ROUTER_PREFIX').'/') !== 0 && strpos($curUri, '/staticapi/') !== 0) {
-							$cachePath = APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH').$curUri;
-							$htaccessFile = APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH').'/.htaccess';
+							$cachePath = TBA_APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH').$curUri;
+							$htaccessFile = TBA_APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH').'/.htaccess';
 
 							if (!is_dir($cachePath)) {
 								mkdir($cachePath, 0777, true);

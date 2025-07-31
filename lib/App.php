@@ -99,9 +99,9 @@ class App
 		Autoload::register();
 
 		// константа-постфикс текущего языка в верхнем регистре
-		define("__LID__", strtoupper('_'.BXAPP_LANGUAGE_ID));
+		define("__LID__", strtoupper('_'.TBA_LANGUAGE_ID));
 		// константа-постфикс текущей группы в верхнем регистре
-		define("__GID__", empty(BXAPP_SITE_GROUP_ID) ? '' : strtoupper('_'.BXAPP_SITE_GROUP_ID));
+		define("__GID__", empty(TBA_SITE_GROUP_ID) ? '' : strtoupper('_'.TBA_SITE_GROUP_ID));
 		// константа-постфикс объединяющая язык и группу
 		define("__PID__", __GID__.__LID__);
 
@@ -114,10 +114,10 @@ class App
 
 		include_once ('ShortCallFunc.php');
 
-		include_once (APP_ROOT_DIR.'/Traits/AssetsTrait.php');
-		include_once (APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
-		include_once (APP_ROOT_DIR.'/Traits/HelpTrait.php');
-		include_once (APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
+		include_once (TBA_APP_ROOT_DIR.'/Traits/AssetsTrait.php');
+		include_once (TBA_APP_ROOT_DIR.'/Traits/ProtectorTrait.php');
+		include_once (TBA_APP_ROOT_DIR.'/Traits/HelpTrait.php');
+		include_once (TBA_APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
 
 		if (\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
@@ -139,11 +139,11 @@ class App
 	 */
 	protected static function setup(): void
 	{
-		if (!is_dir(APP_CACHE_DIR)) {
-			mkdir(APP_CACHE_DIR);
+		if (!is_dir(TBA_APP_CACHE_DIR)) {
+			mkdir(TBA_APP_CACHE_DIR);
 		}
-		if (!is_dir(APP_CACHE_DIR.'/blade')) {
-			mkdir(APP_CACHE_DIR.'/blade');
+		if (!is_dir(TBA_APP_CACHE_DIR.'/blade')) {
+			mkdir(TBA_APP_CACHE_DIR.'/blade');
 		}
 	}
 
@@ -164,7 +164,7 @@ class App
 		} else {
 			$curTemplatePath = '/local/templates/'.\CSite::GetCurTemplate().'/assets/';
 
-			if (realpath(SITE_ROOT_DIR.$curTemplatePath)) {
+			if (realpath(TBA_SITE_ROOT_DIR.$curTemplatePath)) {
 				return $curTemplatePath;
 			}
 		}
@@ -227,7 +227,7 @@ class App
 	 */
 	protected static function getFilePath(string $path = '', string $file = ''): string
 	{
-		$rootDir = ($path == 'Core') ? APP_SELF_DIR : APP_ROOT_DIR;
+		$rootDir = ($path == 'Core') ? TECHART_BXAPP_SELF_DIR : TBA_APP_ROOT_DIR;
 		$className = array_slice(explode('/', $file), -1)[0];
 		$classFile = realpath($rootDir.'/'.$path.'/'.$file.'.php');
 
@@ -335,7 +335,7 @@ class App
 	 */
 	public static function model(string $file = '', bool $collect = true, string $locale = ''): object
 	{
-		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		return self::get('models', 'Models', $file, $collect, $curLang);
 	}
@@ -355,7 +355,7 @@ class App
 	 */
 	public static function menu(string $file = '', bool $collect = true, string $locale = ''): object
 	{
-		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		return self::get('menu', 'Menu', $file, $collect, $curLang);
 	}
@@ -429,7 +429,7 @@ class App
 		$stat = [];
 		$text = '';
 		$iterator = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator(APP_MODELS_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
+			new \RecursiveDirectoryIterator(TBA_APP_MODELS_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
 			\RecursiveIteratorIterator::SELF_FIRST
 		);
 		$iterator->setMaxDepth(5);
@@ -491,7 +491,7 @@ class App
 		$models = false;
 
 		if (\Config::get('Router.APP_ROUTER_CACHE_MODELS_TAGS', false)) {
-			$models = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+			$models = json_decode(file_get_contents(TBA_APP_CACHE_MODELS_DIR . '/models.json'), true);
 		}
 
 		if (\Router::isActive()) {
@@ -507,8 +507,8 @@ class App
 		}
 
 		$pathsBundles = [];
-		foreach (array_diff(scandir(APP_ROUTER_DIR), ['.', '..']) as $path) {
-			if (is_dir(APP_ROUTER_DIR . '/' . $path)) {
+		foreach (array_diff(scandir(TBA_APP_ROUTER_DIR), ['.', '..']) as $path) {
+			if (is_dir(TBA_APP_ROUTER_DIR . '/' . $path)) {
 				$pathsBundles[] = $path;
 			}
 		}
@@ -525,8 +525,8 @@ class App
 			$text .= '<p style="color: red">В конфиге роутера не указаны существующие бандлы: ' . implode(', ', $none) . '</p>';
 		}
 
-		if (file_exists(APP_CACHE_ROUTER_DIR . '/routerNames.txt')) {
-			$namesCache = unserialize(file_get_contents(APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
+		if (file_exists(TBA_APP_CACHE_ROUTER_DIR . '/routerNames.txt')) {
+			$namesCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
 
 			if ($namesCache !== false) {
 				if (!\H::isArrayEquals($namesCache, $names)) {
@@ -539,8 +539,8 @@ class App
 			$text .= '<p style="color: red">Файл cache/router/routerNames.txt отсутствует!</p>';
 		}
 
-		if (file_exists(APP_CACHE_ROUTER_DIR . '/routerConfig.txt')) {
-			$configCache = unserialize(file_get_contents(APP_CACHE_ROUTER_DIR . '/routerConfig.txt'));
+		if (file_exists(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt')) {
+			$configCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt'));
 	
 			if ($configCache !== false) {
 				if (!\H::isArrayEquals($configCache, $routes)) {
@@ -578,7 +578,7 @@ class App
 					if ($models && isset($models[$route['name']])) {
 						$text .= ' - Models: [ ' . implode(', ', $models[$route['name']]) . ' ]';
 					}
-					$controllerFile = realpath(APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
+					$controllerFile = realpath(TBA_APP_ROUTER_DIR.'/'.$route['bundle'].'/Controllers/'.$route['controller'].'.php');
 					require_once($controllerFile);
 					$controllerClass = 'TechartBxApp\Router\\'.$route['bundle'].'\\Controllers\\'.$route['controller'];
 					if (class_exists($controllerClass)) {

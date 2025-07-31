@@ -40,7 +40,7 @@ try {
 	$reader = App::core('Phpspreadsheet')->reader('Xlsx');
 	$reader->setReadDataOnly(true);
 	$reader->setReadEmptyCells(false);
-	$info = $reader->listWorksheetInfo(SITE_ROOT_DIR.'/Xlsx.xlsx')[0];
+	$info = $reader->listWorksheetInfo(TBA_SITE_ROOT_DIR.'/Xlsx.xlsx')[0];
 	$highestCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
 	$lastRow = 0;
 	$chunkFilter = App::core('Phpspreadsheet')->chunkReadFilter(); // фильтр для обработки строк порциями
@@ -50,7 +50,7 @@ try {
 	for ($startRow = 1; $startRow <= intval($info['totalRows']); $startRow += $chunkSize) {
 		$lastRow = $startRow + $chunkSize - 1;
 		$chunkFilter->setRows($startRow, $lastRow);
-		$spreadsheet = $reader->load(SITE_ROOT_DIR.'/Xlsx.xlsx');
+		$spreadsheet = $reader->load(TBA_SITE_ROOT_DIR.'/Xlsx.xlsx');
 		$worksheet = $spreadsheet->getActiveSheet();
 		// какую группу строк нужно вытащить
 		$curRows = $worksheet->rangeToArray(

@@ -11,7 +11,7 @@ class Cache
 	 */
 	public function clearMenu(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearMenu(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearMenu(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -22,7 +22,7 @@ class Cache
 	 */
 	public function clearStatic(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearStatic(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearStatic(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -33,7 +33,7 @@ class Cache
 	 */
 	public function clearComponents(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearComponents(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearComponents(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class Cache
 	 */
 	public function clearBlade(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearBlade(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearBlade(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Cache
 	 */
 	public function clearModels(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearModels(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Cache
 	 */
 	public function clearRouter(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearRouter(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearRouter(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Cache
 	 */
 	public function clearRouterModels(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearRouterModels(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearRouterModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Cache
 	 */
 	public function clearHtml(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearHtml(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearHtml(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -99,6 +99,6 @@ class Cache
 	 */
 	public function clearAll(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearAll(!empty($siteId) ? $siteId : BXAPP_SITE_ID);
+		\Techart\BxApp\Cache::clearAll(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 }

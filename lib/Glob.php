@@ -14,7 +14,7 @@ class Glob
 
 	public static function setSiteGlobals(): void
 	{
-		include_once (APP_ROOT_DIR.'/Configs/SiteGlobals.php');
+		include_once (TBA_APP_ROOT_DIR.'/Configs/SiteGlobals.php');
 	}
 
 	/**

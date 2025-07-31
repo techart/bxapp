@@ -23,7 +23,7 @@ return [
 	'APP_PDF_OPTIONS' => [
 		'default_font' => 'DejaVu Sans',
 		'enable_remote' => true,
-		'log_output_file' => APP_LOGS_DIR.'/DomPdf.html',
+		'log_output_file' => TBA_APP_LOGS_DIR.'/DomPdf.html',
 		'default_paper_orientation' => 'portrait', // portrait | landscape
 		'default_paper_size' => 'A4',
 		//'debugLayout' => true,

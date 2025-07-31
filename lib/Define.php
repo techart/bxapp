@@ -34,14 +34,14 @@ class Define
 			exit();
 		}
 		// общее
-		define("PROJECT_ROOT_DIR", realpath($initPath.'/../../../'));
-		define("SITE_ROOT_DIR", PROJECT_ROOT_DIR.'/www');
-		define("SITE_UPLOAD_DIR", SITE_ROOT_DIR.'/upload');
-		define("APP_CACHE_DIR", SITE_ROOT_DIR.'/local/cache');
-		define("APP_BITRIX_CACHE_DIR", SITE_ROOT_DIR.'/bitrix/cache');
-		define("APP_CACHE_MENU_DIR_NAME", '_BxAppMenu');
-		define("APP_FAVICON_FILES_DIR", SITE_ROOT_DIR.'/local/favicon-files');
-		define("APP_PHP_INTERFACE_DIR", SITE_ROOT_DIR.'/local/php_interface');
+		define("TBA_PROJECT_ROOT_DIR", realpath($initPath.'/../../../'));
+		define("TBA_SITE_ROOT_DIR", TBA_PROJECT_ROOT_DIR.'/www');
+		define("TBA_SITE_UPLOAD_DIR", TBA_SITE_ROOT_DIR.'/upload');
+		define("TBA_APP_CACHE_DIR", TBA_SITE_ROOT_DIR.'/local/cache');
+		define("TBA_APP_BITRIX_CACHE_DIR", TBA_SITE_ROOT_DIR.'/bitrix/cache');
+		define("TBA_APP_CACHE_MENU_DIR_NAME", '_BxAppMenu');
+		define("TBA_APP_FAVICON_FILES_DIR", TBA_SITE_ROOT_DIR.'/local/favicon-files');
+		define("TBA_APP_PHP_INTERFACE_DIR", TBA_SITE_ROOT_DIR.'/local/php_interface');
 	}
 
 	/**
@@ -53,12 +53,12 @@ class Define
 	{
 		$settings = \Techart\BxApp\Registry::setup();
 
-		define('BXAPP_REGISTRY_SERVERS', $settings['servers']);
-		define('BXAPP_REGISTRY_SITES', $settings['sites']);
-		define('BXAPP_REGISTRY_GROUPS', $settings['groups']);
-		define('BXAPP_REGISTRY_CURRENT_SERVER', $settings['currentServer']);
-		define('BXAPP_REGISTRY_CURRENT_SITE', $settings['currentSite']);
-		define('BXAPP_REGISTRY_CURRENT_LANGUAGE', $settings['currentLanguage']);
+		define('TBA_REGISTRY_SERVERS', $settings['servers']);
+		define('TBA_REGISTRY_SITES', $settings['sites']);
+		define('TBA_REGISTRY_GROUPS', $settings['groups']);
+		define('TBA_REGISTRY_CURRENT_SERVER', $settings['currentServer']);
+		define('TBA_REGISTRY_CURRENT_SITE', $settings['currentSite']);
+		define('TBA_REGISTRY_CURRENT_LANGUAGE', $settings['currentLanguage']);
 	}
 
 	/**
@@ -68,26 +68,26 @@ class Define
 	 */
 	private static function defineEnv(): void
 	{
-		define("BXAPP_SERVER_ID", BXAPP_REGISTRY_CURRENT_SERVER);
-		define("BXAPP_SITE_ID", !empty(BXAPP_REGISTRY_CURRENT_SITE) ? BXAPP_REGISTRY_CURRENT_SITE : SITE_ID);
-		define("BXAPP_LANGUAGE_ID", !empty(BXAPP_REGISTRY_CURRENT_LANGUAGE) ? BXAPP_REGISTRY_CURRENT_LANGUAGE : LANGUAGE_ID);
+		define("TBA_SERVER_ID", TBA_REGISTRY_CURRENT_SERVER);
+		define("TBA_SITE_ID", !empty(TBA_REGISTRY_CURRENT_SITE) ? TBA_REGISTRY_CURRENT_SITE : SITE_ID);
+		define("TBA_LANGUAGE_ID", !empty(TBA_REGISTRY_CURRENT_LANGUAGE) ? TBA_REGISTRY_CURRENT_LANGUAGE : LANGUAGE_ID);
 
-		if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['group']) && !empty(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['group'])) {
-			if (isset(BXAPP_REGISTRY_GROUPS[BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['group']])) {
-				define("BXAPP_SITE_GROUP_ID", BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['group']);
+		if (isset(TBA_REGISTRY_SITES[TBA_SITE_ID]['group']) && !empty(TBA_REGISTRY_SITES[TBA_SITE_ID]['group'])) {
+			if (isset(TBA_REGISTRY_GROUPS[TBA_REGISTRY_SITES[TBA_SITE_ID]['group']])) {
+				define("TBA_SITE_GROUP_ID", TBA_REGISTRY_SITES[TBA_SITE_ID]['group']);
 			} else {
-				define("BXAPP_SITE_GROUP_ID", null);
+				define("TBA_SITE_GROUP_ID", null);
 			}
 		} else {
-			define("BXAPP_SITE_GROUP_ID", null);
+			define("TBA_SITE_GROUP_ID", null);
 		}
 
-		Logger::info('defineEnv (BXAPP_SERVER_ID): '.json_encode(BXAPP_SERVER_ID));
-		Logger::info('defineEnv (BXAPP_SITE_ID): '.BXAPP_SITE_ID);
-		Logger::info('defineEnv (BXAPP_LANGUAGE_ID): '.BXAPP_LANGUAGE_ID);
-		Logger::info('defineEnv (BXAPP_SITE_GROUP_ID): '.json_encode(BXAPP_SITE_GROUP_ID));
+		Logger::info('defineEnv (TBA_SERVER_ID): '.json_encode(TBA_SERVER_ID));
+		Logger::info('defineEnv (TBA_SITE_ID): '.TBA_SITE_ID);
+		Logger::info('defineEnv (TBA_LANGUAGE_ID): '.TBA_LANGUAGE_ID);
+		Logger::info('defineEnv (TBA_SITE_GROUP_ID): '.json_encode(TBA_SITE_GROUP_ID));
 
-		// dd(BXAPP_REGISTRY_SERVERS, BXAPP_REGISTRY_SITES, BXAPP_REGISTRY_GROUPS, BXAPP_REGISTRY_CURRENT_SERVER, BXAPP_REGISTRY_CURRENT_SITE, BXAPP_REGISTRY_CURRENT_LANGUAGE, BXAPP_SERVER_ID, BXAPP_SITE_ID, BXAPP_LANGUAGE_ID, BXAPP_SITE_GROUP_ID);
+		// dd(TBA_REGISTRY_SERVERS, TBA_REGISTRY_SITES, TBA_REGISTRY_GROUPS, TBA_REGISTRY_CURRENT_SERVER, TBA_REGISTRY_CURRENT_SITE, TBA_REGISTRY_CURRENT_LANGUAGE, TBA_SERVER_ID, TBA_SITE_ID, TBA_LANGUAGE_ID, TBA_SITE_GROUP_ID);
 	}
 
 	/**
@@ -98,16 +98,16 @@ class Define
 	private static function defineVendorsPaths(): void
 	{
 		// Пути vendor
-		define("APP_VENDOR_DIR", SITE_ROOT_DIR.'/local/vendor/techart/bxapp');
-		define("APP_CORE_SETUP_DIR", APP_VENDOR_DIR.'/Setup');
-		define("APP_CORE_BXAPP_SETUP_DIR", APP_VENDOR_DIR.'/Setup/BxApp');
-		define("APP_SELF_DIR", APP_VENDOR_DIR.'/lib');
-		define("APP_CORE_BASE_DIR", APP_SELF_DIR.'/Base');
-		define("APP_CORE_CONFIGS", APP_SELF_DIR.'/Configs');
-		define("APP_CORE_DIR", APP_SELF_DIR.'/Core');
-		define("APP_CORE_MIDDLEWARE_DIR", APP_SELF_DIR.'/Middleware');
-		define("APP_CORE_ROUTER_DIR", APP_SELF_DIR.'/Router');
-		define("APP_CORE_TRAITS_DIR", APP_SELF_DIR.'/Traits');
+		define("TECHART_BXAPP_VENDOR_DIR", TBA_SITE_ROOT_DIR.'/local/vendor/techart/bxapp');
+		define("TECHART_BXAPP_CORE_SETUP_DIR", TECHART_BXAPP_VENDOR_DIR.'/Setup');
+		define("TECHART_BXAPP_CORE_BXAPP_SETUP_DIR", TECHART_BXAPP_VENDOR_DIR.'/Setup/BxApp');
+		define("TECHART_BXAPP_SELF_DIR", TECHART_BXAPP_VENDOR_DIR.'/lib');
+		define("TECHART_BXAPP_CORE_BASE_DIR", TECHART_BXAPP_SELF_DIR.'/Base');
+		define("TECHART_BXAPP_CORE_CONFIGS", TECHART_BXAPP_SELF_DIR.'/Configs');
+		define("TECHART_BXAPP_CORE_DIR", TECHART_BXAPP_SELF_DIR.'/Core');
+		define("TECHART_BXAPP_CORE_MIDDLEWARE_DIR", TECHART_BXAPP_SELF_DIR.'/Middleware');
+		define("TECHART_BXAPP_CORE_ROUTER_DIR", TECHART_BXAPP_SELF_DIR.'/Router');
+		define("TECHART_BXAPP_CORE_TRAITS_DIR", TECHART_BXAPP_SELF_DIR.'/Traits');
 	}
 
 	/**
@@ -120,30 +120,30 @@ class Define
 		$bxAppPaths = Registry::buildBxAppEntitiesDirs();
 
 		// Пути app на сайте: php_interface/BxApp
-		define("APP_ROOT_DIR", APP_PHP_INTERFACE_DIR.'/'.$bxAppPaths['bxAppDir']); // путь к папке BxApp (или её переопределению)
-		define("APP_CLI_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['cliDir']); // папка Cli
-		define("APP_CONFIGS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['configsDir']); // папка Configs
-		define("APP_ENTITIES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['entitiesDir']); // папка Entities
-		define("APP_LOCALIZATION_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['localizationDir']); // папка Localization
-		define("APP_LOGS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['logsDir']); // папка Logs
-		define("APP_MENU_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['menuDir']); // папка Menu
-		define("APP_MIDDLEWARE_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['middlewareDir']); // папка Middleware
-		define("APP_MIDDLEWARE_BEFORE_DIR", APP_MIDDLEWARE_DIR.'/Before'); // папка Middleware/Before
-		define("APP_MIDDLEWARE_AFTER_DIR", APP_MIDDLEWARE_DIR.'/After'); // папка Middleware/After
-		define("APP_MODELS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['modelsDir']); // папка Models
-		define("APP_MODULES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['modulesDir']); // папка Modules
-		define("APP_ROUTER_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['routerDir']); // папка Router
-		define("APP_SERVICES_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['servicesDir']); // папка Services
-		define("APP_TRAITS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['traitsDir']); // папка Traits
-		define("APP_VIEWS_DIR", APP_ROOT_DIR.'/'.$bxAppPaths['viewsDir']); // папка Views
-		define("APP_VIEWS_PDF_DIR", APP_VIEWS_DIR.'/Pdf'); // папка Views/Pdf
-		define("APP_CACHE_BLADE_DIR", APP_CACHE_DIR.'/blade'); // папка кэша блейда
-		define("APP_CACHE_ROUTER_ROOT_DIR", APP_CACHE_DIR.'/router'); // папка кэша роутера
-		define("APP_CACHE_ROUTER_DIR", APP_CACHE_ROUTER_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша роутера сайта
-		define("APP_CACHE_ROUTER_PAGES_DIR", APP_CACHE_ROUTER_DIR.'/routes'); // папка кэша роутов (страниц)
-		define("APP_CACHE_STATIC_ROOT_DIR", APP_CACHE_DIR.'/static'); // папка кэша статики
-		define("APP_CACHE_STATIC_DIR", APP_CACHE_STATIC_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша статики сайта
-		define("APP_CACHE_MODELS_ROOT_DIR", APP_CACHE_DIR.'/models'); // папка кэша роутов моделей
-		define("APP_CACHE_MODELS_DIR", APP_CACHE_MODELS_ROOT_DIR.'/'.BXAPP_SITE_ID); // папка кэша роутов моделей сайта
+		define("TBA_APP_ROOT_DIR", TBA_APP_PHP_INTERFACE_DIR.'/'.$bxAppPaths['bxAppDir']); // путь к папке BxApp (или её переопределению)
+		define("TBA_APP_CLI_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['cliDir']); // папка Cli
+		define("TBA_APP_CONFIGS_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['configsDir']); // папка Configs
+		define("TBA_APP_ENTITIES_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['entitiesDir']); // папка Entities
+		define("TBA_APP_LOCALIZATION_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['localizationDir']); // папка Localization
+		define("TBA_APP_LOGS_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['logsDir']); // папка Logs
+		define("TBA_APP_MENU_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['menuDir']); // папка Menu
+		define("TBA_APP_MIDDLEWARE_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['middlewareDir']); // папка Middleware
+		define("TBA_APP_MIDDLEWARE_BEFORE_DIR", TBA_APP_MIDDLEWARE_DIR.'/Before'); // папка Middleware/Before
+		define("TBA_APP_MIDDLEWARE_AFTER_DIR", TBA_APP_MIDDLEWARE_DIR.'/After'); // папка Middleware/After
+		define("TBA_APP_MODELS_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['modelsDir']); // папка Models
+		define("TBA_APP_MODULES_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['modulesDir']); // папка Modules
+		define("TBA_APP_ROUTER_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['routerDir']); // папка Router
+		define("TBA_APP_SERVICES_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['servicesDir']); // папка Services
+		define("TBA_APP_TRAITS_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['traitsDir']); // папка Traits
+		define("TBA_APP_VIEWS_DIR", TBA_APP_ROOT_DIR.'/'.$bxAppPaths['viewsDir']); // папка Views
+		define("TBA_APP_VIEWS_PDF_DIR", TBA_APP_VIEWS_DIR.'/Pdf'); // папка Views/Pdf
+		define("TBA_APP_CACHE_BLADE_DIR", TBA_APP_CACHE_DIR.'/blade'); // папка кэша блейда
+		define("TBA_APP_CACHE_ROUTER_ROOT_DIR", TBA_APP_CACHE_DIR.'/router'); // папка кэша роутера
+		define("TBA_APP_CACHE_ROUTER_DIR", TBA_APP_CACHE_ROUTER_ROOT_DIR.'/'.TBA_SITE_ID); // папка кэша роутера сайта
+		define("TBA_APP_CACHE_ROUTER_PAGES_DIR", TBA_APP_CACHE_ROUTER_DIR.'/routes'); // папка кэша роутов (страниц)
+		define("TBA_APP_CACHE_STATIC_ROOT_DIR", TBA_APP_CACHE_DIR.'/static'); // папка кэша статики
+		define("TBA_APP_CACHE_STATIC_DIR", TBA_APP_CACHE_STATIC_ROOT_DIR.'/'.TBA_SITE_ID); // папка кэша статики сайта
+		define("TBA_APP_CACHE_MODELS_ROOT_DIR", TBA_APP_CACHE_DIR.'/models'); // папка кэша роутов моделей
+		define("TBA_APP_CACHE_MODELS_DIR", TBA_APP_CACHE_MODELS_ROOT_DIR.'/'.TBA_SITE_ID); // папка кэша роутов моделей сайта
 	}
 }

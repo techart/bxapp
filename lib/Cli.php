@@ -40,11 +40,11 @@ class Cli
 		self::$siteId = $argv[1];
 		$isSetSiteId = true;
 
-		if (!empty(BXAPP_REGISTRY_SITES[self::$siteId])) {
+		if (!empty(TBA_REGISTRY_SITES[self::$siteId])) {
 			self::$action = $argv[2];
 			self::$options = array_slice($argv, 3);
 		} else {
-			self::$siteId = BXAPP_SITE_ID;
+			self::$siteId = TBA_SITE_ID;
 
 			if (strpos($argv[2], '_') !== false || strpos($argv[2], ':') !== false) {
 				self::$action = $argv[2];
@@ -71,7 +71,7 @@ class Cli
 				$methodArgs = self::$options;
 
 				if (!empty($className) && !empty($methodName)) {
-					$classFile = APP_CLI_DIR.'/'.$className.'.php';
+					$classFile = TBA_APP_CLI_DIR.'/'.$className.'.php';
 
 					if (file_exists($classFile)) {
 						require_once($classFile);

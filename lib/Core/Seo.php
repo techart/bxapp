@@ -73,7 +73,7 @@ class Seo
 		$infoblock = \CIBlock::GetList(
 			[],
 			[
-				'SITE_ID' => BXAPP_SITE_ID,
+				'SITE_ID' => TBA_SITE_ID,
 				"CODE" => $iblockСode
 			],
 			false
@@ -102,7 +102,7 @@ class Seo
 			['SORT' => 'ASC'],
 			[
 				'IBLOCK_ID' => $this->iblockId,
-				'SECTION_CODE' => BXAPP_SITE_ID . '-' . BXAPP_LANGUAGE_ID,
+				'SECTION_CODE' => TBA_SITE_ID . '-' . TBA_LANGUAGE_ID,
 				'NAME' => $this->name
 			], false, false,
 			['ID']

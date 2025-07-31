@@ -34,7 +34,7 @@ class Helpers
 	 */
 	public static function imgToBase64(string $imgPath = ''): string
 	{
-		$path = realpath(PROJECT_ROOT_DIR.'/'.$imgPath);
+		$path = realpath(TBA_PROJECT_ROOT_DIR.'/'.$imgPath);
 
 		if (file_exists($path)) {
 			$type = pathinfo($path, PATHINFO_EXTENSION);
@@ -230,14 +230,14 @@ class Helpers
 	 * Возвращает true, если $lang равен дефолтному языку (APP_LANG в конфиге App.php)
 	 * Возвращает false в противном случае
 	 *
-	 * Если $lang не задан, то проверяется BXAPP_LANGUAGE_ID
+	 * Если $lang не задан, то проверяется TBA_LANGUAGE_ID
 	 *
 	 * @param string $lang
 	 * @return boolean
 	 */
 	public static function isDefaultLanguage(string $lang = ''): bool
 	{
-		$curLang = !empty($lang) ? $lang : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($lang) ? $lang : TBA_LANGUAGE_ID;
 
 		return ($curLang === \Config::get('App.APP_LANG', 'ru')) ? true : false;
 	}

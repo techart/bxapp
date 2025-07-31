@@ -19,19 +19,19 @@ class AppSetup
 		$path = str_replace('\\', '/', $options[0]);
 		$explodePath = explodePathString($path);
 		$modelName = ucfirst($explodePath['file']);
-		$template = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/ModelTemplate.php');
+		$template = file_get_contents(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/ModelTemplate.php');
 		$template = str_replace(
 			['{{model_name}}', '{{model_table}}'],
 			[$modelName, strtolower($modelName)],
 			$template
 		);
 
-		if (!is_dir(APP_MODELS_DIR)) {
-			mkdir(APP_MODELS_DIR);
+		if (!is_dir(TBA_APP_MODELS_DIR)) {
+			mkdir(TBA_APP_MODELS_DIR);
 		}
-		createDirsChaine(APP_MODELS_DIR, $explodePath['dirs']);
+		createDirsChaine(TBA_APP_MODELS_DIR, $explodePath['dirs']);
 
-		file_put_contents(APP_MODELS_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php', $template);
+		file_put_contents(TBA_APP_MODELS_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php', $template);
 	}
 
 	/**
@@ -48,7 +48,7 @@ class AppSetup
 		$explodePath = explodePathString($path);
 		$cliName = ucfirst($explodePath['file']);
 		$cliMethod = strtolower($method);
-		$template = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/CliTemplate.php');
+		$template = file_get_contents(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/CliTemplate.php');
 		$cliNamespace = !empty($explodePath['dirs']) ? '\\'.implode('\\', $explodePath['dirs']) : '';
 		$template = str_replace(
 			['{{cli_name}}', '{{cli_method}}', '{{cli_namespace}}'],
@@ -56,12 +56,12 @@ class AppSetup
 			$template
 		);
 
-		if (!is_dir(APP_CLI_DIR)) {
-			mkdir(APP_CLI_DIR);
+		if (!is_dir(TBA_APP_CLI_DIR)) {
+			mkdir(TBA_APP_CLI_DIR);
 		}
-		createDirsChaine(APP_CLI_DIR, $explodePath['dirs']);
+		createDirsChaine(TBA_APP_CLI_DIR, $explodePath['dirs']);
 
-		file_put_contents(APP_CLI_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$cliName.'.php', $template);
+		file_put_contents(TBA_APP_CLI_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$cliName.'.php', $template);
 	}
 
 	/**
@@ -75,16 +75,16 @@ class AppSetup
 	{
 		$bundleName = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
-		if (!is_dir(APP_ROUTER_DIR.'/'.$bundleName)) {
-			recurseCopy(APP_CORE_SETUP_DIR.'/TemplateFiles/Router/BundleName', APP_ROUTER_DIR.'/'.$bundleName);
+		if (!is_dir(TBA_APP_ROUTER_DIR.'/'.$bundleName)) {
+			recurseCopy(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/Router/BundleName', TBA_APP_ROUTER_DIR.'/'.$bundleName);
 
-			$template = file_get_contents(APP_ROUTER_DIR.'/'.$bundleName.'/Controllers/Actions.php');
+			$template = file_get_contents(TBA_APP_ROUTER_DIR.'/'.$bundleName.'/Controllers/Actions.php');
 			$template = str_replace(
 				['{{BundleName}}'],
 				[$bundleName],
 				$template
 			);
-			file_put_contents(APP_ROUTER_DIR.'/'.$bundleName.'/Controllers/Actions.php', $template);
+			file_put_contents(TBA_APP_ROUTER_DIR.'/'.$bundleName.'/Controllers/Actions.php', $template);
 		}
 	}
 
@@ -99,16 +99,16 @@ class AppSetup
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
-		if (!file_exists(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php')) {
-			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareAfter.php', APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
+		if (!file_exists(TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareAfter.php', TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
 
-			$template = file_get_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
+			$template = file_get_contents(TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php');
 			$template = str_replace(
 				['{{middleware_name}}'],
 				[$name],
 				$template
 			);
-			file_put_contents(APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php', $template);
+			file_put_contents(TBA_APP_MIDDLEWARE_AFTER_DIR.'/'.$name.'.php', $template);
 		}
 	}
 
@@ -123,16 +123,16 @@ class AppSetup
 	{
 		$name = ucfirst(str_replace(['\\', '/'], '', $options[0]));
 
-		if (!file_exists(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php')) {
-			copy(APP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareBefore.php', APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
+		if (!file_exists(TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/MiddlewareBefore.php', TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
 
-			$template = file_get_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
+			$template = file_get_contents(TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php');
 			$template = str_replace(
 				['{{middleware_name}}'],
 				[$name],
 				$template
 			);
-			file_put_contents(APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php', $template);
+			file_put_contents(TBA_APP_MIDDLEWARE_BEFORE_DIR.'/'.$name.'.php', $template);
 		}
 	}
 
@@ -145,70 +145,70 @@ class AppSetup
 	 */
 	public static function setup($siteId = '', $isSetSiteId = false): void
 	{
-		$rootDir = APP_PHP_INTERFACE_DIR . '/' . 'BxApp' . ($isSetSiteId ? '_'.$siteId : '');
+		$rootDir = TBA_APP_PHP_INTERFACE_DIR . '/' . 'BxApp' . ($isSetSiteId ? '_'.$siteId : '');
 		if (!is_dir($rootDir)) {
 			mkdir($rootDir);
 		}
 
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Cli', $rootDir . '/Cli');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Configs', $rootDir . '/Configs');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Entities', $rootDir . '/Entities');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Localization', $rootDir . '/Localization');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Logs', $rootDir . '/Logs');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Menu', $rootDir . '/Menu');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Middleware', $rootDir . '/Middleware');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Models', $rootDir . '/Models');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Modules', $rootDir . '/Modules');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Router', $rootDir . '/Router');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Services', $rootDir . '/Services');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Traits', $rootDir . '/Traits');
-		recurseCopy(APP_CORE_BXAPP_SETUP_DIR.'/Views', $rootDir . '/Views');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Cli', $rootDir . '/Cli');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Configs', $rootDir . '/Configs');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Entities', $rootDir . '/Entities');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Localization', $rootDir . '/Localization');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Logs', $rootDir . '/Logs');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Menu', $rootDir . '/Menu');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Middleware', $rootDir . '/Middleware');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Models', $rootDir . '/Models');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Modules', $rootDir . '/Modules');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Router', $rootDir . '/Router');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Services', $rootDir . '/Services');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Traits', $rootDir . '/Traits');
+		recurseCopy(TECHART_BXAPP_CORE_BXAPP_SETUP_DIR.'/Views', $rootDir . '/Views');
 
-		recurseCopy(APP_CORE_SETUP_DIR.'/Events', APP_PHP_INTERFACE_DIR.'/Events');
-		recurseCopy(APP_CORE_SETUP_DIR.'/Lib', APP_PHP_INTERFACE_DIR.'/Lib');
+		recurseCopy(TECHART_BXAPP_CORE_SETUP_DIR.'/Events', TBA_APP_PHP_INTERFACE_DIR.'/Events');
+		recurseCopy(TECHART_BXAPP_CORE_SETUP_DIR.'/Lib', TBA_APP_PHP_INTERFACE_DIR.'/Lib');
 
-		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
-			copy(APP_CORE_SETUP_DIR.'/BxAppRegistry.php', APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
+		if (!file_exists(TBA_APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/BxAppRegistry.php', TBA_APP_PHP_INTERFACE_DIR.'/BxAppRegistry.php');
 		}
-		if (!file_exists(APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php')) {
-			copy(APP_CORE_SETUP_DIR.'/BxAppRouterProcessingProlog.php', APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php');
+		if (!file_exists(TBA_APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/BxAppRouterProcessingProlog.php', TBA_APP_PHP_INTERFACE_DIR.'/BxAppRouterProcessingProlog.php');
 		}
-		if (file_exists(APP_PHP_INTERFACE_DIR.'/init.php')) {
-			unlink(APP_PHP_INTERFACE_DIR.'/init.php');
+		if (file_exists(TBA_APP_PHP_INTERFACE_DIR.'/init.php')) {
+			unlink(TBA_APP_PHP_INTERFACE_DIR.'/init.php');
 		}
-		copy(APP_CORE_SETUP_DIR.'/init.php', APP_PHP_INTERFACE_DIR.'/init.php');
-		if (file_exists(APP_PHP_INTERFACE_DIR.'/cli.php')) {
-			unlink(APP_PHP_INTERFACE_DIR.'/cli.php');
+		copy(TECHART_BXAPP_CORE_SETUP_DIR.'/init.php', TBA_APP_PHP_INTERFACE_DIR.'/init.php');
+		if (file_exists(TBA_APP_PHP_INTERFACE_DIR.'/cli.php')) {
+			unlink(TBA_APP_PHP_INTERFACE_DIR.'/cli.php');
 		}
-		copy(APP_CORE_SETUP_DIR.'/cli.php', APP_PHP_INTERFACE_DIR.'/cli.php');
-		if (!is_dir(APP_FAVICON_FILES_DIR)) {
-			mkdir(APP_FAVICON_FILES_DIR);
-			copy(APP_CORE_SETUP_DIR.'/gitkeep', APP_FAVICON_FILES_DIR.'/.gitkeep');
+		copy(TECHART_BXAPP_CORE_SETUP_DIR.'/cli.php', TBA_APP_PHP_INTERFACE_DIR.'/cli.php');
+		if (!is_dir(TBA_APP_FAVICON_FILES_DIR)) {
+			mkdir(TBA_APP_FAVICON_FILES_DIR);
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/gitkeep', TBA_APP_FAVICON_FILES_DIR.'/.gitkeep');
 		}
-		if (!is_dir(APP_CACHE_DIR)) {
-			mkdir(APP_CACHE_DIR);
+		if (!is_dir(TBA_APP_CACHE_DIR)) {
+			mkdir(TBA_APP_CACHE_DIR);
 		}
-		if (!is_dir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets')) {
-			mkdir(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets');
-			copy(APP_CORE_SETUP_DIR.'/gitkeep', SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets/.gitkeep');
+		if (!is_dir(TBA_SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets')) {
+			mkdir(TBA_SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets');
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/gitkeep', TBA_SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/assets/.gitkeep');
 		}
-		if (!is_dir(APP_CACHE_DIR.'/blade')) {
-			mkdir(APP_CACHE_DIR.'/blade');
+		if (!is_dir(TBA_APP_CACHE_DIR.'/blade')) {
+			mkdir(TBA_APP_CACHE_DIR.'/blade');
 		}
-		if (!is_dir(APP_CACHE_ROUTER_DIR)) {
-			mkdir(APP_CACHE_ROUTER_DIR);
+		if (!is_dir(TBA_APP_CACHE_ROUTER_DIR)) {
+			mkdir(TBA_APP_CACHE_ROUTER_DIR);
 		}
-		if (!file_exists(PROJECT_ROOT_DIR.'/.env')) {
-			copy(APP_CORE_SETUP_DIR.'/.env.default', PROJECT_ROOT_DIR.'/.env');
+		if (!file_exists(TBA_PROJECT_ROOT_DIR.'/.env')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/.env.default', TBA_PROJECT_ROOT_DIR.'/.env');
 		}
-		if (!file_exists(PROJECT_ROOT_DIR.'/.env.example')) {
-			copy(APP_CORE_SETUP_DIR.'/.env.example', PROJECT_ROOT_DIR.'/.env.example');
+		if (!file_exists(TBA_PROJECT_ROOT_DIR.'/.env.example')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/.env.example', TBA_PROJECT_ROOT_DIR.'/.env.example');
 		}
-		if (!file_exists(APP_ROOT_DIR.'/.gitignore')) {
-			copy(APP_CORE_SETUP_DIR.'/gitignore', APP_ROOT_DIR.'/.gitignore');
+		if (!file_exists(TBA_APP_ROOT_DIR.'/.gitignore')) {
+			copy(TECHART_BXAPP_CORE_SETUP_DIR.'/gitignore', TBA_APP_ROOT_DIR.'/.gitignore');
 		}
-		if (file_exists(SITE_ROOT_DIR.'/local/.config.php')) {
-			unlink(SITE_ROOT_DIR.'/local/.config.php');
+		if (file_exists(TBA_SITE_ROOT_DIR.'/local/.config.php')) {
+			unlink(TBA_SITE_ROOT_DIR.'/local/.config.php');
 		}
 	}
 
@@ -221,10 +221,10 @@ class AppSetup
 	 */
 	public static function setupTemplate(): void
 	{
-		$templateHeader = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/header.php');
-		$templateFooter = file_get_contents(APP_CORE_SETUP_DIR.'/TemplateFiles/footer.php');
+		$templateHeader = file_get_contents(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/header.php');
+		$templateFooter = file_get_contents(TECHART_BXAPP_CORE_SETUP_DIR.'/TemplateFiles/footer.php');
 
-		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
-		file_put_contents(SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
+		file_put_contents(TBA_SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/header.php', $templateHeader);
+		file_put_contents(TBA_SITE_ROOT_DIR.SITE_TEMPLATE_PATH.'/footer.php', $templateFooter);
 	}
 }

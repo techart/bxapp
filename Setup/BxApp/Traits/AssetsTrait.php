@@ -48,7 +48,7 @@ trait AssetsTrait
 	 */
 	private function setLibs(string $entry): void
 	{
-		$file = SITE_TEMPLATE_ID == '.default' ? file_get_contents(SITE_ROOT_DIR.'/local/templates/site/frontend/user.settings.js') : file_get_contents(SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend').'/user.settings.js');
+		$file = SITE_TEMPLATE_ID == '.default' ? file_get_contents(TBA_SITE_ROOT_DIR.'/local/templates/site/frontend/user.settings.js') : file_get_contents(TBA_SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend').'/user.settings.js');
 		$file_entry = stristr($file, $entry.':');
 		$file_entry = stristr($file_entry, '{');
 		$file_entry = stristr($file_entry, '}', true).'}';
@@ -76,7 +76,7 @@ trait AssetsTrait
 	 */
 	private function buildTagAttrs(string $item = '', array $attrs = [], string $type = ''): array|bool
 	{
-		$pathToAssets = SITE_TEMPLATE_ID == '.default' ? SITE_ROOT_DIR.'/local/templates/site/frontend/assets/' : SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend/assets/');
+		$pathToAssets = SITE_TEMPLATE_ID == '.default' ? TBA_SITE_ROOT_DIR.'/local/templates/site/frontend/assets/' : TBA_SITE_ROOT_DIR.$GLOBALS['APPLICATION']->GetTemplatePath('frontend/assets/');
 		$pathToBuildJson = realpath($pathToAssets . '/' . \Glob::get('APP_ENV', 'dev') . '.json');
 
 		if ($pathToBuildJson === false) {

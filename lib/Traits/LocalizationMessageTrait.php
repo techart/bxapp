@@ -33,7 +33,7 @@ trait LocalizationMessageTrait
 		foreach (['namespace' => '::', 'group' => '.', 'key' => ''] as $param => $postfix) {
 			$matches[$param] = str_replace(
 				['{entity_name}', '{class_name}', '{method_name}', '{site_id}', '{first_dir}', '{all_dir}'],
-				[$entity, $className, $methodName, BXAPP_SITE_ID, $path[0], implode('/', $path)],
+				[$entity, $className, $methodName, TBA_SITE_ID, $path[0], implode('/', $path)],
 				isset($matches[$param]) && !empty($matches[$param]) ? $matches[$param] . $postfix : ''
 			);
 		}

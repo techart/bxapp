@@ -12,7 +12,7 @@ class Cache {
 	 */
 	public static function clearRouter(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(APP_CACHE_ROUTER_ROOT_DIR.'/'.$siteId);
+		Directory::deleteDirectory(TBA_APP_CACHE_ROUTER_ROOT_DIR.'/'.$siteId);
 
 		if (\Config::get('Router.APP_ROUTER_CACHE_REBUILD', false) === false) {
 			Router::routerNamesToCache();
@@ -46,10 +46,10 @@ class Cache {
 	 */
 	public static function clearModels(string $siteId = ''): void
 	{
-		$models = self::collectModels(APP_MODELS_DIR);
+		$models = self::collectModels(TBA_APP_MODELS_DIR);
 
 		foreach($models as $model) {
-			Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'. App::model($model)->table);
+			Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.'/'. App::model($model)->table);
 		}
 	}
 
@@ -61,7 +61,7 @@ class Cache {
 	 */
 	public static function clearBlade(): void
 	{
-		array_map('unlink', array_filter((array) glob(APP_CACHE_BLADE_DIR . '/*')));
+		array_map('unlink', array_filter((array) glob(TBA_APP_CACHE_BLADE_DIR . '/*')));
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Cache {
 	 */
 	public static function clearComponents(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'.$siteId);
+		Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.'/'.$siteId);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Cache {
 	 */
 	public static function clearStatic(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(APP_CACHE_STATIC_ROOT_DIR.'/'.$siteId);
+		Directory::deleteDirectory(TBA_APP_CACHE_STATIC_ROOT_DIR.'/'.$siteId);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Cache {
 	 */
 	public static function clearMenu(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.'/'.APP_CACHE_MENU_DIR_NAME.'/'.$siteId);
+		Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.'/'.TBA_APP_CACHE_MENU_DIR_NAME.'/'.$siteId);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Cache {
 	 */
 	public static function clearRouterModels(string $siteId = ''): void
 	{
-		$routes = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/models.json'), true);
+		$routes = json_decode(file_get_contents(TBA_APP_CACHE_MODELS_DIR . '/models.json'), true);
 		$tables = [];
 		$staticRoutes = [];
 
@@ -115,7 +115,7 @@ class Cache {
 			}
 
 			foreach (array_unique($tables) as $table) {
-				$data = json_decode(file_get_contents(APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'));
+				$data = json_decode(file_get_contents(TBA_APP_CACHE_MODELS_DIR . '/' . $table . '/router.json'));
 
 				if ($data !== false) {
 					foreach ($data as $routeData) {
@@ -127,7 +127,7 @@ class Cache {
 			}
 
 			$staticRoutes = array_unique($staticRoutes);
-			Directory::deleteDirectory(APP_CACHE_MODELS_DIR);
+			Directory::deleteDirectory(TBA_APP_CACHE_MODELS_DIR);
 
 			foreach ($staticRoutes as $route) {
 				\H::deleteFile($route . 'data.json', 'static');
@@ -145,7 +145,7 @@ class Cache {
 	 */
 	public static function clearHtml(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH'));
+		Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH'));
 	}
 
 	/**

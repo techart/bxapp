@@ -31,14 +31,14 @@ class Env
 		if (self::$env === false) {
 			$envFile = '.env';
 
-			if (isset(BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities']) && in_array('env', BXAPP_REGISTRY_SITES[BXAPP_SITE_ID]['bxappEntities'])) {
-				$envFile .= '_'.BXAPP_SITE_ID;
+			if (isset(TBA_REGISTRY_SITES[TBA_SITE_ID]['bxappEntities']) && in_array('env', TBA_REGISTRY_SITES[TBA_SITE_ID]['bxappEntities'])) {
+				$envFile .= '_'.TBA_SITE_ID;
 			}
 
-			$envPath = PROJECT_ROOT_DIR.'/'.$envFile;
+			$envPath = TBA_PROJECT_ROOT_DIR.'/'.$envFile;
 
 			if (file_exists($envPath)) {
-				self::$env = Dotenv::createImmutable([APP_CORE_SETUP_DIR, PROJECT_ROOT_DIR], [$envFile, '.env.default'], false)->load();
+				self::$env = Dotenv::createImmutable([TECHART_BXAPP_CORE_SETUP_DIR, TBA_PROJECT_ROOT_DIR], [$envFile, '.env.default'], false)->load();
 			} else {
 				self::$env = [];
 			}

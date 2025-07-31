@@ -68,7 +68,7 @@ class EventsModel
 
 		if (!empty($tableName)) {
 			foreach ($sites as $site) {
-				$dir = APP_CACHE_MODELS_ROOT_DIR . '/' . $site . '/';
+				$dir = TBA_APP_CACHE_MODELS_ROOT_DIR . '/' . $site . '/';
 
 				if (is_dir($dir . $tableName)) {
 					$filePath = $dir . $tableName . '/router.json';

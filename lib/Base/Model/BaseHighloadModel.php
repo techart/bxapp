@@ -59,7 +59,7 @@ class BaseHighloadModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : BXAPP_LANGUAGE_ID;
+		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 

@@ -213,9 +213,9 @@ class Route
 				\Techart\BxApp\RouterConfigurator::setRouteModels($this->requestMethod, $this->bundle, $this->getCurrentUrl(), array_merge($this->routeModels, $this->groupModels));
 			}
 			if (!empty($this->routeBundle)) {
-				if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+				if (file_exists(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
 					if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
-						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
 					}
 
 					if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
@@ -229,9 +229,9 @@ class Route
 				}
 			}*/
 			if (!empty($this->routeBundle)) {
-				if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+				if (file_exists(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
 					if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
-						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+						\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
 					}
 
 					if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
@@ -369,9 +369,9 @@ class Route
 
 		// NOTE: Удалить если не нужны модели в конфиге роута
 		/*if (!empty($this->routeBundle)) {
-			if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+			if (file_exists(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
 				if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
-					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
 				}
 
 				if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
@@ -397,9 +397,9 @@ class Route
 			}
 		}*/
 		if (!empty($this->routeBundle)) {
-			if (file_exists(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
+			if (file_exists(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php')) {
 				if (!isset(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {
-					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
+					\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle] = include_once(TBA_APP_ROUTER_DIR . '/' . $this->routeBundle . '/RoutesAPI.php');
 				}
 
 				if (!empty(\Techart\BxApp\RouterConfigurator::$bundles[$this->routeBundle])) {

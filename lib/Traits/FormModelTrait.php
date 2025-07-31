@@ -158,7 +158,7 @@ trait FormModelTrait
 	{
 		Event::send([
 			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
-			"LID" => BXAPP_SITE_ID,
+			"LID" => TBA_SITE_ID,
 			"C_FIELDS" => $fields,
 			'FILE' => $file,
 			'MESSAGE_ID' => $messageId,
@@ -188,7 +188,7 @@ trait FormModelTrait
 	{
 		Event::sendImmediate([
 			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
-			"LID" => BXAPP_SITE_ID,
+			"LID" => TBA_SITE_ID,
 			"C_FIELDS" => $fields,
 			'FILE' => $file,
 			'MESSAGE_ID' => $messageId,

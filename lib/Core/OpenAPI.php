@@ -75,8 +75,8 @@ class OpenAPI
 	 */
 	private function init(): void
 	{
-		$this->schema = include_once(APP_ROUTER_DIR . '/' . 'SchemaAPI.php');
-		$this->schemaDefault = include_once(APP_VENDOR_DIR . '/lib/Router/SchemaAPI.php');
+		$this->schema = include_once(TBA_APP_ROUTER_DIR . '/' . 'SchemaAPI.php');
+		$this->schemaDefault = include_once(TECHART_BXAPP_VENDOR_DIR . '/lib/Router/SchemaAPI.php');
 		$this->tags = array_merge($this->schema['TAGS'], $this->schemaDefault['TAGS']);
 
 		if (empty(\Env::get('APP_OPENAPI_DOMAIN'))) {
@@ -173,9 +173,9 @@ class OpenAPI
 								$this->routesApiData[$route['bundle']] = \Techart\BxApp\RouterConfigurator::$bundles[$route['bundle']];
 							} else {
 								if ($route['bundle'] === 'BxappDefault') {
-									$this->routesApiData[$route['bundle']] = include_once(APP_VENDOR_DIR . '/lib/Router/BxappDefault/RoutesAPI.php');
+									$this->routesApiData[$route['bundle']] = include_once(TECHART_BXAPP_VENDOR_DIR . '/lib/Router/BxappDefault/RoutesAPI.php');
 								} else {
-									$this->routesApiData[$route['bundle']] = include_once(APP_ROUTER_DIR . '/' . $route['bundle'] . '/' . 'RoutesAPI.php');
+									$this->routesApiData[$route['bundle']] = include_once(TBA_APP_ROUTER_DIR . '/' . $route['bundle'] . '/' . 'RoutesAPI.php');
 								}
 							}
 						}
@@ -258,8 +258,8 @@ class OpenAPI
 						}
 
 						if ($this->schema['ADD_SERVER_ID']) {
-							if (isset(BXAPP_REGISTRY_SITES[$this->siteId]['server']) && !empty(BXAPP_REGISTRY_SITES[$this->siteId]['server'])) {
-								$this->servers = BXAPP_REGISTRY_SITES[$this->siteId]['server'];
+							if (isset(TBA_REGISTRY_SITES[$this->siteId]['server']) && !empty(TBA_REGISTRY_SITES[$this->siteId]['server'])) {
+								$this->servers = TBA_REGISTRY_SITES[$this->siteId]['server'];
 							}
 
 							$this->apiFile['paths'][$route['routeUrl']][$route['requestMethod']]['parameters'][] = [
@@ -277,7 +277,7 @@ class OpenAPI
 						if ($this->schema['ADD_SECRET_KEY']) {
 							if (!empty($this->servers)) {
 								foreach ($this->servers as $server) {
-									$this->secretkeys[] = BXAPP_REGISTRY_SERVERS[$server]['secretKey'];
+									$this->secretkeys[] = TBA_REGISTRY_SERVERS[$server]['secretKey'];
 								}
 							}
 

@@ -145,7 +145,7 @@ class Assets
 			'height' => '',
 		];
 		$currentParams = array_merge($defaultParams, $params);
-		$svgRealPath = realpath(SITE_ROOT_DIR.'/'.$svgPath);
+		$svgRealPath = realpath(TBA_SITE_ROOT_DIR.'/'.$svgPath);
 
 		if(file_exists($svgRealPath)) {
 			$fileContent = file_get_contents($svgRealPath);
