@@ -49,7 +49,7 @@ class Router
 	 */
 	public static function getRequestQuery(): array
 	{
-		return defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY') ? BXAPP_ROUTER_CURRENT_REQUEST_QUERY : $_GET;
+		return defined('TBA_ROUTER_CURRENT_REQUEST_QUERY') ? TBA_ROUTER_CURRENT_REQUEST_QUERY : $_GET;
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Router
 				return $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
 		}
 
-		return defined('BXAPP_ROUTER_CURRENT_REQUEST_METHOD') ? BXAPP_ROUTER_CURRENT_REQUEST_METHOD : Application::getInstance()->getContext()->getRequest()->getRequestMethod();
+		return defined('TBA_ROUTER_CURRENT_REQUEST_METHOD') ? TBA_ROUTER_CURRENT_REQUEST_METHOD : Application::getInstance()->getContext()->getRequest()->getRequestMethod();
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Router
 	 */
 	public static function getRequestUri(): string
 	{
-		return defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') ? BXAPP_ROUTER_CURRENT_REQUEST_URL : Application::getInstance()->getContext()->getRequest()->getRequestUri();
+		return defined('TBA_ROUTER_CURRENT_REQUEST_URL') ? TBA_ROUTER_CURRENT_REQUEST_URL : Application::getInstance()->getContext()->getRequest()->getRequestUri();
 	}
 
 	/**

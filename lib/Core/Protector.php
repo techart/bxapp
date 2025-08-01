@@ -312,7 +312,7 @@ class Protector
 	}
 
 	/**
-	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно public
+	 * Проверяет, что значение TBA_REQUEST_TYPE равно public
 	 *
 	 * @param bool $reverse
 	 * @return object
@@ -327,7 +327,7 @@ class Protector
 	}
 
 	/**
-	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно mixed
+	 * Проверяет, что значение TBA_REQUEST_TYPE равно mixed
 	 *
 	 * @param bool $reverse
 	 * @return object
@@ -342,7 +342,7 @@ class Protector
 	}
 
 	/**
-	 * Проверяет, что значение BXAPP_REQUEST_TYPE равно secure
+	 * Проверяет, что значение TBA_REQUEST_TYPE равно secure
 	 *
 	 * @param bool $reverse
 	 * @return object

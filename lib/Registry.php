@@ -43,14 +43,14 @@ class Registry
 					if (method_exists($registryClass, 'apply')) {
 						$registryClass->apply();
 
-						if (!defined('BXAPP_IS_SITE_PAGE')) {
-							define('BXAPP_IS_SITE_PAGE', true);
+						if (!defined('TBA_IS_SITE_PAGE')) {
+							define('TBA_IS_SITE_PAGE', true);
 						}
-						if (!defined('BXAPP_IS_STATIC')) {
-							define('BXAPP_IS_STATIC', false);
+						if (!defined('TBA_IS_STATIC')) {
+							define('TBA_IS_STATIC', false);
 						}
 
-						Logger::info('Registry::setup (BXAPP_IS_STATIC): '.json_encode(BXAPP_IS_STATIC));
+						Logger::info('Registry::setup (TBA_IS_STATIC): '.json_encode(TBA_IS_STATIC));
 
 						$settings['servers'] = $registryClass->getServers();
 						$settings['sites'] = $registryClass->getSites();

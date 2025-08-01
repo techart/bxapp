@@ -49,10 +49,10 @@ class BaseRegistry
 	public function setForStaticApi()
 	{
 		if (isset($_GET['bxapp_staticapi']) && $_GET['bxapp_staticapi'] == true) {
-			define('BXAPP_IS_STATIC', true);
-			define('BXAPP_IS_SITE_PAGE', false);
-			define('BXAPP_ROUTER_CURRENT_REQUEST_METHOD', $_GET['bxapp_method']);
-			define('BXAPP_ROUTER_CURRENT_REQUEST_URL', $_GET['bxapp_url']);
+			define('TBA_IS_STATIC', true);
+			define('TBA_IS_SITE_PAGE', false);
+			define('TBA_ROUTER_CURRENT_REQUEST_METHOD', $_GET['bxapp_method']);
+			define('TBA_ROUTER_CURRENT_REQUEST_URL', $_GET['bxapp_url']);
 			unset($_GET['bxapp_staticapi']);
 			unset($_GET['bxapp_method']);
 			unset($_GET['bxapp_url']);
@@ -71,14 +71,14 @@ class BaseRegistry
 			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
 				$this->currentLanguage = $this->sites[$this->currentSite]['language'];
 			}
-			define('BXAPP_ROUTER_CURRENT_REQUEST_QUERY', $_GET);
+			define('TBA_ROUTER_CURRENT_REQUEST_QUERY', $_GET);
 		}
 	}
 
 	public function setForCli()
 	{
-		if (defined('BXAPP_CLI_ARGV') && $this->sites[BXAPP_CLI_ARGV[1]]) {
-			$this->currentSite = BXAPP_CLI_ARGV[1];
+		if (defined('TBA_CLI_ARGV') && $this->sites[TBA_CLI_ARGV[1]]) {
+			$this->currentSite = TBA_CLI_ARGV[1];
 
 			if (isset($this->sites[$this->currentSite]['language']) && !empty($this->sites[$this->currentSite]['language'])) {
 				$this->currentLanguage = $this->sites[$this->currentSite]['language'];

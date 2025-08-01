@@ -12,7 +12,7 @@ class StaticApi
 	function handle($data)
 	{
 		// Если статик кэш включён и если запрос помечен как staticapi
-		if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && defined('BXAPP_IS_STATIC') && BXAPP_IS_STATIC === true && defined('BXAPP_ROUTER_CURRENT_REQUEST_URL') && !empty(BXAPP_ROUTER_CURRENT_REQUEST_URL)) {
+		if (\Glob::get('APP_SETUP_STATIC_API_ACTIVE', true) === true && defined('TBA_IS_STATIC') && TBA_IS_STATIC === true && defined('TBA_ROUTER_CURRENT_REQUEST_URL') && !empty(TBA_ROUTER_CURRENT_REQUEST_URL)) {
 			if (\App::getRoute('requestMethod') !== 'get') {
 				\App::core('Main')->do404();
 			}
@@ -35,7 +35,7 @@ class StaticApi
 			}
 
 			if ($putCache) {
-				$cachePath = TBA_APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL;
+				$cachePath = TBA_APP_CACHE_STATIC_DIR.TBA_ROUTER_CURRENT_REQUEST_URL;
 
 				if (!is_dir($cachePath)) {
 					mkdir($cachePath, 0777, true);
@@ -90,9 +90,9 @@ class StaticApi
 								}
 								if ($dataModel !== false) {
 									if (!empty($dataModel[$routeName]) &&
-										!in_array(TBA_APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL, $dataModel[$routeName]) ||
+										!in_array(TBA_APP_CACHE_STATIC_DIR.TBA_ROUTER_CURRENT_REQUEST_URL, $dataModel[$routeName]) ||
 										empty($dataModel[$routeName])) {
-											$dataModel[$routeName][] = TBA_APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL;
+											$dataModel[$routeName][] = TBA_APP_CACHE_STATIC_DIR.TBA_ROUTER_CURRENT_REQUEST_URL;
 
 											if (file_put_contents(TBA_APP_CACHE_MODELS_DIR . '/' . $table . '/router.json', json_encode($dataModel)) === false) {
 												\Logger::info('StaticApi: Не удалось записать файл router.json в папке ' . $table);
@@ -111,7 +111,7 @@ class StaticApi
 							}
 
 							if ($default !== false) {
-								$default[$routeName][] = TBA_APP_CACHE_STATIC_DIR.BXAPP_ROUTER_CURRENT_REQUEST_URL;
+								$default[$routeName][] = TBA_APP_CACHE_STATIC_DIR.TBA_ROUTER_CURRENT_REQUEST_URL;
 								if (file_put_contents(TBA_APP_CACHE_MODELS_DIR . '/default.json', json_encode($default)) === false) {
 									\Logger::info('StaticApi: Не удалось записать файл default.json');
 								}

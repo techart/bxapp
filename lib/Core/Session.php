@@ -69,7 +69,7 @@ class Session
 	}
 
 	/**
-	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно mixed
+	 * Возвращает true, если значение TBA_REQUEST_TYPE равно mixed
 	 * А иначе возвращает false
 	 *
 	 * @return boolean
@@ -78,11 +78,11 @@ class Session
 	{
 
 		return
-		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'mixed') ? true : false;
+		(defined('TBA_REQUEST_TYPE') && TBA_REQUEST_TYPE == 'mixed') ? true : false;
 	}
 
 	/**
-	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно public
+	 * Возвращает true, если значение TBA_REQUEST_TYPE равно public
 	 * А иначе возвращает false
 	 *
 	 * @return boolean
@@ -91,11 +91,11 @@ class Session
 	{
 
 		return
-		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'public') ? true : false;
+		(defined('TBA_REQUEST_TYPE') && TBA_REQUEST_TYPE == 'public') ? true : false;
 	}
 
 	/**
-	 * Возвращает true, если значение BXAPP_REQUEST_TYPE равно secure
+	 * Возвращает true, если значение TBA_REQUEST_TYPE равно secure
 	 * А иначе возвращает false
 	 *
 	 * @return boolean
@@ -104,7 +104,7 @@ class Session
 	{
 
 		return
-		(defined('BXAPP_REQUEST_TYPE') && BXAPP_REQUEST_TYPE == 'secure') ? true : false;
+		(defined('TBA_REQUEST_TYPE') && TBA_REQUEST_TYPE == 'secure') ? true : false;
 	}
 
 	/**

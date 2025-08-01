@@ -47,8 +47,8 @@ class Autoload
 			//'BaseSeo' => '\Techart\BxApp\Base\Seo\BaseSeo',
 		];
 
-		if (defined('TECHART_BX_APP_ALIASES')) {
-			$aliases = array_merge($aliases, TECHART_BX_APP_ALIASES);
+		if (defined('TBA_APP_ALIASES')) {
+			$aliases = array_merge($aliases, TBA_APP_ALIASES);
 		}
 
 		self::$aliases = $aliases;

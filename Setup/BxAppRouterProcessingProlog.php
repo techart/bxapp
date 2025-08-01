@@ -21,17 +21,17 @@
  * - сессия по PHPSESSID НЕ ПОДНИМАЕТСЯ, даже если файл сессии существует
  * - создаётся новая виртуальная сессия (как она работает описано выше)
  *
- * В BxApp (если BXAPP_USE_BX_SECURITY_SESSION_VIRTUAL === true):
+ * В BxApp (если TBA_USE_BX_SECURITY_SESSION_VIRTUAL === true):
  *
- * 1) Если заголовок HTTP_REQUEST_TYPE = 'secure', то константа BXAPP_REQUEST_TYPE = 'secure' и используется обычная сессия
+ * 1) Если заголовок HTTP_REQUEST_TYPE = 'secure', то константа TBA_REQUEST_TYPE = 'secure' и используется обычная сессия
  *
  * 2) Если заголовка HTTP_REQUEST_TYPE нет или HTTP_REQUEST_TYPE != 'secure', то это public запрос. Поэтому:
- * константа BXAPP_REQUEST_TYPE = 'public' и включается виртуальная сессия битрикса
+ * константа TBA_REQUEST_TYPE = 'public' и включается виртуальная сессия битрикса
  *
  * 3) Если заголовка HTTP_REQUEST_TYPE нет или HTTP_REQUEST_TYPE != 'secure' и при этом передаётся PHPSESSID. То:
- * константа BXAPP_REQUEST_TYPE = 'mixed' и включается виртуальная сессия битрикса
+ * константа TBA_REQUEST_TYPE = 'mixed' и включается виртуальная сессия битрикса
  */
-// define('BXAPP_USE_BX_SECURITY_SESSION_VIRTUAL', true);
+// define('TBA_USE_BX_SECURITY_SESSION_VIRTUAL', true);
 
 
 

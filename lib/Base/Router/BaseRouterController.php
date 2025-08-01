@@ -98,8 +98,8 @@ class BaseRouterController
 		$props = [];
 		$method = !empty($method) ? $method : strtolower($this->request->getRequestMethod());
 
-		if ($method == 'get' && defined('BXAPP_ROUTER_CURRENT_REQUEST_QUERY')) {
-			$values = BXAPP_ROUTER_CURRENT_REQUEST_QUERY;
+		if ($method == 'get' && defined('TBA_ROUTER_CURRENT_REQUEST_QUERY')) {
+			$values = TBA_ROUTER_CURRENT_REQUEST_QUERY;
 		} else {
 			$values = \App::core('Main')->getCurRequestValues($method);
 		}

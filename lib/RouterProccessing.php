@@ -20,26 +20,26 @@ if( realpath($prologFile)) {
 	require_once $prologFile;
 }
 
-if (defined('BXAPP_USE_BX_SECURITY_SESSION_VIRTUAL') && BXAPP_USE_BX_SECURITY_SESSION_VIRTUAL === true) {
+if (defined('TBA_USE_BX_SECURITY_SESSION_VIRTUAL') && TBA_USE_BX_SECURITY_SESSION_VIRTUAL === true) {
 	// if (!isset($_SERVER['HTTP_REQUEST_TYPE']) or $_SERVER['HTTP_REQUEST_TYPE'] !== 'secure') {
 	// TODO: убрать проверку $_GET и вернуть проверку заголовка
 	if (!isset($_GET['type']) or $_GET['type'] !== 'secure') {
 		if (isset($_COOKIE['PHPSESSID']) && !empty($_COOKIE['PHPSESSID'])) {
 			// если secure запрос не указан, но при этом передаётся PHPSESSID,
-			// то это mixed запрос - запоминаем это в BXAPP_REQUEST_TYPE
-			define('BXAPP_REQUEST_TYPE', 'mixed');
+			// то это mixed запрос - запоминаем это в TBA_REQUEST_TYPE
+			define('TBA_REQUEST_TYPE', 'mixed');
 			// включаем виртуальную сессию (PHPSESSID игнорируется) (файл сессии не создаётся, заголовок куки не посылается)
 			define('BX_SECURITY_SESSION_VIRTUAL', true);
 		} else {
-			// если это чисто public запрос, то запоминаем это в BXAPP_REQUEST_TYPE
-			define('BXAPP_REQUEST_TYPE', 'public');
+			// если это чисто public запрос, то запоминаем это в TBA_REQUEST_TYPE
+			define('TBA_REQUEST_TYPE', 'public');
 			// включаем виртуальную сессию (файл сессии не создаётся, заголовок куки не посылается)
 			define('BX_SECURITY_SESSION_VIRTUAL', true);
 		}
 	} else {
-		// если это чисто secure запрос, то запоминаем это в BXAPP_REQUEST_TYPE
+		// если это чисто secure запрос, то запоминаем это в TBA_REQUEST_TYPE
 		// используется обычная сессия
-		define('BXAPP_REQUEST_TYPE', 'secure');
+		define('TBA_REQUEST_TYPE', 'secure');
 	}
 }
 
