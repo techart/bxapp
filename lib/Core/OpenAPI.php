@@ -79,7 +79,7 @@ class OpenAPI
 		$this->schemaDefault = include_once(TECHART_BXAPP_VENDOR_DIR . '/lib/Router/SchemaAPI.php');
 		$this->tags = array_merge($this->schema['TAGS'], $this->schemaDefault['TAGS']);
 
-		if (empty(\Env::get('APP_OPENAPI_DOMAIN'))) {
+		if (empty(\Glob::get('APP_OPENAPI_DOMAIN'))) {
 			\Logger::error('Open API: В файле .env заполните значение APP_OPENAPI_DOMAIN');
 		}
 
@@ -94,7 +94,7 @@ class OpenAPI
 				return [
 					'url' => trim($v)
 				];
-			}, explode(',', \Env::get('APP_OPENAPI_DOMAIN', ''))),
+			}, explode(',', \Glob::get('APP_OPENAPI_DOMAIN'))),
 			'tags' => [],
 			'paths' => [],
 			'components' => [

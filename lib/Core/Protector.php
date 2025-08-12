@@ -593,14 +593,79 @@ class Protector
 	/**
 	 * Проверяет не устарел ли ID сессии PHPSESSID в куках
 	 *
-	 * @return bool
+	 * @param bool $reverse
+	 * @return object
 	 */
-	public function checkNextSessionID(): bool
+	public function checkNextSessionID(bool $reverse = false): object
 	{
 		if ($_COOKIE['PHPSESSID'] !== session_id()) {
-			return false;
+			$check = false;
+		} else {
+			$check = true;
 		}
 
-		return true;
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет является ли сайт локалкой
+	 * 
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkLocalHost(bool $reverse = false): object
+	{
+		$check = \H::isLocalHost();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет является ли сайт тестовым сервером
+	 * 
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkTestHost(bool $reverse = false): object
+	{
+		$check = \H::isTestHost();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет является ли сайт локалкой или тестовым сервером
+	 * 
+	 * @param bool $reverse
+	 * @return object
+	 */
+	public function checkDevHost(bool $reverse = false): object
+	{
+		$check = \H::isDevHost();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
+	}
+
+	/**
+	 * Проверяет условие на включение дебаг бара
+	 * 
+	 * @param bool $reverse
+	 * @return bool
+	 */
+	public function checkDebugBarSuccess(bool $reverse = false): object
+	{
+		$check = \Techart\BxApp\DebugBar::checkSetup();
+
+		$this->setFriendship($check, $reverse);
+
+		return $this;
 	}
 }

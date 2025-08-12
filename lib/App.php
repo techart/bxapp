@@ -30,7 +30,7 @@ namespace Techart\BxApp;
  *
  * App::entity()
  * Файлы энтити ищутся в php_interface/BxApp/Entities/{$file}.php
- * 
+ *
  * App::form()
  * Файлы битрикс форм ищутся в php_interface/BxApp/Forms/{$file}.php
  *
@@ -259,9 +259,12 @@ class App
 	 */
 	protected static function get(string $type = '', string $path = '', string $file = '', bool $collect = true, string $locale = ''): object
 	{
+		if (DebugBar::checkSetup()) {
+			$backtrace = debug_backtrace();
+			DebugBar::add('entity', $path . '/' . $file, self::getFilePath($path, $file), $backtrace[1]['file'], $backtrace[1]['line']);
+		}
 		$className = ($type == 'core') ? '\\Techart\\BxApp\\Core\\'.$file : array_slice(explode('/', $file), -1)[0];
 		$fullEntityName = $path.'_'.$className.(!empty($locale) ? '_'.$locale : '');
-
 		if (!isset(self::$instances[$type][$fullEntityName]) || $collect === false) {
 			$classFile = self::getFilePath($path, $file);
 
@@ -389,7 +392,7 @@ class App
 	/**
 	 * Возвращает экземпляр класса энтити из файла $file
 	 * Если $collect = false, то не сохраняет экземпляр
-	 * 
+	 *
 	 * @param string $file
 	 * @param boolean $collect
 	 * @return object
@@ -541,7 +544,7 @@ class App
 
 		if (file_exists(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt')) {
 			$configCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt'));
-	
+
 			if ($configCache !== false) {
 				if (!\H::isArrayEquals($configCache, $routes)) {
 					$text .= '<p style="color: red">Файл cache/router/routerConfig.txt неактуален!</p>';

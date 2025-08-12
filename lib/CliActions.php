@@ -169,7 +169,7 @@ class CliActions
 	{
 		$args = func_get_args();
 
-		if (empty(\Env::get('APP_OPENAPI_DOMAIN'))) {
+		if (empty(\Glob::get('APP_OPENAPI_DOMAIN'))) {
 			echo 'Укажите домен в файле .env в переменной APP_OPENAPI_DOMAIN'.PHP_EOL;
 			exit;
 		}

@@ -26,8 +26,8 @@ class YooKassa
 
 			try {
 				$this->client = $client->setAuth(
-					intval(\Env::get('APP_YOOKASSA_SHOP_ID', 0)),
-					\Env::get('APP_YOOKASSA_SECRET_KEY', '')
+					intval(\Glob::get('APP_YOOKASSA_SHOP_ID', 0)),
+					\Glob::get('APP_YOOKASSA_SECRET_KEY', '')
 				);
 			} catch (\Exception $e) {
 				$this->exception = $e;

@@ -1,0 +1,158 @@
+.tba_debug_bar {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 99999999;
+	width: 100%;
+	font-family: inherit;
+}
+
+.tba_debug_bar * {
+	box-sizing: content-box;
+}
+
+.tba_debug_bar__panel {
+	display: flex;
+	justify-content: space-between;
+	background-color: indianred;
+}
+
+.tba_debug_bar__tabs {
+	display: flex;
+}
+
+.tba_debug_bar__tab {
+	padding: 4px 12px;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.3s ease;
+}
+
+.tba_debug_bar__tab:hover {
+	background-color: #cc7777;
+}
+
+.tba_debug_bar__tab.active {
+	background-color: #000;
+	color: #FFF;
+}
+
+.tba_debug_bar__close {
+	font-weight: bold;
+	font-family: inherit;
+	cursor: pointer;
+	padding: 4px 12px;
+}
+
+.tba_debug_bar__head {
+	position: absolute;
+	top: -38px;
+	left: 0;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	gap: 4px;
+	user-select: none;
+}
+
+.tba_debug_bar__count {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 25px;
+	height: 18px;
+	line-height: 1;
+	padding: 10px;
+	background-color: red;
+	border-radius: 50%;
+	color: white;
+	font-size: 24px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.tba_debug_bar__count span {
+	position: relative;
+	z-index: 5;
+}
+
+.tba_debug_bar__count::after {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	right: 0;
+	content: "";
+	width: 100%;
+	height: 100%;
+	background-color: red;
+	border-radius: 50% 50% 0 0;
+}
+
+.tba_debug_bar__body {
+	height: 0px;
+	background-color: #d3a2a2;
+	overflow: hidden;
+}
+
+.tba_debug_bar__body.show {
+	height: 500px;
+	padding-bottom: 16px;
+}
+
+.tba_debug_bar__body-content {
+	display: none;
+	width: 100%;
+	height: 96%;
+	padding: 20px;
+	overflow: scroll;
+	white-space: break-spaces;
+	box-sizing: border-box;
+	flex-direction: column;
+	gap: 32px;
+}
+
+.vis {
+	display: flex;
+}
+
+.hide {
+	display: none;
+}
+
+.tba_debug_bar__buttons {
+	white-space: initial;
+}
+
+.tba_debug_bar__button {
+	background: indianred;
+	border-radius: 10px;
+	padding: 2px 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tba_debug_bar__button:hover {
+	background: #000;
+	color: #FFF;
+}
+
+.tba_debug_bar__line.removed {
+	text-decoration: line-through;
+}
+
+.tba_debug_bar__resizeLine {
+	height: 5px;
+	width: 100%;
+	background-color: red;
+	position: absolute; 
+	bottom: 0;
+}
+
+.tba_debug_bar__resizeLine.resizable {
+	cursor: ns-resize;
+}

@@ -8,7 +8,7 @@ namespace Techart\BxApp;
  *
  * Лог пишет в файл и отправляет на почту.
  * Можно указывать с какого уровня ошибок делать и то и другое: $typesForEmail, $typesForFile
- * Можно отключать отдельные выводы: $showLoggerBar, $sendEmail, $writeToFile
+ * Можно отключать отдельные выводы: $sendEmail, $writeToFile
  *
  * По умолчанию на почту отправляется логи уровня warning и выше.
  * По умолчанию в файл лога пишутся логи уровня debug и выше.
@@ -41,8 +41,7 @@ namespace Techart\BxApp;
 
 class Log
 {
-	protected static $count = 0; // считает кол-во запомненных сообщений
-	protected static $showLoggerBar; // выводить ли дебаг бар на сайт?
+	public static $count = 0; // считает кол-во запомненных сообщений
 	protected static $sendEmail; // отправлять на почту?
 	protected static $writeToFile; // записывать в файл лога?
 	protected static $emails; // получатели через запятую
@@ -50,7 +49,7 @@ class Log
 	protected static $typesForEmail; // с какого типа сообщений отправлять почту
 	protected static $typesForFile; // с какого типа сообщений писать в файл
 	protected static $curTypeID = 999;
-	protected static $types = [
+	public static $types = [
 		'critical',
 		'error',
 		'warning',
@@ -68,7 +67,6 @@ class Log
 	 */
 	public static function setup(): void
 	{
-		self::$showLoggerBar = \Glob::get('APP_SETUP_LOG_BAR', true);
 		self::$sendEmail = \Glob::get('APP_SETUP_LOG_TO_EMAIL', true);
 		self::$writeToFile = \Glob::get('APP_SETUP_LOG_TO_FILE', true);
 		self::$typesForEmail = \Glob::get('APP_SETUP_LOG_LEVEL_EMAIL', 'warning');
@@ -76,6 +74,15 @@ class Log
 		self::$emails = \Glob::get('APP_SETUP_LOG_EMAILS', '');
 	}
 
+	/**
+	 * Получение всех сообщений логгера
+	 * 
+	 * @return array
+	 */
+	public static function getMessages(): array
+	{
+		return self::$messages;
+	}
 
 	/**
 	 * Запись сообщения в массив
@@ -161,129 +168,6 @@ class Log
 	}
 
 	/**
-	 * Выводит логер бар на сайт
-	 *
-	 * @return void
-	 */
-	protected static function showLoggerBar(): void
-	{
-		if (self::$showLoggerBar) {
-			if (\H::isLocalHost()) {
-				echo '
-				<style>
-					.debugbar {
-						position: fixed;
-						bottom: 0;
-						left: 0;
-						z-index: 99999999;
-						width: 100%;
-						font-family: inherit;
-					}
-					.debugbar * {
-						box-sizing: content-box;
-					}
-					.debugbar__close {
-						position: absolute;
-						top: 5px;
-						right: 20px;
-						z-index: 1;
-						color: black;
-						font-weight: bold;
-						font-family: inherit;
-						cursor: pointer;
-					}
-					.debugbar__head {
-						position: absolute;
-						top: -35px;
-						left: 0;
-						width: 100%;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						overflow: hidden;
-					}
-					.debugbar__count {
-						position: relative;
-						z-index: 1;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						width: 25px;
-						height: 18px;
-						line-height: 1;
-						padding: 10px;
-						background-color: red;
-						border-radius: 50%;
-						color: white;
-						font-size: 24px;
-						font-weight: bold;
-						cursor: pointer;
-					}
-					.debugbar__count span {
-						position: relative;
-						z-index: 5;
-					}
-					.debugbar__count::after {
-						position: absolute;
-						z-index: 1;
-						top: 0;
-						left: 0;
-						right: 0;
-						content: "";
-						width: 100%;
-						height: 100%;
-						background-color: red;
-						border-radius: 50% 50% 0 0;
-					}
-					.debugbar__body {
-						display: flex;
-						height: 0px;
-						border: 3px solid red;
-						background-color: #d3a2a2;
-						overflow: hidden;
-					}
-					.debugbar__body.show {
-						height: 50vh;
-					}
-					.debugbar__body-content {
-						display: none;
-						width: 100%;
-						height: 100%;
-						padding: 20px;
-						overflow: scroll;
-						white-space: break-spaces;
-					}
-					.vis {
-						display: block;
-					}
-					.hide {
-						display: none;
-					}
-				</style>
-				<script>
-					function toggleBody() {
-						let body = document.querySelector(".debugbar__body");
-						body.classList.toggle("show");
-					}
-					function closeDebugbar() {
-						let body = document.querySelector(".debugbar");
-						body.classList.toggle("hide");
-					}
-				</script>
-				<div class="debugbar">
-					<div class="debugbar__head">
-						<div class="debugbar__count" data-id="1" onClick="toggleBody()"><span>'.self::$count.'</span></div>
-					</div>
-					<div class="debugbar__body">
-						<div class="debugbar__close" onClick="closeDebugbar()">x</div>
-						<div class="debugbar__body-content content-1 vis">'.self::buildLogText('info', 'toEmail', '<br><br>').'</div>
-					</div>
-				</div>';
-			}
-		}
-	}
-
-	/**
 	 * Собирает в строку сообщения для лога, тип которых не меньше переданного $type вида $for
 	 *
 	 * @param string $type
@@ -291,7 +175,7 @@ class Log
 	 * @param string $lineBreak
 	 * @return string
 	 */
-	protected static function buildLogText(string $type = 'debug', string $for = 'toEmail', string $lineBreak = "\r\n"): string
+	public static function buildLogText(string $type = 'debug', string $for = 'toEmail', string $lineBreak = "\r\n"): string
 	{
 		$text = '';
 		$typeID = array_search($type, self::$types);
@@ -396,7 +280,7 @@ class Log
 		self::sendEmail();
 
 		if (\H::isSitePage()) {
-			self::showLoggerBar();
+			DebugBar::showDebugBar();
 		}
 	}
 }

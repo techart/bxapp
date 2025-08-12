@@ -109,7 +109,7 @@ class Recaptcha
 	private function check(string $token = ''): array
 	{
 		$data = array(
-			'secret' => \Env::get('APP_RECAPTCHA_SECRET_KEY'),
+			'secret' => \Glob::get('APP_RECAPTCHA_SECRET_KEY'),
 			'response' => $token
 		);
 

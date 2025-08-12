@@ -119,4 +119,26 @@ class Actions extends \BaseRouterController
 
 		return $this->result('', '', $data);
 	}
+
+	public function cacheDelete()
+	{
+		$data = [];
+		$val = $this->getValues();
+
+		if (isset($val['cacheLink']) && !empty($val['cacheLink']) && is_array($val['cacheLink'])) {
+			foreach ($val['cacheLink'] as $link) {
+				if (strpos($link, TBA_APP_BITRIX_CACHE_DIR) === 0) {
+					if (file_exists($link)) {
+						\H::deleteFile($link, TBA_APP_BITRIX_CACHE_DIR);
+						$data['links'][] = $link;
+					}
+				}
+			}
+			$data['success'] = true;
+		} else {
+			$this->logicError('В параметре cacheLink необходимо передать массив полных путей до кеша, лежащих в папке www/bitrix/cache');
+		}
+
+		return $this->result('', '', $data);
+	}
 }

@@ -40,7 +40,7 @@ class Env
 			if (file_exists($envPath)) {
 				self::$env = Dotenv::createImmutable([TECHART_BXAPP_CORE_SETUP_DIR, TBA_PROJECT_ROOT_DIR], [$envFile, '.env.default'], false)->load();
 			} else {
-				self::$env = [];
+				self::$env = Dotenv::createImmutable(TECHART_BXAPP_CORE_SETUP_DIR, '.env.default', false)->load();
 			}
 		}
 

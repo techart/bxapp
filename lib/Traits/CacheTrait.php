@@ -202,7 +202,7 @@ trait CacheTrait
 	 * Возвращает кэш для текущего id.
 	 * Это или переданная строка $cacheID (очень нежелательно).
 	 * Или по умолчанию строка состоящая из имени класса модели и метода, где вызывается функция кэша.
-	 *
+	 * 
 	 * @param string $cacheID
 	 * @return mixed
 	 */
@@ -212,6 +212,11 @@ trait CacheTrait
 			$id = $this->getCacheID($cacheID);
 			$cache = $this->getCacheObject($id);
 			$this->CacheTraitFromCache[$id] = true;
+
+			if (\Techart\BxApp\DebugBar::checkSetup()) {
+				$backtrace = debug_backtrace();
+				\Techart\BxApp\DebugBar::addCache('model', $backtrace[1]['class'], TBA_APP_BITRIX_CACHE_DIR . '/' . $this->table . '/' . $cache->getPath($id), $backtrace[0]['file']);
+			}
 
 			return $cache->getVars();
 		} else {

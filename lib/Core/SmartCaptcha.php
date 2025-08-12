@@ -36,7 +36,7 @@ class SmartCaptcha
 	private function check(string $token = ''):array
 	{
 		$args = http_build_query([
-			'secret' => \Env::get('APP_SMARTCAPTCHA_SECRET_KEY'),
+			'secret' => \Glob::get('APP_SMARTCAPTCHA_SECRET_KEY'),
 			'token' => $token,
 			"ip" => $_SERVER['REMOTE_ADDR'],
 		]);

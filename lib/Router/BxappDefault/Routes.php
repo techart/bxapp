@@ -8,3 +8,4 @@ App::route()->post('/session/updateData/', 'Actions.updateSessionData')->name('b
 App::route()->get('/session/removeData/?{store}', 'Actions.removeSessionData')->name('bxapp-session-removeData')->where(['store' => '.*']);
 App::route()->get('/session/createNextSession/', 'Actions.createNextSession')->name('bxapp-session-createNextSession');
 App::route()->get('/session/checkNextSession/', 'Actions.checkNextSession')->name('bxapp-session-checkNextSession');
+App::route()->post('/cache/delete/', 'Actions.cacheDelete')->protector(['checkDebugBarSuccess'])->name('bxapp-cache-delete');
