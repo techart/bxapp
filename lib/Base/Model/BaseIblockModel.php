@@ -224,6 +224,8 @@ class BaseIblockModel
 				]);
 				if ($result = $data->Fetch()) {
 					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => $result['ID']];
+				} else {
+					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => 999999999999];
 				}
 			}
 		}
@@ -313,6 +315,8 @@ class BaseIblockModel
 				]);
 				if ($result = $data->Fetch()) {
 					$curFilter += ['PROPERTY_TBA_LOC_DIRECTORY_ID' => $result['UF_XML_ID']];
+				} else {
+					$curFilter += ['PROPERTY_TBA_LOC_DIRECTORY_ID' => 999999999999];
 				}
 			}
 		}

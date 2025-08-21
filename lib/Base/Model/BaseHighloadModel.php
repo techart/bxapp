@@ -293,6 +293,8 @@ class BaseHighloadModel
 				]);
 				if ($result = $data->Fetch()) {
 					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => $result['ID']];
+				} else {
+					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => 999999999999];
 				}
 			}
 		}
@@ -344,7 +346,7 @@ class BaseHighloadModel
 	{
 		$entityDataClass = $this->getEntityClass();
 		$hlselect = $this->makeSelect($select);
-		$hlfilter = $filter;
+		$hlfilter = $this->makeFilter($filter);
 
 		$element = $entityDataClass::getList([
 			'select' => $hlselect,
