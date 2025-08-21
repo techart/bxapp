@@ -60,10 +60,15 @@ namespace Techart\BxApp;
  *
  */
 
+\CModule::IncludeModule('highloadblock');
+
+use Bitrix\Highloadblock as HL;
+
 class App
 {
 	private static $currentRouteData = [];
 	protected static $frontendInstance = false;
+	protected static $localizationBlockInstance = []; // экземпляр хайлоадблока локализации TbaLocDirectory
 	protected static $instances = [
 		'core' => [],
 		'menu' => [],
@@ -725,5 +730,30 @@ class App
 		}
 
 		return $languages;
+	}
+
+	/**
+	 * Возвращает инстанс хайлоадблока локализации (если он есть)
+	 * 
+	 * @return array
+	 */
+	public static function getLocalizationBlock()
+	{
+		if (empty(self::$localizationBlockInstance)) {
+			$hlblock = HL\HighloadBlockTable::getList([
+				'filter' => ['=NAME' => 'TbaLocDirectory']
+			])->fetch();
+
+			if($hlblock) {
+				$entity = HL\HighloadBlockTable::compileEntity($hlblock);
+				$entityDataClass = $entity->getDataClass();
+				self::$localizationBlockInstance = $entityDataClass;
+			} else {
+				throw new \LogicException('Highload-блок "TbaLocDirectory" не существует!');
+				exit();
+			}
+		}
+
+		return self::$localizationBlockInstance;
 	}
 }

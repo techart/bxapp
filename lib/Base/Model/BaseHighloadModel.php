@@ -46,7 +46,8 @@ class BaseHighloadModel
 	public $hblockElementsSelectForLocalization = []; // выборка полей для элементов модели
 	public $localizationMode = ''; // режим локализации модели
 	private $hblockData = []; // массив параметров highload блока
-	private $curModes = ['none', 'code', 'select', 'checkbox']; // режимы локализации модели хайлоадблока
+	private $curLang = ''; // язык локализации модели
+	private $curModes = ['none', 'code', 'select', 'directory']; // режимы локализации модели хайлоадблока
 
 
 	/**
@@ -59,7 +60,7 @@ class BaseHighloadModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
+		$this->curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 
@@ -67,7 +68,7 @@ class BaseHighloadModel
 			$locMode = $this->getLocalizationMode();
 
 			if ($locMode !== 'none') {
-				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+				$this->lid = strtoupper('_'.$this->curLang); // обновляем указатель языка модели
 				$this->pid = __GID__.$this->lid;
 
 				// если режим локализации моделей указан как "code"
@@ -271,6 +272,39 @@ class BaseHighloadModel
 	}
 
 	/**
+	 * Составляет фильтр у элементов для текущего запроса
+	 * Условия из $filter плюсуются к базовому условию
+	 *
+	 * @param array $filter
+	 * @return array
+	 */
+	private function makeFilter(array $filter = []): array
+	{
+		$curFilter = [];
+
+		if ($this->getLocalizationMode() === 'directory') {
+			$hlblock = \App::getLocalizationBlock();
+
+			if($hlblock) {
+				$data = $hlblock::getList([
+					'select' => ['ID'],
+					'order' => [],
+					'filter' => ['UF_XML_ID' => $this->curLang]
+				]);
+				if ($result = $data->Fetch()) {
+					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => $result['ID']];
+				}
+			}
+		}
+
+		if (count($filter) > 0) {
+			$curFilter += $filter;
+		}
+
+		return $curFilter;
+	}
+
+	/**
 	 * Возвращает объект всех элементов highload-блока в необработанном виде.
 	 * Можно указать список полей, условия фильтра и т.д.
 	 *
@@ -285,7 +319,7 @@ class BaseHighloadModel
 		$entityDataClass = $this->getEntityClass();
 
 		$hlselect = $this->makeSelect($select);
-		$hlfilter = $filter;
+		$hlfilter = $this->makeFilter($filter);
 		$hlorder = $this->makeOrder($order);
 
 		$elements = $entityDataClass::getList([

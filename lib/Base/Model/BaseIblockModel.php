@@ -137,7 +137,8 @@ class BaseIblockModel
 	public $iblockElementsSelectForLocalization = []; // выборка полей для элементов модели
 	public $localizationMode = ''; // режим локализации модели
 	private $iblockData = []; // массив параметров инфоблока
-	private $curModes = ['none', 'code', 'select', 'checkbox']; // режимы локализации модели инфоблока
+	private $curLang = ''; // язык локализации модели
+	private $curModes = ['none', 'code', 'select', 'directory']; // режимы локализации модели инфоблока
 
 
 	/**
@@ -150,7 +151,7 @@ class BaseIblockModel
 	 */
 	public function __construct(string $locale = '')
 	{
-		$curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
+		$this->curLang = !empty($locale) ? $locale : TBA_LANGUAGE_ID;
 
 		$this->setLocalizationMode();
 
@@ -158,7 +159,7 @@ class BaseIblockModel
 			$locMode = $this->getLocalizationMode();
 
 			if ($locMode !== 'none') {
-				$this->lid = strtoupper('_'.$curLang); // обновляем указатель языка модели
+				$this->lid = strtoupper('_'.$this->curLang); // обновляем указатель языка модели
 				$this->pid = __GID__.$this->lid;
 
 				// если режим локализации моделей указан как "code"
@@ -211,6 +212,21 @@ class BaseIblockModel
 	private function makeSectionsFilter(array $filter = []): array
 	{
 		$curFilter = ['IBLOCK_ID' => $this->iblockData['ID']];
+
+		if ($this->getLocalizationMode() === 'directory') {
+			$hlblock = \App::getLocalizationBlock();
+
+			if($hlblock) {
+				$data = $hlblock::getList([
+					'select' => ['ID'],
+					'order' => [],
+					'filter' => ['UF_XML_ID' => $this->curLang]
+				]);
+				if ($result = $data->Fetch()) {
+					$curFilter += ['UF_TBA_LOC_DIRECTORY_ID' => $result['ID']];
+				}
+			}
+		}
 
 		if (count($filter) > 0) {
 			$curFilter += $filter;
@@ -285,6 +301,21 @@ class BaseIblockModel
 	private function makeElementsFilter(array $filter = []): array
 	{
 		$curFilter = ['IBLOCK_ID' => $this->iblockData['ID']];
+
+		if ($this->getLocalizationMode() === 'directory') {
+			$hlblock = \App::getLocalizationBlock();
+
+			if($hlblock) {
+				$data = $hlblock::getList([
+					'select' => ['UF_XML_ID'],
+					'order' => [],
+					'filter' => ['UF_XML_ID' => $this->curLang]
+				]);
+				if ($result = $data->Fetch()) {
+					$curFilter += ['PROPERTY_TBA_LOC_DIRECTORY_ID' => $result['UF_XML_ID']];
+				}
+			}
+		}
 
 		if (count($filter) > 0) {
 			$curFilter += $filter;
