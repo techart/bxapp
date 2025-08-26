@@ -116,10 +116,10 @@ abstract class BaseMenu
 					$ibModelName,
 					function($code = '') {
 						return $this->setSelectedMenuElement($code);
-					})['data'] : '',
+					},
 					[
 						'id' => $section['ID'],
-					]
+					])['data'] : '',
 			];
 
 			if ($newSection['IBLOCK_SECTION_ID'] === $pID) {
@@ -195,10 +195,10 @@ abstract class BaseMenu
 					!empty($ibModelName) ? $ibModelName : $currentModel,
 					function($code = '', $sectionId = '', $comp = []) {
 						return $this->setSelectedMenuElement($code, $sectionId ?? '');
-					}) : '',
+					},
 					[
 						'id' => $section['ID'],
-					]
+					]) : '',
 			];
 
 			$this->tree[$section['ID']] = $newSection;

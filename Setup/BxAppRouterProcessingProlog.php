@@ -31,7 +31,9 @@
  * 3) Если заголовка HTTP_REQUEST_TYPE нет или HTTP_REQUEST_TYPE != 'secure' и при этом передаётся PHPSESSID. То:
  * константа TBA_REQUEST_TYPE = 'mixed' и включается виртуальная сессия битрикса
  */
-// define('TBA_USE_BX_SECURITY_SESSION_VIRTUAL', true);
+//if (strpos($_SERVER['HTTP_REFERER'], '/bitrix/') === false) {
+// 	define('TBA_USE_BX_SECURITY_SESSION_VIRTUAL', true);
+// }
 
 
 
