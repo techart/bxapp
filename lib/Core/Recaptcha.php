@@ -8,7 +8,7 @@ namespace Techart\BxApp\Core;
  *
  * 1) В .env файле надо заполнить поля:
  * APP_RECAPTCHA_SECRET_KEY, APP_RECAPTCHA_SITE_KEY и APP_RECAPTCHA_SCORE (для проверки v3)
- * 
+ *
  * 2) ВАЖНО - инпут в форме, куда будет записываться значение капчи, должен называться ВСЕГДА g-recaptcha-response !!!!
  *
  *
@@ -96,9 +96,7 @@ class Recaptcha
 		$return = false;
 
 		if (\Glob::get('APP_CAPTCHA_CHECK_LOCAL', true)) {
-			$host = explode('.', $_SERVER['HTTP_HOST']);
-
-			if (strpos($_SERVER['SERVER_NAME'], '.techart.') !== false) {
+			if (\H::isLocalHost()) {
 				$return = true;
 			}
 		}
@@ -144,7 +142,7 @@ class Recaptcha
 	{
 		$return = false;
 
-		if ($this->checkLocal() === false) {
+		if ($this->checkLocal() === true) {
 			$response = $this->check($token);
 
 			if ($response["success"] === false) {

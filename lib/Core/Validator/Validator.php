@@ -161,6 +161,17 @@ class Validator
 	{
 		$errors = [];
 		$validator = $this->get();
+
+		// Если локально капча отключена, то удаляем из правил эту проверку
+		if (\Glob::get('APP_CAPTCHA_CHECK_LOCAL', true) === false) {
+			if (isset($rules['smart-token'])) {
+				unset($rules['smart-token']);
+			}
+			if (isset($rules['g-recaptcha-response'])) {
+				unset($rules['g-recaptcha-response']);
+			}
+		}
+
 		$check = $validator->make($formData, $rules, $messages);
 		$check->setAttributeNames($attributeNames);
 

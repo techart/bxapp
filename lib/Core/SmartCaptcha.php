@@ -73,7 +73,7 @@ class SmartCaptcha
 	{
 		$return = false;
 
-		if ($this->checkLocal() === false) {
+		if ($this->checkLocal() === true) {
 			$response = $this->check($token);
 
 			if ($response["status"] !== "ok") {
