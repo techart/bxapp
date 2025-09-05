@@ -120,7 +120,7 @@ class EventsModel
 	public static function hbChanged(\Bitrix\Main\Entity\Event $event): void
 	{
 		$name = $event->getEntity()->getName();
-		
+
 		if (isset($name) && !empty($name)) {
 			$cache = Cache::createInstance();
 			$cache->CleanDir($name);

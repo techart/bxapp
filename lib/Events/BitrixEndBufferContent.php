@@ -18,14 +18,14 @@ namespace Techart\BxApp\Events;
  use \Bitrix\Main\Application;
  use voku\helper\HtmlMin;
  use WyriHaximus\HtmlCompress\Factory as HtmlCompress;
- 
+
 class BitrixEndBufferContent
 {
 	public static function setEvent()
 	{
 		AddEventHandler("main", "OnEndBufferContent", ["\Techart\BxApp\Events\BitrixEndBufferContent", "ChangeMyContent"], 1);
 	}
- 
+
 	public static function ChangeMyContent(&$content)
 	{
 		if (!\App::core('Protector')->checkAdmin()->go() && !\App::core('Protector')->checkDeveloper()->go()) {
@@ -36,10 +36,10 @@ class BitrixEndBufferContent
 			) {
 				// если GET запрос
 				if (Application::getInstance()->getContext()->getRequest()->getRequestMethod() == 'GET') {
-					// если нет GET параметров
-					if (count(Application::getInstance()->getContext()->getRequest()->getQueryList()) === 0) {
-						$curUri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
+					$curUri = Application::getInstance()->getContext()->getRequest()->getRequestUri();
 
+					// если нет GET параметров
+					if (!isset(parse_url($curUri)['query'])) {
 						// если не апи и не статик запрос
 						if (strpos($curUri, '/'.\Config::get('Router.APP_ROUTER_PREFIX').'/') !== 0 && strpos($curUri, '/staticapi/') !== 0) {
 							$cachePath = TBA_APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH').$curUri;
@@ -56,7 +56,7 @@ class BitrixEndBufferContent
 								</IfModule>';
 								file_put_contents($htaccessFile, $htaccessContent);
 							}
-		
+
 							if (!file_exists($cachePath .'data.html')) {
 								$htmlMin = new HtmlMin();
 								$params = \Config::get('HtmlCache.APP_HTML_CACHE_HTML_MIN_PARAMS');
@@ -181,10 +181,10 @@ class BitrixEndBufferContent
 								} else {
 									$htmlMin->doRemoveOmittedHtmlTags(true);
 								}
-		
+
 								$parser = HtmlCompress::constructSmallest()->withHtmlMin($htmlMin);
 								$content = $parser->compress($content);
-		
+
 								file_put_contents($cachePath .'data.html', $content);
 							}
 						}

@@ -1,14 +1,14 @@
 <?php
 /**
  * Конфиг для настроек HTML-кеша.
- * 
+ *
  * Включается в .env файле параметром APP_HTML_PAGE_CACHE
  * Кеш работает только на обычных страницах.
  * Если сайт открыт на локалке, то для работы кеша в .env файле должен быть включено APP_LOCAL_FORCED_CACHE.
  * Кеш не генерируется если пройдена авторизация под администратором или с группой Разработчик
- * 
+ *
  * В файле www/.htaccess между настройкой редиректов без www на www и битрикс urlrewrite должен быть прописан следующий блок:
- * 
+ *
 	# === HTML кэш страниц
 		# только для GET
 		RewriteCond %{REQUEST_METHOD} GET [NC]
@@ -22,9 +22,9 @@
 		RewriteCond %{DOCUMENT_ROOT}/bitrix/cache/htmlPages%{REQUEST_URI}data.html -f
 		RewriteRule ^ /bitrix/cache/htmlPages%{REQUEST_URI}data.html [NE,L]
 	# ===
- * 
- * 
- * В папке, заданной параметром APP_HTML_CACHE_PATH генерируется HTML-кеш каждой страницы и .htaccess файл, 
+ *
+ *
+ * В папке, заданной параметром APP_HTML_CACHE_PATH генерируется HTML-кеш каждой страницы и .htaccess файл,
  * устанавливающий хедеры, заданные параметром APP_HTML_CACHE_HEADERS.
  * Контент страницы сохраняется в минифицированном виде при помощи пакета voku/HtmlMin.
  * Параметры для создания кеша указаны в параметре APP_HTML_CACHE_HTML_MIN_PARAMS.
@@ -39,8 +39,8 @@ return [
 		'doSumUpWhitespace' => true,
 		'doRemoveWhitespaceAroundTags' => true,
 		'doOptimizeAttributes' => true,
-		'doRemoveHttpPrefixFromAttributes' => true,
-		'doRemoveHttpsPrefixFromAttributes' => true,
+		'doRemoveHttpPrefixFromAttributes' => false,
+		'doRemoveHttpsPrefixFromAttributes' => false,
 		'doKeepHttpAndHttpsPrefixOnExternalAttributes' => true,
 		'doMakeSameDomainsLinksRelative' => [],
 		'doRemoveDefaultAttributes' => true,
