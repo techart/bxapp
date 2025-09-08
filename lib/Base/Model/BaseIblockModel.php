@@ -762,6 +762,32 @@ class BaseIblockModel
 
 	/**
 	 * SEO
+	 * устанавливает меты для указанной секции
+	 *
+	 * @param integer $sectionId
+	 * @return void
+	 */
+	public function setSectionValues(int $sectionId = 0): void
+	{
+		global $APPLICATION;
+
+		$metas = $this->getSectionValues($sectionId);
+
+		if (count($metas) > 0) {
+			if (isset($metas['SECTION_META_TITLE'])) {
+				$APPLICATION->SetPageProperty('title', $metas['SECTION_META_TITLE']);
+			}
+			if (isset($metas['SECTION_META_KEYWORDS'])) {
+				$APPLICATION->SetPageProperty('keywords', $metas['SECTION_META_KEYWORDS']);
+			}
+			if (isset($metas['SECTION_META_DESCRIPTION'])) {
+				$APPLICATION->SetPageProperty('description', $metas['SECTION_META_DESCRIPTION']);
+			}
+		}
+	}
+
+	/**
+	 * SEO
 	 * Возвращает для текущего инфоблока Bitrix\Iblock\InheritedProperty\ElementValues
 	 *
 	 * @param integer $elementId
@@ -782,6 +808,32 @@ class BaseIblockModel
 	public function getElementValues(int $elementId = 0): array
 	{
 		return $this->elementValues($elementId)->getValues();
+	}
+
+	/**
+	 * SEO
+	 * устанавливает меты для указанного элемента
+	 *
+	 * @param integer $sectionId
+	 * @return void
+	 */
+	public function setElementValues(int $sectionId = 0): void
+	{
+		global $APPLICATION;
+
+		$metas = $this->getElementValues($sectionId);
+
+		if (count($metas) > 0) {
+			if (isset($metas['ELEMENT_META_TITLE'])) {
+				$APPLICATION->SetPageProperty('title', $metas['ELEMENT_META_TITLE']);
+			}
+			if (isset($metas['ELEMENT_META_KEYWORDS'])) {
+				$APPLICATION->SetPageProperty('keywords', $metas['ELEMENT_META_KEYWORDS']);
+			}
+			if (isset($metas['ELEMENT_META_DESCRIPTION'])) {
+				$APPLICATION->SetPageProperty('description', $metas['ELEMENT_META_DESCRIPTION']);
+			}
+		}
 	}
 
 	/**

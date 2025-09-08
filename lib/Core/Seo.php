@@ -44,6 +44,31 @@ class Seo
 	}
 
 	/**
+	 * Установить меты страницы на основе массива возвращаемого методами getValues() секций или элементов
+	 *
+	 * @param array $metas
+	 * @return void
+	 */
+	public function setMetasByValues(array $metas = [])
+	{
+		global $APPLICATION;
+
+		if (count($metas) > 0) {
+			foreach ($metas as $key => $value) {
+				if (strpos($key, '_META_TITLE') !== false) {
+					$APPLICATION->SetPageProperty('title', $value);
+				}
+				if (strpos($key, '_META_KEYWORDS') !== false) {
+					$APPLICATION->SetPageProperty('keywords', $value);
+				}
+				if (strpos($key, '_META_DESCRIPTION') !== false) {
+					$APPLICATION->SetPageProperty('description', $value);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Получает code, к которому относится текущий компонент
 	 * Для entryPoint = mainPage или error404 - это одноимённый код
 	 * Для остальных страниц - это последний элемент из url path
