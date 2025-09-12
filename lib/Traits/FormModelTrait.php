@@ -154,10 +154,10 @@ trait FormModelTrait
 	 * @param string $languageId
 	 * @return void
 	 */
-	public function sendFormToEvent(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = ''): void
+	public function sendFormToEvent(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = '', string $eventName = ''): void
 	{
 		Event::send([
-			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
+			"EVENT_NAME" => !empty($eventName) ? $eventName.strtoupper($this->pid) : $this->eventName.strtoupper($this->pid),
 			"LID" => TBA_SITE_ID,
 			"C_FIELDS" => $fields,
 			'FILE' => $file,
@@ -184,10 +184,10 @@ trait FormModelTrait
 	 * @param string $languageId
 	 * @return void
 	 */
-	public function sendFormToEventImmediate(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = ''): void
+	public function sendFormToEventImmediate(array $fields = [], array $file = [], int|string $messageId = '', string $languageId = '', string $eventName = ''): void
 	{
 		Event::sendImmediate([
-			"EVENT_NAME" => $this->eventName.strtoupper($this->pid),
+			"EVENT_NAME" => !empty($eventName) ? $eventName.strtoupper($this->pid) : $this->eventName.strtoupper($this->pid),
 			"LID" => TBA_SITE_ID,
 			"C_FIELDS" => $fields,
 			'FILE' => $file,
