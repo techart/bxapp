@@ -23,7 +23,9 @@ class BitrixEndBufferContent
 {
 	public static function setEvent()
 	{
-		AddEventHandler("main", "OnEndBufferContent", ["\Techart\BxApp\Events\BitrixEndBufferContent", "ChangeMyContent"], 1);
+		$id = AddEventHandler("main", "OnEndBufferContent", ["\Techart\BxApp\Events\BitrixEndBufferContent", "ChangeMyContent"], 1);
+
+		\Glob::set('TBA_HTML_CACHE_EVENT_HANDLER_ID', $id);
 	}
 
 	public static function ChangeMyContent(&$content)

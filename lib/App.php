@@ -756,4 +756,18 @@ class App
 
 		return self::$localizationBlockInstance;
 	}
+
+	/**
+	 * Выключает HTML CACHE на определённой странице
+	 * 
+	 * @return void
+	 */
+	public static function disableHtmlCache(): void
+	{
+		\Glob::set('APP_SETUP_HTML_PAGE_CACHE', false);
+
+		if (\Glob::has('TBA_HTML_CACHE_EVENT_HANDLER_ID')) {
+			RemoveEventHandler('main', 'OnEndBufferContent', \Glob::get('TBA_HTML_CACHE_EVENT_HANDLER_ID'));
+		}
+	}
 }

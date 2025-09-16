@@ -110,6 +110,7 @@ class DebugBar
 			$loggerLog = self::getLoggerLog(\Glob::get('APP_SETUP_LOG_LEVEL_DEBUGBAR'));
 			echo '
 			<link rel="stylesheet" href="/local/vendor/techart/bxapp/lib/Assets/debugbar.css">
+			<div class="tba_debug_bar__collapsedOpener' . (self::$countLog === 0 ? ' no-error' : '') . '" onClick="collapseDebugBar()">'.(self::$countLog > 0 ? self::$countLog : 'D').'</div>
 			<div class="tba_debug_bar" data-prefix="'.\Config::get('Router.APP_ROUTER_PREFIX').'">
 				<div class="tba_debug_bar__head">
 					<div class="tba_debug_bar__count" title="logger" onClick="toggleBody(0)"><span>'.self::$countLog.'</span></div>
@@ -127,7 +128,11 @@ class DebugBar
 							<div class="tba_debug_bar__tab">Cache</div>
 							<div class="tba_debug_bar__tab">Env</div>
 						</div>
-						<div class="tba_debug_bar__close" onClick="closeDebugbar()">x</div>
+						<div class="tba_debug_bar__control">
+							<div class="tba_debug_bar__controlBtn" onClick="expandDebugBar()"><img src="/local/vendor/techart/bxapp/lib/Assets/svg/expand.svg"></div>
+							<div class="tba_debug_bar__controlBtn" onClick="collapseDebugBar()"><img src="/local/vendor/techart/bxapp/lib/Assets/svg/collapse.svg"></div>
+							<div class="tba_debug_bar__controlBtn" onClick="closeDebugBar()"><img src="/local/vendor/techart/bxapp/lib/Assets/svg/close.svg"></div>
+						</div>
 					</div>
 					<div class="tba_debug_bar__body-content vis">'.$loggerLog.'</div>
 					<div class="tba_debug_bar__body-content">'.self::getLog().'</div>
@@ -158,20 +163,22 @@ class DebugBar
 		foreach ($messages as $item) {
 			$text .= '<div class="tba_debug_bar__line">';
 			if ($showTime) {
-				$text .= '[' . $item['time'] . '] ';
+				$text .= '<b>[' . $item['time'] . '] </b>';
 			}
 			if ($showType) {
-				$text .= $item['type'] . ': ';
+				$text .= '<b>' . $item['type'] . '</b>: ';
 			}
-			$text .= $item['name'];
+			$text .= '<b>' . $item['name'] . '</b>';
 			if (!empty($item['path'])) {
 				$text .= ' | <span title=' . $item['path'] . '>' . str_replace(TBA_SITE_ROOT_DIR, '', $item['path']) . '</span>';
 			}
 			if (!empty($item['call_from'])) {
-				$text .= ' | <span title=' . $item['call_from'] . '>' . str_replace(TBA_SITE_ROOT_DIR, '', $item['call_from']) . '</span>';
-			}
-			if ($item['line'] > 0) {
-				$text .= ' on line ' . $item['line'];
+				$text .= ' | <span class="tba_debug_bar__calledFrom" title=' . $item['call_from'] . '>' . str_replace(TBA_SITE_ROOT_DIR, '', $item['call_from']);
+
+				if ($item['line'] > 0) {
+					$text .= ' on line ' . $item['line'];
+				}
+				$text .= '</span>';
 			}
 			if (isset($item['button']) && !empty($item['button'])) {
 				$text .= ' <button class="tba_debug_bar__button deleteBtn" data-link="' . $item['button']['link'] . '">x</button>';
@@ -212,9 +219,9 @@ class DebugBar
 						}
 
 						if ($v['typeID'] == array_search('frontendError', Log::$types)) {
-							$text .= $v['date']." - [".strtoupper($v['type'])."] - ".var_export($v['message'], true).'<br><br>';
+							$text .= '<div class="tba_debug_bar__line"><b>' . $v['date']."</b> - <b>[".strtoupper($v['type'])."]</b> - ".var_export($v['message'], true).'</div>';
 						} else {
-							$text .= $v['date']." - [".strtoupper($v['type'])."] - ".var_export($v['message'], true)." (".$v['file']." on line ".$v['line'].")".'<br><br>';
+							$text .= '<div class="tba_debug_bar__line"><b>' . $v['date']."</b> - <b>[".strtoupper($v['type'])."]</b> - ".var_export($v['message'], true)." <span class='tba_debug_bar__calledFrom'>(".$v['file']." on line ".$v['line'].")</span>".'</div>';
 						}
 						self::$countLog++;
 					}
@@ -255,7 +262,7 @@ class DebugBar
 	public static function getCacheLog(): string
 	{
 		$text = '<div class="tba_debug_bar__buttons">
-			<button class="tba_debug_bar__button" id="cacheClearAll">Очистить весь кеш</button>
+			<button class="tba_debug_bar__button" id="cacheClearAll">Очистить кеш страницы</button>
 		</div>';
 
 		return $text . self::buildLog(self::$cache, false, true);
