@@ -40,8 +40,8 @@ class AppGlobals
 		\Glob::set('APP_SETUP_API_ROUTER_CACHE_ACTIVE', boolval(\Env::get('APP_ROUTER_CACHE_ACTIVE')));
 		// роутер должен работать только по https протоколу?
 		\Glob::set('APP_SETUP_API_ROUTER_CHECK_HTTPS', boolval(\Env::get('APP_ROUTER_CHECK_HTTPS')));
-		// если true, то капчи локально всегда правильные (не проверяется)
-		\Glob::set('APP_CAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_CAPTCHA_CHECK_LOCAL')));
+		// если false, то капчи локально всегда правильные (не проверяется)
+		\Glob::set('APP_CAPTCHA_CHECK_LOCAL', boolval(\Env::get('APP_CAPTCHA_CHECK_LOCAL', true)));
 		// секретный ключ рекапчи
 		\Glob::set('APP_RECAPTCHA_SECRET_KEY', strval(\Env::get('APP_RECAPTCHA_SECRET_KEY')));
 		// секретный ключ смарткапчи

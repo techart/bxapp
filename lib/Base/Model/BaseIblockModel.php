@@ -445,6 +445,21 @@ class BaseIblockModel
 	}
 
 	/**
+	 * Возвращает количество разделов, удовлетворяющих фильтру $filter
+	 * На основе CIBlockSection::GetCount
+	 *
+	 * @param array $filter
+	 * @return int
+	 */
+	public function getSectionsCount(array $filter = []): int
+	{
+		$arFilter = $this->makeSectionsFilter($filter);
+		$count = \CIBlockSection::GetCount($arFilter);
+
+		return $count;
+	}
+
+	/**
 	 * Возвращает массив с данными конкретной секции
 	 * Можно указать список полей, условия фильтра и т.д.
 	 * $select перебивает переменные инфоблока $iblockSectionsSelect и $iblockSectionsSelectForLocalization
