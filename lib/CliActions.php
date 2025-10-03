@@ -105,7 +105,7 @@ class CliActions
 	public function clearCache(): void
 	{
 		$args = func_get_args();
-		Cache::clear($args[0], $args[1]);
+		\Techart\BxApp\Cache\Cache::clear($args[0], $args[1]);
 
 		echo 'Очистка кэша выполнена!'.PHP_EOL;
 	}

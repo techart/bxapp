@@ -9,21 +9,18 @@ use \Bitrix\Main\Application;
 
 class Router
 {
-	private static $routerConfigFile = 'routerConfig.txt';
-	private static $routerNamesFile = 'routerNames.txt';
 	private static $defaultRoutes = ['BxappDefault'];
 
 
 	public static function routeUrl(string $name = '', array $args = []): string
 	{
 		$url = '';
-
 		if (!empty($name) && count($args) > 0 && self::isCacheNamesAlive()) {
-			$cacheNamesData = file_get_contents(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile);
+			$cacheNamesData = \Techart\BxApp\Cache\Router\Names::get();
 
 			if (!empty($cacheNamesData)) {
 				if ($cacheNamesData !== false) {
-					$routerNamesData = unserialize($cacheNamesData);
+					$routerNamesData = $cacheNamesData;
 
 					if (isset($routerNamesData['names'][$name])) {
 						$search = [];
@@ -140,7 +137,7 @@ class Router
 	public static function isCacheAlive(): bool
 	{
 		// файл кэша присутствует?
-		if (file_exists(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile)) {
+		if (\Techart\BxApp\Cache\Router\Config::exists()) {
 			return true;
 		} else {
 			return false;
@@ -154,8 +151,8 @@ class Router
 	 */
 	public static function isCacheNamesAlive(): bool
 	{
-		// файл кэша присутствует?
-		if (file_exists(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile)) {
+		// кэш присутствует?
+		if (\Techart\BxApp\Cache\Router\Names::exists()) {
 			return true;
 		} else {
 			return false;
@@ -413,13 +410,14 @@ class Router
 	{
 		$curMethod = self::getRequestMethod();
 		checkCreateDir(TBA_APP_CACHE_ROUTER_PAGES_DIR);
-		$cachePath = TBA_APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.trim($url, '/').'/';
+		$cacheUrl = $curMethod.'/'.trim($url, '/').'/';
+		$cachePath = TBA_APP_CACHE_ROUTER_PAGES_DIR.'/'.$cacheUrl;
 
 		if (!is_dir($cachePath)) {
 			mkdir($cachePath, 0777, true);
 		}
 
-		if (file_put_contents($cachePath.'data.txt', serialize($pageRouteData))) {
+		if (\Techart\BxApp\Cache\Router\Routes::put($pageRouteData, $cacheUrl)) {
 			Logger::info('кэш роута для страницы "'.$url.'" записан');
 		} else {
 			Logger::error('кэш роута для страницы "'.$url.'" записать не удалось');
@@ -480,20 +478,14 @@ class Router
 	public static function getRouteFromPageCacheByUrl(string $url = ''): mixed
 	{
 		$curMethod = self::getRequestMethod();
-		$cachePath = TBA_APP_CACHE_ROUTER_PAGES_DIR.'/'.$curMethod.'/'.$url.'/';
-		$pageCacheData = file_get_contents($cachePath.'data.txt');
+		$cachePath = $curMethod.'/'.$url.'/';
+		$pageCacheData = \Techart\BxApp\Cache\Router\Routes::get($cachePath);
 
-		if ($pageCacheData !== false) {
-			$routeData = unserialize($pageCacheData);
-
-			if ($routeData !== false) {
-				if (self::isRequestQueryAllowed(Router::getRequestQuery(), $routeData) === false) {
-					return false;
-				}
-				return $routeData;
-			} else {
-				Logger::error('Router: данные кэша повреждены для страницы '.$url);
+		if ($pageCacheData !== false && !empty($pageCacheData)) {
+			if (self::isRequestQueryAllowed(Router::getRequestQuery(), $pageCacheData) === false) {
+				return false;
 			}
+			return $pageCacheData;
 		} else {
 			Logger::info('Router: не удалось взять данные из файла кэша для страницы '.$url);
 		}
@@ -518,23 +510,17 @@ class Router
 				return $routeCacheData;
 			} else {
 				Logger::info('данные роута ищутся в общем кэше роутера');
-				$cacheData = file_get_contents(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile);
+				$cacheData = \Techart\BxApp\Cache\Router\Config::get();
 
 				if (!empty($cacheData)) {
 					if ($cacheData !== false) {
-						$routerData = unserialize($cacheData);
+						$currentRouteData = self::findCurrentRoute($cacheData);
 
-						if ($routerData !== false) {
-							$currentRouteData = self::findCurrentRoute($routerData);
-
-							if ($currentRouteData !== false) {
-								self::toPageCache($curUrl, $currentRouteData);
-								return $currentRouteData;
-							} else {
-								Logger::info('Router: в кэше нет роута для переданного урла');
-							}
+						if ($currentRouteData !== false) {
+							self::toPageCache($curUrl, $currentRouteData);
+							return $currentRouteData;
 						} else {
-							Logger::error('Router: данные кэша повреждены');
+							Logger::info('Router: в кэше нет роута для переданного урла');
 						}
 					} else {
 						Logger::error('Router: не удалось взять данные из файла кэша');
@@ -564,7 +550,7 @@ class Router
 	}
 
 	/**
-	 * Записывает кэш routerConfig.txt
+	 * Записывает кэш routerConfig
 	 *
 	 * @return void
 	 */
@@ -578,7 +564,7 @@ class Router
 			$data = RouterConfigurator::get();
 		}
 
-		if (file_put_contents(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerConfigFile, serialize($data))) {
+		if (\Techart\BxApp\Cache\Router\Config::put($data)) {
 			Logger::info('кэш роутера записан');
 		} else {
 			Logger::error('кэш роутера записать не удалось');
@@ -586,7 +572,7 @@ class Router
 	}
 
 	/**
-	 * Записывает кэш routerNames.txt
+	 * Записывает кэш routerNames
 	 *
 	 * @return void
 	 */
@@ -600,7 +586,8 @@ class Router
 			$data = RouterConfigurator::getNames();
 		}
 
-		if (file_put_contents(TBA_APP_CACHE_ROUTER_DIR.'/'.self::$routerNamesFile, serialize($data))) {
+
+		if (\Techart\BxApp\Cache\Router\Names::put($data)) {
 			Logger::info('кэш имён роутера записан');
 		} else {
 			Logger::error('кэш имён роутера записать не удалось');
@@ -696,7 +683,7 @@ class Router
 			$routesCurrent = \Techart\BxApp\RouterConfigurator::get();
 			$namesCurrent = \Techart\BxApp\RouterConfigurator::getNames();
 			$models = self::generateModelsForRouter($routesCurrent);
-			$namesCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
+			$namesCache = \Techart\BxApp\Cache\Router\Names::get();
 			$currentModels = [];
 			$deletedRoutes = [];
 

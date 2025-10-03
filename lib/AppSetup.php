@@ -31,7 +31,9 @@ class AppSetup
 		}
 		createDirsChaine(TBA_APP_MODELS_DIR, $explodePath['dirs']);
 
-		file_put_contents(TBA_APP_MODELS_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php', $template);
+		if (!file_exists(TBA_APP_MODELS_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php')) {
+			file_put_contents(TBA_APP_MODELS_DIR.'/'.implode('/', $explodePath['dirs']).'/'.$modelName.'.php', $template);
+		}
 	}
 
 	/**

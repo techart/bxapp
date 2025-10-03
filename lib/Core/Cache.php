@@ -11,7 +11,7 @@ class Cache
 	 */
 	public function clearMenu(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearMenu(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearMenu(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -22,7 +22,7 @@ class Cache
 	 */
 	public function clearStatic(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearStatic(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearStatic(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -33,7 +33,7 @@ class Cache
 	 */
 	public function clearComponents(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearComponents(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearComponents(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class Cache
 	 */
 	public function clearBlade(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearBlade(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearBlade(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Cache
 	 */
 	public function clearModels(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -66,29 +66,29 @@ class Cache
 	 */
 	public function clearRouter(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearRouter(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearRouter(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
 	 * Очищает кеш привязки роутов к моделям
-	 * 
+	 *
 	 * @param string $siteId
 	 * @return void
 	 */
 	public function clearRouterModels(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearRouterModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearRouterModels(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
 	 * Очищает HTML-кеш страниц
-	 * 
+	 *
 	 * @param string $siteId
 	 * @return void
 	 */
 	public function clearHtml(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearHtml(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearHtml(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 
 	/**
@@ -99,6 +99,6 @@ class Cache
 	 */
 	public function clearAll(string $siteId = ''): void
 	{
-		\Techart\BxApp\Cache::clearAll(!empty($siteId) ? $siteId : TBA_SITE_ID);
+		\Techart\BxApp\Cache\Cache::clearAll(!empty($siteId) ? $siteId : TBA_SITE_ID);
 	}
 }

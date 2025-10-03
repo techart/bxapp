@@ -1,5 +1,5 @@
 <?php
-namespace Techart\BxApp;
+namespace Techart\BxApp\Cache;
 
 use Bitrix\Main\IO\Directory;
 
@@ -12,11 +12,13 @@ class Cache {
 	 */
 	public static function clearRouter(string $siteId = ''): void
 	{
-		Directory::deleteDirectory(TBA_APP_CACHE_ROUTER_ROOT_DIR.'/'.$siteId);
+		\Techart\BxApp\Cache\Router\Config::flush();
+		\Techart\BxApp\Cache\Router\Names::flush();
+		\Techart\BxApp\Cache\Router\Routes::flush();
 
 		if (\Config::get('Router.APP_ROUTER_CACHE_REBUILD', false) === false) {
-			Router::routerNamesToCache();
-			Router::routerConfigToCache();
+			\Router::routerNamesToCache();
+			\Router::routerConfigToCache();
 		}
 	}
 
@@ -49,7 +51,7 @@ class Cache {
 		$models = self::collectModels(TBA_APP_MODELS_DIR);
 
 		foreach($models as $model) {
-			Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.'/'. App::model($model)->table);
+			Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.'/'. \App::model($model)->table);
 		}
 	}
 
@@ -99,7 +101,7 @@ class Cache {
 
 	/**
 	 * Очищает кеш привязки моделей к роутам
-	 * 
+	 *
 	 * @param string $siteId
 	 * @return void
 	 */
@@ -139,7 +141,7 @@ class Cache {
 
 	/**
 	 * Очищает HTML-кеш страниц
-	 * 
+	 *
 	 * @param string $siteId
 	 * @return void
 	 */
@@ -157,7 +159,7 @@ class Cache {
 	public static function clearAll(string $siteId = ''): void
 	{
 		self::clear(['all'], $siteId);
-		Logger::info('Cache: Очистка всех кешей' . $siteId !== '' ?? ' для сайта ' . $siteId);
+		\Logger::info('Cache: Очистка всех кешей' . $siteId !== '' ?? ' для сайта ' . $siteId);
 	}
 
 	/**
@@ -172,32 +174,32 @@ class Cache {
 
 		if ($cacheName === 'router' || $cacheName === 'all') {
 			self::clearRouter($siteId);
-			Logger::info('Cache: Очистка кеша роутера');
+			\Logger::info('Cache: Очистка кеша роутера');
 		}
 
 		if ($cacheName === 'models' || $cacheName === 'all') {
 			self::clearModels($siteId);
-			Logger::info('Cache: Очистка кеша моделей');
+			\Logger::info('Cache: Очистка кеша моделей');
 		}
 
 		if ($cacheName === 'blade' || $cacheName === 'all') {
 			self::clearBlade();
-			Logger::info('Cache: Очистка кеша блейда');
+			\Logger::info('Cache: Очистка кеша блейда');
 		}
 
 		if ($cacheName === 'components' || $cacheName === 'all') {
 			self::clearComponents($siteId);
-			Logger::info('Cache: Очистка кеша компонентов');
+			\Logger::info('Cache: Очистка кеша компонентов');
 		}
 
 		if ($cacheName === 'static' || $cacheName === 'all') {
 			self::clearStatic($siteId);
-			Logger::info('Cache: Очистка кеша статики');
+			\Logger::info('Cache: Очистка кеша статики');
 		}
 
 		if ($cacheName === 'menu' || $cacheName === 'all') {
 			self::clearMenu($siteId);
-			Logger::info('Cache: Очистка кеша меню');
+			\Logger::info('Cache: Очистка кеша меню');
 		}
 
 		if ($cacheName === 'html' || $cacheName === 'all') {
@@ -206,7 +208,7 @@ class Cache {
 
 		if ($cacheName === 'routerModels' || $cacheName === 'all') {
 			self::clearRouterModels($siteId);
-			Logger::info('Cache: Очистка кеша роутов привязанных к моделям');
+			\Logger::info('Cache: Очистка кеша роутов привязанных к моделям');
 		}
 	}
 }

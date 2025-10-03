@@ -533,8 +533,8 @@ class App
 			$text .= '<p style="color: red">В конфиге роутера не указаны существующие бандлы: ' . implode(', ', $none) . '</p>';
 		}
 
-		if (file_exists(TBA_APP_CACHE_ROUTER_DIR . '/routerNames.txt')) {
-			$namesCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerNames.txt'));
+		if (\Techart\BxApp\Cache\Router\Names::exists()) {
+			$namesCache = \Techart\BxApp\Cache\Router\Names::get();
 
 			if ($namesCache !== false) {
 				if (!\H::isArrayEquals($namesCache, $names)) {
@@ -547,8 +547,8 @@ class App
 			$text .= '<p style="color: red">Файл cache/router/routerNames.txt отсутствует!</p>';
 		}
 
-		if (file_exists(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt')) {
-			$configCache = unserialize(file_get_contents(TBA_APP_CACHE_ROUTER_DIR . '/routerConfig.txt'));
+		if (\Techart\BxApp\Cache\Router\Config::exists()) {
+			$configCache = \Techart\BxApp\Cache\Router\Config::get();
 
 			if ($configCache !== false) {
 				if (!\H::isArrayEquals($configCache, $routes)) {
@@ -734,7 +734,7 @@ class App
 
 	/**
 	 * Возвращает инстанс хайлоадблока локализации (если он есть)
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function getLocalizationBlock()
@@ -759,7 +759,7 @@ class App
 
 	/**
 	 * Выключает HTML CACHE на определённой странице
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function disableHtmlCache(): void
