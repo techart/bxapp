@@ -250,7 +250,7 @@ class BaseIblockModel
 	 */
 	private function makeSectionsSelect(array $select = []): array
 	{
-		$curSelect = [];
+		$curSelect = ['ID'];
 
 		if (count($select) > 0) {
 			$curSelect = array_merge($curSelect, $select);
@@ -341,7 +341,7 @@ class BaseIblockModel
 	 */
 	private function makeElementsSelect(array $select = []): array
 	{
-		$curSelect = [];
+		$curSelect = ['ID'];
 
 		if (count($select) > 0) {
 			$curSelect = array_merge($curSelect, $select);

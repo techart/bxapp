@@ -245,7 +245,7 @@ class BaseHighloadModel
 	*/
 	private function makeSelect(array $select = []): array
 	{
-		$curSelect = [];
+		$curSelect = ['ID'];
 
 		if (count($select) > 0) {
 			$curSelect = array_merge($curSelect, $select);
