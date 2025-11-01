@@ -71,13 +71,17 @@ class BaseRouterController
 			foreach ($curFiles as $k => $v) {
 				if (is_array($v['name'])) {
 					foreach ($v['name'] as $key => $val) {
-						if (isset($v['tmp_name'][$key]) && !empty($v['tmp_name'][$key])) {
-							$uploadedFiles[$k][$key] = new UploadedFile($v['tmp_name'][$key], $v['name'][$key], $v['type'][$key]);
+						if (isset($v['full_path'][$key]) && !empty($v['full_path'][$key]) && $v['full_path'][$key] !== 'undefined') {
+							if (isset($v['tmp_name'][$key]) && !empty($v['tmp_name'][$key])) {
+								$uploadedFiles[$k][$key] = new UploadedFile($v['tmp_name'][$key], $v['name'][$key], $v['type'][$key]);
+							}
 						}
 					}
 				} else {
-					if (isset($v['tmp_name']) && !empty($v['tmp_name'])) {
-						$uploadedFiles[$k] = new UploadedFile($v['tmp_name'], $v['name'], $v['type']);
+					if (isset($v['full_path']) && !empty($v['full_path']) && $v['full_path'] !== 'undefined') {
+						if (isset($v['tmp_name']) && !empty($v['tmp_name'])) {
+							$uploadedFiles[$k] = new UploadedFile($v['tmp_name'], $v['name'], $v['type']);
+						}
 					}
 				}
 			}
