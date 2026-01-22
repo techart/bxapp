@@ -9,7 +9,7 @@ class Actions extends \BaseRouterController
 		// тут договориться и в $props сделать массив с типами ошибок и обрабатывать их тут
 
 		if (isset($props['type']) && isset($props['text'])) {
-			\Logger::add($props['type'], json_decode($props['text']), 'frontendError');
+			\Logger::add($props['type'], $props['text'], 'frontendError');
 		}
 
 		return $this->result('', '', []);
@@ -55,9 +55,9 @@ class Actions extends \BaseRouterController
 				$stores[] = $props['key'];
 				$session->set('stores', $stores);
 			}
-	
+
 			$session->set($props['key'], $props['data']);
-	
+
 			return $this->result('', 'ok', true);
 		} else {
 			\App::core('main')->do404();
