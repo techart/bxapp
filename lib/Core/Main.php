@@ -12,6 +12,8 @@ Loader::includeModule("iblock");
 
 class Main
 {
+	use \Techart\BxApp\Traits\ResultTrait;
+
 	/**
 	 * Возвращает true, если домен запроса совпадает с доменом сервера, а иначе false
 	 *
@@ -40,7 +42,12 @@ class Main
 	 */
 	public function do404(): void
 	{
-		header('HTTP/1.0 404 not found');
+		if (\Config::get('App.APP_DO_404_MODE', 'default') === 'default') {
+			header('HTTP/1.0 404 not found');
+		} else {
+			echo $this->jsonResponse($this->result('', 'Not found', null));
+		}
+
 		exit();
 	}
 
@@ -108,7 +115,7 @@ class Main
 		if ($method == 'get') {
 			$values = $request->getQueryList()->toArray();
 		}
-		if ($request->isJson() ?? ($method == 'delete' || $method == 'put' || $method == 'options')) {
+		if ($request->isJson() && ($method == 'delete' || $method == 'put' || $method == 'options')) {
 			$values = json_decode(file_get_contents('php://input'), true);
 		}
 

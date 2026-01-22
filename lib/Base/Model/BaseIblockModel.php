@@ -429,17 +429,34 @@ class BaseIblockModel
 	 * Можно указать список полей, условия фильтра и т.д.
 	 * $select перебивает переменные инфоблока $iblockSectionsSelect и $iblockSectionsSelectForLocalization
 	 *
+	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
 	 * @param array $order
+	 * @param bool|callable $callback
 	 * @return object
 	 */
-	public function getSections(array $select = [], array $filter = [], array $order = []): object
+	public function getSections(array $select = [], array $filter = [], array $order = [], bool|callable $callback = false): object|array|string
 	{
 		$arFilter = $this->makeSectionsFilter($filter);
 		$arSelect = $this->makeSectionsSelect($select);
 		$arOrder = $this->makeSectionsOrder($order);
 		$sections = \CIBlockSection::GetList($arOrder, $arFilter, false, $arSelect, false);
+
+		if ($sections && $callback) {
+			$data = [];
+
+			while ($section = $sections->GetNext()) {
+				if ($callback === true) {
+					$data[] = $this->buildSectionData($section);
+				} else {
+					$data[] = $callback($section);
+				}
+			}
+
+			$sections = $data;
+		}
 
 		return $sections;
 	}
@@ -464,17 +481,28 @@ class BaseIblockModel
 	 * Можно указать список полей, условия фильтра и т.д.
 	 * $select перебивает переменные инфоблока $iblockSectionsSelect и $iblockSectionsSelectForLocalization
 	 *
+	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
 	 * @param array $order
+	 * @param bool|callable $callback
 	 * @return array | bool
 	 */
-	public function getSection(array $select = [], array $filter = [], array $order = []): array | bool
+	public function getSection(array $select = [], array $filter = [], array $order = [], bool|callable $callback = false): array | bool
 	{
 		$arFilter = $this->makeSectionsFilter($filter);
 		$arSelect = $this->makeSectionsSelect($select);
 		$arOrder = $this->makeSectionsOrder($order);
 		$section = \CIBlockSection::GetList($arOrder, $arFilter, false, $arSelect, false)->GetNext();
+
+		if ($section && $callback) {
+			if ($callback === true) {
+				$section = $this->buildSectionData($section);
+			} else {
+				$section = $callback($section);
+			}
+		}
 
 		return $section;
 	}
@@ -567,20 +595,39 @@ class BaseIblockModel
 	 * Можно указать список полей, условия фильтра и т.д.
 	 * $select перебивает переменные инфоблока $iblockElementsSelect и $iblockElementsSelectForLocalization
 	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
 	 * @param array $order
 	 * @param array $limit
 	 * @param mixed $group
-	 * @return object|string
+	 * @param bool|callable $callback
+	 * @return object|array|string
 	 */
-	public function getElements(array $select = [], array $filter = [], array $order = [], mixed $limit = [], mixed $group = false): object|string
+	public function getElements(array $select = [], array $filter = [], array $order = [], mixed $limit = [], mixed $group = false, bool|callable $callback = false): object|array|string
 	{
 		$arFilter = $this->makeElementsFilter($filter);
 		$arSelect = $this->makeElementsSelect($select);
 		$arOrder = $this->makeElementsOrder($order);
 		$arGroup = $this->makeElementsGroup($group);
 		$elements = \CIBlockElement::GetList($arOrder, $arFilter, $arGroup, $limit, $arSelect);
+
+		if ($elements && $callback) {
+			$data = [];
+
+			while ($element = $elements->GetNext()) {
+				$element = $element ? $element : [];
+
+				if ($callback === true) {
+					$data[] = $this->buildElementData($element);
+				} else {
+					$data[] = $callback($element);
+				}
+			}
+
+			$elements = $data;
+		}
 
 		return $elements;
 	}
@@ -591,17 +638,218 @@ class BaseIblockModel
 	 * $select перебивает переменные инфоблока $iblockElementsSelect и $iblockElementsSelectForLocalization
 	 * $filter может быть по ID или CODE (указываем сами)
 	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
+	 * @param bool|callable $callback
 	 * @return array | bool
 	 */
-	public function getElement(array $select = [], array $filter = []): array | bool
+	public function getElement(array $select = [], array $filter = [], bool|callable $callback = false): array | bool
 	{
 		$arFilter = $this->makeElementsFilter($filter);
 		$arSelect = $this->makeElementsSelect($select);
 		$element = \CIBlockElement::GetList([], $arFilter, false, [], $arSelect)->GetNext();
 
+		if ($element && $callback) {
+			$element = $element ? $element : [];
+
+			if ($callback === true) {
+				$element = $this->buildElementData($element);
+			} else {
+				$element = $callback($element);
+			}
+		}
+
 		return $element;
+	}
+
+	/**
+	 * Возвращает массив с данными конкретного элемента по его ID
+	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
+	 * @param string|int $id
+	 * @param bool|callable $callback
+	 * @return array | bool
+	 */
+	public function getElementByID(array $select = [], string|int $id, bool|callable $callback = false): array | bool
+	{
+		$element = $this->getElement($select, ['ID' => $id], $callback);
+
+		return $element;
+	}
+
+	/**
+	 * Возвращает массив с данными конкретного элемента по его ID
+	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
+	 * @param array $select
+	 * @param int|array $id
+	 * @param array $order
+	 * @param mixed $limit
+	 * @param mixed $group
+	 * @param bool|callable $callback
+	 * @return object|array|string
+	 */
+	public function getElementsByID(array $select = [], int|array $id, array $order = [], mixed $limit = [], mixed $group = false, bool|callable $callback = false): object|array|string
+	{
+		$elements = $this->getElements($select, ['ID' => $id], empty($order) ? ['ID' => $id] : $order, $limit, $group, $callback);
+
+		return $elements;
+	}
+
+	/**
+	 * Возвращает разделы, которым принадлежит элемент, по его коду
+	 * @param mixed $id
+	 * @param bool $only
+	 * @param array $select
+	 * @return array
+	 */
+	public function getElementGroups(mixed $id, bool $only = false, array $select = [])
+	{
+		$curSelect = ['ID'];
+
+		if (count($select) > 0) {
+			$curSelect = array_merge($curSelect, $select);
+		} else {
+			if (count($this->iblockSectionsSelect) > 0) {
+				$curSelect = array_merge($curSelect, $this->iblockSectionsSelect);
+			}
+		}
+		$groups = \CIBlockElement::GetElementGroups($id, $only, $curSelect);
+
+		$data = [];
+
+		while ($group = $groups->GetNext()) {
+			$data[] = $group;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Возвращает значения свойств для элементов, отобранных по фильтру
+	 *
+	 * @param array $filter
+	 * @param bool $ext
+	 * @param array $propertyFilter
+	 * @return object
+	 */
+	public function getPropertyValues(array $filter = [], bool $ext = false, array $propertyFilter = []): object
+	{
+		$values = \CIBlockElement::GetPropertyValues($this->getInfoblock()['ID'], $filter, $ext, $propertyFilter);
+
+		return $values;
+	}
+
+	/**
+	 * Получение значений свойств элементов
+	 *
+	 * @param array $result
+	 * @param array $filter
+	 * @param array $propertyFilter
+	 * @param array $options
+	 * @return array
+	 */
+	public function getPropertyValuesArray(array $result = [], array $filter = [], array $propertyFilter = [], array $options = []): array
+	{
+		\CIBlockElement::GetPropertyValuesArray($result, $this->getInfoblock()['ID'], $filter, $propertyFilter, $options);
+
+		return $result;
+	}
+
+	/**
+	 * Возвращает количество разделов удовлетворяющих фильтру
+	 *
+	 * @param array $filter
+	 * @return int
+	 */
+	public function getCountSections(array $filter = []): int
+	{
+		$curFilter = ['IBLOCK_ID' => $this->getInfoblock()['ID']];
+
+		if (count($filter) > 0) {
+			$curFilter += $filter;
+		}
+
+		return \CIBlockSection::GetCount($curFilter);
+	}
+
+	/**
+	 * Получает количество элементов в определённой секции
+	 *
+	 * @param int|string $sectionId
+	 * @param array $filter
+	 * @return int
+	 */
+	public function getCountElements(int|string $sectionId, array $filter = []): int
+	{
+		$curFilter = ['IBLOCK_ID' => $this->getInfoblock()['ID']];
+
+		if (count($filter) > 0) {
+			$curFilter += $filter;
+		}
+
+		return \CIBlockSection::GetSectionElementsCount($sectionId, $curFilter);
+	}
+
+	/**
+	 * Возвращает путь по дереву от корня до переданного раздела
+	 *
+	 * @param int|string $sectionId
+	 * @param array $select
+	 * @param bool $result
+	 * @return array|object
+	 */
+	public function getNavChain(int|string $sectionId, array $select = [], bool $result = false): array|object
+	{
+		$curSelect = ['ID'];
+
+		if (count($select) > 0) {
+			$curSelect = array_merge($curSelect, $select);
+		} else {
+			if (count($this->iblockSectionsSelect) > 0) {
+				$curSelect = array_merge($curSelect, $this->iblockSectionsSelect);
+			}
+			if ($this->getLocalizationMode() == 'select') {
+				if (count($this->iblockSectionsSelectForLocalization) > 0) {
+					$locSelect = [];
+
+					foreach ($this->iblockSectionsSelectForLocalization as $v) {
+						$locSelect[] = $v.$this->pid; // подставляем постфикс для свойства
+					}
+
+					// добавляет локализованные свойства
+					$curSelect = array_merge($curSelect, $locSelect);
+				}
+			}
+		}
+
+		$result = \CIBlockSection::GetNavChain($this->getInfoblock()['ID'], $sectionId, $curSelect, $result);
+
+		return $result;
+	}
+
+	/**
+	 * Подзапросы
+	 *
+	 * @param string $field
+	 * @param array $filter
+	 * @return array
+	 */
+	public function subQuery(string $field = '', array $filter = [])
+	{
+		$curFilter = ['IBLOCK_ID' => $this->getInfoblock()['ID']];
+
+		if (count($filter) > 0) {
+			$curFilter += $filter;
+		}
+
+		$query = \CIBlockElement::SubQuery($field, $filter);
+
+		return $query;
 	}
 
 	/**
@@ -901,7 +1149,6 @@ class BaseIblockModel
 	}
 
 	/**
-	/**
 	 * Возвращает массив-дерево всех секций инфоблока и их элементов.
 	 * Вложенные секции лежат в ключе "sections"
 	 * Вложенные элементы лежат в ключе "elements"
@@ -1016,6 +1263,24 @@ class BaseIblockModel
 	 * @return array
 	 */
 	public function getSectionData(): array {}
+
+	/**
+	 * Описать у себя в модели, если будет нужно
+	 *
+	 * Сюда передаются данные из методов getElements(), getElement(), getElementByID(), getElementsByID() если параметр $callback = true
+	 *
+	 * @return array
+	 */
+	public function buildElementData(array $element): array {}
+
+	/**
+	 * Описать у себя в модели, если будет нужно
+	 *
+	 * Сюда передаются данные из методов getSection(), getSections() если параметр $callback = true
+	 *
+	 * @return array
+	 */
+	public function buildSectionData(array $section): array {}
 
 	/**
 	 * Генерация урлов для сайтмапа по заданному в модели инфоблоку

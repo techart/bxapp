@@ -13,4 +13,5 @@ return [
 	'APP_MODEL_LOCALIZATION_MODE' => 'none', // режим локализации моделей: none | code | select | directory (можно менять в модели)
 	'APP_MODEL_CLEAN_CACHE_ON_CHANGE' => true, // чистить кэш модели после добавления/удаления/обновления
 	'APP_HIGHLOAD_BLOCKS_LIST' => [], // список $table всех HB которые нужно орабатывать (например,чистить кэш)
+	'APP_DO_404_MODE' => 'default', // режим работы метода do404 из класса Core/Main: default (Возвращает хедер 404) | result (Возвращает null в данных traitResult)
 ];

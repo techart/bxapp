@@ -47,7 +47,12 @@ class BitrixPageStart
 		if (\Config::get('Redirects.APP_SITE_REDIRECTS_ACTIVE', false) === true) {
 			// урлы начинающиеся с /bitrix/ или /upload/ никогда не участвуют в BxApp редиректах
 			if (strpos($_SERVER['REQUEST_URI'], '/bitrix/') !== 0 && strpos($_SERVER['REQUEST_URI'], '/upload/') !== 0) {
-				$curUrl = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+				if (\Config::get('Redirects.APP_SITE_REDIRECTS_GET_PARAMS', false) === true) {
+					$query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+					$curUrl = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) . (!empty($query) ? '?' . $query : ''));
+				} else {
+					$curUrl = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+				}
 
 				// редирект с большого регистра на маленький
 				if (\Config::get('Redirects.APP_SITE_REDIRECTS_TO_LOWER', false) === true) {

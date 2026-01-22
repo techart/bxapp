@@ -316,7 +316,7 @@ class BaseHighloadModel
 	 *
 	 * @return object
 	 */
-	public function getElements(array $select = [], array $filter = [], array $order = []): object
+	public function getElements(array $select = [], array $filter = [], array $order = [], bool|callable $callback = false): object|array|string
 	{
 		$entityDataClass = $this->getEntityClass();
 
@@ -330,6 +330,20 @@ class BaseHighloadModel
 			'filter' => $hlfilter
 		]);
 
+		if ($elements && $callback) {
+			$data = [];
+
+			while ($element = $elements->fetch()) {
+				if ($callback === true) {
+					$data[] = $this->buildElementData($element);
+				} else {
+					$data[] = $callback($element);
+				}
+			}
+
+			$elements = $data;
+		}
+
 		return $elements;
 	}
 
@@ -337,12 +351,15 @@ class BaseHighloadModel
 	 * Возвращает один элемент highload-блока в необработанном виде
 	 * Можно указать список полей и условия фильтра
 	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
+	 * @param bool|callable $callback
 	 *
-	 * @return array
+	 * @return object|array|string
 	 */
-	public function getElement(array $select = [], array $filter = []): array
+	public function getElement(array $select = [], array $filter = [], bool|callable $callback = false): object|array|string
 	{
 		$entityDataClass = $this->getEntityClass();
 		$hlselect = $this->makeSelect($select);
@@ -354,6 +371,16 @@ class BaseHighloadModel
 		]);
 
 		$data = $element->Fetch();
+
+		if ($element && $callback) {
+			$data = $data ? $data : [];
+
+			if ($callback === true) {
+				$data = $this->buildElementData($data);
+			} else {
+				$data = $callback($data);
+			}
+		}
 
 		return !$data ? [] : $data;
 	}
@@ -389,4 +416,13 @@ class BaseHighloadModel
 	 * @return array
 	 */
 	public function getElementData(): array {}
+
+	/**
+	 * Описать у себя в модели, если будет нужно
+	 *
+	 * Сюда передаются данные из методов getElements(), getElement(), getElementByID(), getElementsByID() если параметр $callback = true
+	 *
+	 * @return array
+	 */
+	public function buildElementData(array $element): array {}
 }

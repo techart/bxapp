@@ -26,6 +26,7 @@
 return [
 	'APP_SITE_REDIRECTS_ACTIVE' => false, // true = редиректы работают
 	'APP_SITE_REDIRECTS_TO_LOWER' => false, // true = включён редирект с верхнего регистра на нижний
+	'APP_SITE_REDIRECTS_GET_PARAMS' => false, // true = включить обработку гет параметров
 	'APP_SITE_REDIRECTS' => [
 		// редиректы со статусом 301
 		'301' => [
