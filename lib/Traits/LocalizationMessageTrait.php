@@ -36,16 +36,18 @@ trait LocalizationMessageTrait
 		$path = array_splice($path, 1, count($path) - 2);
 
 		$entity = explode('_', array_shift($path))[0];
+		$fileName = basename($trace[0]['file'], '.php');
 		$className = isset($trace[1]['class']) && !empty($trace[1]['class']) ? $trace[1]['class'] : '';
 		$methodName = isset($trace[1]['function']) && !empty($trace[1]['function']) ? $trace[1]['function'] : '';
 		$templates = \Config::get('App.APP_LOCALIZATION_MESSAGES_TEMPLATES', []);
-		$template = (isset($templates[$entity]) ? $templates[$entity] : '{entity_name}/{first_dir}::{class_name}.{method_name}_') . $code;
+		$classFile = !empty($path) ? $path[0] : $fileName;
+		$template = (isset($templates[$entity]) ? $templates[$entity] : '{entity_name}/{first_part}::{class_name}.{method_name}_') . $code;
 		preg_match('/^((?P<namespace>.*)::)?((?P<group>.*)\\.)?(?P<key>(.*_)?.*)$/', $template, $matches);
 
 		foreach (['namespace' => '::', 'group' => '.', 'key' => ''] as $param => $postfix) {
 			$matches[$param] = str_replace(
-				['{entity_name}', '{class_name}', '{method_name}', '{site_id}', '{first_dir}', '{all_dir}'],
-				[$entity, $className, $methodName, TBA_SITE_ID, $path[0], implode('/', $path)],
+				['{entity_name}', '{class_name}', '{method_name}', '{site_id}', '{first_dir}', '{all_dir}', '{first_part}', '{file_name}'],
+				[$entity, $className, $methodName, TBA_SITE_ID, $path[0], implode('/', $path), $classFile, $fileName],
 				isset($matches[$param]) && !empty($matches[$param]) ? $matches[$param] . $postfix : ''
 			);
 		}
