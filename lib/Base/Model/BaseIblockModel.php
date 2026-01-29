@@ -508,6 +508,41 @@ class BaseIblockModel
 	}
 
 	/**
+	 * Возвращает массив с данными конкретной секции по её ID
+	 *
+	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
+	 *
+	 * @param array $select
+	 * @param string|int $id
+	 * @param bool|callable $callback
+	 * @return array | bool
+	 */
+	public function getSectionByID(array $select = [], string|int $id, bool|callable $callback = false): array | bool
+	{
+		$section = $this->getSection($select, ['ID' => $id], callback: $callback);
+
+		return $section;
+	}
+
+	/**
+	 * Возвращает массив с данными конкретных секций по их ID
+	 *
+	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
+	 *
+	 * @param array $select
+	 * @param int|array $id
+	 * @param array $order
+	 * @param bool|callable $callback
+	 * @return object|array|string
+	 */
+	public function getSectionsByID(array $select = [], int|array $id, array $order = [], bool|callable $callback = false): object|array|string
+	{
+		$sections = $this->getSections($select, ['ID' => $id], $order, $callback);
+
+		return $sections;
+	}
+
+	/**
 	 * Удаляет секцию по переданному $id
 	 * Возвращает массив трейта buildResult
 	 *
@@ -642,14 +677,16 @@ class BaseIblockModel
 	 *
 	 * @param array $select
 	 * @param array $filter
+	 * @param array $order
 	 * @param bool|callable $callback
 	 * @return array | bool
 	 */
-	public function getElement(array $select = [], array $filter = [], bool|callable $callback = false): array | bool
+	public function getElement(array $select = [], array $filter = [], array $order = [], bool|callable $callback = false): array | bool
 	{
 		$arFilter = $this->makeElementsFilter($filter);
 		$arSelect = $this->makeElementsSelect($select);
-		$element = \CIBlockElement::GetList([], $arFilter, false, [], $arSelect)->GetNext();
+		$arOrder = $this->makeElementsOrder($order);
+		$element = \CIBlockElement::GetList($arOrder, $arFilter, false, [], $arSelect)->GetNext();
 
 		if ($element && $callback) {
 			$element = $element ? $element : [];
@@ -669,13 +706,14 @@ class BaseIblockModel
 	 *
 	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
 	 *
+	 * @param array $select
 	 * @param string|int $id
 	 * @param bool|callable $callback
 	 * @return array | bool
 	 */
 	public function getElementByID(array $select = [], string|int $id, bool|callable $callback = false): array | bool
 	{
-		$element = $this->getElement($select, ['ID' => $id], $callback);
+		$element = $this->getElement($select, ['ID' => $id], callback: $callback);
 
 		return $element;
 	}
@@ -758,23 +796,6 @@ class BaseIblockModel
 		\CIBlockElement::GetPropertyValuesArray($result, $this->getInfoblock()['ID'], $filter, $propertyFilter, $options);
 
 		return $result;
-	}
-
-	/**
-	 * Возвращает количество разделов удовлетворяющих фильтру
-	 *
-	 * @param array $filter
-	 * @return int
-	 */
-	public function getCountSections(array $filter = []): int
-	{
-		$curFilter = ['IBLOCK_ID' => $this->getInfoblock()['ID']];
-
-		if (count($filter) > 0) {
-			$curFilter += $filter;
-		}
-
-		return \CIBlockSection::GetCount($curFilter);
 	}
 
 	/**

@@ -313,6 +313,7 @@ class BaseHighloadModel
 	 * @param array $select
 	 * @param array $filter
 	 * @param array $order
+	 * @param bool|callable $callback
 	 *
 	 * @return object
 	 */
@@ -355,18 +356,21 @@ class BaseHighloadModel
 	 *
 	 * @param array $select
 	 * @param array $filter
+	 * @param array $order
 	 * @param bool|callable $callback
 	 *
 	 * @return object|array|string
 	 */
-	public function getElement(array $select = [], array $filter = [], bool|callable $callback = false): object|array|string
+	public function getElement(array $select = [], array $filter = [], array $order = [], bool|callable $callback = false): object|array|string
 	{
 		$entityDataClass = $this->getEntityClass();
 		$hlselect = $this->makeSelect($select);
 		$hlfilter = $this->makeFilter($filter);
+		$hlorder = $this->makeOrder($order);
 
 		$element = $entityDataClass::getList([
 			'select' => $hlselect,
+			'order' => $hlorder,
 			'filter' => $hlfilter,
 		]);
 

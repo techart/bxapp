@@ -47,6 +47,17 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_be
 
 $do404 = false;
 
+if (isset($_SERVER['HTTP_ISSWAGGER']) || strpos($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'], 'isswagger') !== false) {
+	header('Access-Control-Allow-Headers:*');
+	header('Access-Control-Allow-Origin:*');
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Credentials:true');
+
+	if (strpos($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'], 'isswagger') !== false) {
+		exit();
+	}
+}
+
 if (Router::isActive()) { // роут включён
 	Logger::info('RouterProccessing: роутер включён');
 
