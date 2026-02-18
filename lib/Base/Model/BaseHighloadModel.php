@@ -310,6 +310,8 @@ class BaseHighloadModel
 	 * Возвращает объект всех элементов highload-блока в необработанном виде.
 	 * Можно указать список полей, условия фильтра и т.д.
 	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
 	 * @param array $select
 	 * @param array $filter
 	 * @param array $order
@@ -344,6 +346,26 @@ class BaseHighloadModel
 
 			$elements = $data;
 		}
+
+		return $elements;
+	}
+
+	/**
+	 * Возвращает массив с данными конкретных элементов по их ID
+	 * Можно указать список полей, условия фильтра и т.д.
+	 *
+	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
+	 *
+	 * @param array $select
+	 * @param int|array $id
+	 * @param array $order
+	 * @param bool|callable $callback
+	 *
+	 * @return object
+	 */
+	public function getElementsByID(array $select = [], int|array $id = [], array $order = [], bool|callable $callback = false): object|array|string
+	{
+		$elements = $this->getElements($select, ['ID' => $id], $order, $callback);
 
 		return $elements;
 	}
@@ -424,7 +446,7 @@ class BaseHighloadModel
 	/**
 	 * Описать у себя в модели, если будет нужно
 	 *
-	 * Сюда передаются данные из методов getElements(), getElement(), getElementByID(), getElementsByID() если параметр $callback = true
+	 * Сюда передаются данные из методов getElements(), getElement(), getElementsByID() если параметр $callback = true
 	 *
 	 * @return array
 	 */

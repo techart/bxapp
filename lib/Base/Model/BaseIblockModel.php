@@ -508,23 +508,6 @@ class BaseIblockModel
 	}
 
 	/**
-	 * Возвращает массив с данными конкретной секции по её ID
-	 *
-	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
-	 *
-	 * @param array $select
-	 * @param string|int $id
-	 * @param bool|callable $callback
-	 * @return array | bool
-	 */
-	public function getSectionByID(array $select = [], string|int $id, bool|callable $callback = false): array | bool
-	{
-		$section = $this->getSection($select, ['ID' => $id], callback: $callback);
-
-		return $section;
-	}
-
-	/**
 	 * Возвращает массив с данными конкретных секций по их ID
 	 *
 	 * $callback - если true - данные выборки передаются в buildSectionData(), либо в указанный метод
@@ -702,24 +685,7 @@ class BaseIblockModel
 	}
 
 	/**
-	 * Возвращает массив с данными конкретного элемента по его ID
-	 *
-	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
-	 *
-	 * @param array $select
-	 * @param string|int $id
-	 * @param bool|callable $callback
-	 * @return array | bool
-	 */
-	public function getElementByID(array $select = [], string|int $id, bool|callable $callback = false): array | bool
-	{
-		$element = $this->getElement($select, ['ID' => $id], callback: $callback);
-
-		return $element;
-	}
-
-	/**
-	 * Возвращает массив с данными конкретного элемента по его ID
+	 * Возвращает массив с данными конкретных элементов по их ID
 	 *
 	 * $callback - если true - данные выборки передаются в buildElementData(), либо в указанный метод
 	 *
@@ -1288,7 +1254,7 @@ class BaseIblockModel
 	/**
 	 * Описать у себя в модели, если будет нужно
 	 *
-	 * Сюда передаются данные из методов getElements(), getElement(), getElementByID(), getElementsByID() если параметр $callback = true
+	 * Сюда передаются данные из методов getElements(), getElement(), getElementsByID() если параметр $callback = true
 	 *
 	 * @return array
 	 */

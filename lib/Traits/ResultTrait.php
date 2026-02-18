@@ -5,6 +5,7 @@ namespace Techart\BxApp\Traits;
  * Нужен для форматирования возвращаемых данных по API во фронтенд в обговоренном виде:
  *
 	status: 'success' | 'fail'
+	site: string
 	language: string
 	cache?: true | false
 	errors?: [
