@@ -437,8 +437,9 @@ abstract class BaseMenu
 		$code = \Cutil::translit(
 			$code,
 			'ru',
-			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-']
-		).'_'.rand(1000000, 10000000);
+			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-', 'replace_other' => '-']
+		);
+		$code .= (!empty($code) ? '_' : '').rand(1000000, 10000000);
 
 		return $code;
 	}

@@ -383,14 +383,15 @@ class Helpers
 			$code,
 			'ru',
 			['max_len' => 25, 'change_case' => 'L', 'replace_space' => '-', 'replace_other' => '-']
-		).'_'.rand(1000000, 10000000);
+		);
+		$code .= (!empty($code) ? '_' : '').rand(1000000, 10000000);
 
 		return $code;
 	}
 
 	/**
 	 *  Удаляет переданный файл и очищает пустые папки поверх него
-	 * 
+	 *
 	 * @param string $path
 	 * @param string $stop
 	 * @return bool
@@ -433,7 +434,7 @@ class Helpers
 
 	/**
 	 * Рекурсивно проходит 2 массива и проверяет являются ли они идентичными
-	 * 
+	 *
 	 * @param array $first
 	 * @param array $second
 	 * @return bool
