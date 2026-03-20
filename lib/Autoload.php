@@ -44,6 +44,7 @@ class Autoload
 			'BaseHighloadModel' => '\Techart\BxApp\Base\Model\BaseHighloadModel',
 			'BaseRouterController' => '\Techart\BxApp\Base\Router\BaseRouterController',
 			'BaseMenu' => '\Techart\BxApp\Base\Menu\BaseMenu',
+			'BaseScheme' => '\Techart\BxApp\Base\Scheme\BaseScheme',
 			//'BaseSeo' => '\Techart\BxApp\Base\Seo\BaseSeo',
 		];
 
