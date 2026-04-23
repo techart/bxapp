@@ -85,17 +85,17 @@ class Validator
 	 */
 	protected function customRules(\Illuminate\Validation\Factory $validator): void
 	{
-		$validator->extend('recaptchav2', function($attribute, $value, $parameters)
+		$validator->extendImplicit('recaptchav2', function($attribute, $value, $parameters)
 		{
 			return \App::core('Recaptcha')->checkV2($value);
 		}, 'Пройдите тест reCaptcha!');
 
-		$validator->extend('recaptchav3', function($attribute, $value, $parameters)
+		$validator->extendImplicit('recaptchav3', function($attribute, $value, $parameters)
 		{
 			return \App::core('Recaptcha')->checkV3($value);
 		}, 'Пройдите тест reCaptcha!');
 
-		$validator->extend('smartCaptcha', function($attribute, $value, $parameters)
+		$validator->extendImplicit('smartCaptcha', function($attribute, $value, $parameters)
 		{
 			return \App::core('SmartCaptcha')->checkSmart($value);
 		}, 'Пройдите тест smartCaptcha!');
@@ -109,7 +109,7 @@ class Validator
 		 * Если "strict" не передан, то телефон трактуется очень широко:
 		 * +7 (123) 123-45-67; 81231234567; 8 (123) 1234567; 8(123)1234567 и т.д.
 		 */
-		$validator->extend('phone_number', function($attribute, $value, $parameters)
+		$validator->extendImplicit('phone_number', function($attribute, $value, $parameters)
 		{
 			if (in_array('strict', $parameters)) {
 				return preg_match('/\+7 \([0-9]{3}\) [0-9]{3}-[0-9]{2}-[0-9]{2}/', $value);

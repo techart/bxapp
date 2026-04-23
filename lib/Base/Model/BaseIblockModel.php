@@ -1328,4 +1328,83 @@ class BaseIblockModel
 
 		return $data;
 	}
+
+	/**
+	 * Возвращает массив:
+	 * Ключ "filter" - фильтр, по которому считалась пагинация
+	 * Ключ "navStartParams" - для применения пагинации к выборке из модели
+	 * Ключ "pagination" - для построения навигации
+	 *
+	 * $model - объект модели
+	 * $currentPage - текущая страница. Если 0 - вернёт false
+	 * $elementsOnPage - элементов на странице, если 0 то возьмёт из конфига MySite.COUNT_ELEMENTS_ON_PAGE
+	 * $filter - фильтр по которому считать пагинацию: false или [] - без фильтра; true - дефолтный фильтр (см.ответ)
+	 * $isElement - если true, то смотрит элементы (getElements), а иначе секции (getSections)
+	 *
+	 * Если пагинацию посчитать невозможно, то вернёт false
+	 *
+	 * @param object|false $model
+	 * @param integer $currentPage
+	 * @param integer $elementsOnPage
+	 * @param array $filter
+	 * @param bool $isElement
+	 * @return array|false
+	 */
+	public function pagination(string|int $currentPage = 1, int $elementsOnPage = 0, array|bool $filter = true, bool $isElement = true): array|false
+	{
+		$data = false;
+		$elementsOnPage = intval($elementsOnPage > 0 ? $elementsOnPage : Config::get('MySite.COUNT_ELEMENTS_ON_PAGE', 12));
+
+		if ($isElement) {
+			$filter = $filter === true ? ['ACTIVE' => 'Y', 'SECTION_GLOBAL_ACTIVE' => 'Y',] : (!empty($filter) ? $filter : []);
+			$elementCount = intval($this->getElements([], $filter)->selectedRowsCount());
+		} else {
+			$filter = $filter === true ? ['ACTIVE' => 'Y', 'GLOBAL_ACTIVE' => 'Y',] : (!empty($filter) ? $filter : []);
+			$elementCount = intval($this->getSections([], $filter)->selectedRowsCount());
+		}
+		$pagination = [
+			'currentPage' => intval($currentPage),
+			'totalPages' => intval(ceil($elementCount / $elementsOnPage)),
+		];
+
+		if (
+			preg_match('/^[1-9]\\d*$/', $currentPage) && $pagination['currentPage'] > 0 &&
+			$pagination['totalPages'] > 0 && $pagination['currentPage'] <= $pagination['totalPages']
+		) {
+			$data['filter'] = $filter;
+			$data['navStartParams'] = [
+				'nPageSize' => $elementsOnPage,
+				'iNumPage' => $currentPage,
+			];
+			$data['pagination'] = $pagination;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Вызывает $this->pagination() с параметром $isElement = true
+	 *
+	 * @param integer $currentPage
+	 * @param integer $elementsOnPage
+	 * @param boolean $filter
+	 * @return array|false
+	 */
+	public function elementPagination(string|int $currentPage = 1, int $elementsOnPage = 0, array|bool $filter = true): array|false
+	{
+		return $this->pagination($currentPage, $elementsOnPage, $filter, true);
+	}
+
+	/**
+	 * Вызывает $this->pagination() с параметром $isElement = false
+	 *
+	 * @param integer $currentPage
+	 * @param integer $elementsOnPage
+	 * @param boolean $filter
+	 * @return array|false
+	 */
+	public function sectionPagination(string|int $currentPage = 1, int $elementsOnPage = 0, array|bool $filter = true): array|false
+	{
+		return $this->pagination($currentPage, $elementsOnPage, $filter, false);
+	}
 }
