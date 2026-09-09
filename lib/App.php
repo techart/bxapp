@@ -749,6 +749,7 @@ class App
 				$entityDataClass = $entity->getDataClass();
 				self::$localizationBlockInstance = $entityDataClass;
 			} else {
+				Logger::error('Highload-блок "TbaLocDirectory" не существует!');
 				throw new \LogicException('Highload-блок "TbaLocDirectory" не существует!');
 				exit();
 			}

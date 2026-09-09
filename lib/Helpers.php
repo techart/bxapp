@@ -34,7 +34,7 @@ class Helpers
 	 */
 	public static function imgToBase64(string $imgPath = ''): string
 	{
-		$path = realpath(TBA_PROJECT_ROOT_DIR.'/'.$imgPath);
+		$path = realpath(TBA_SITE_ROOT_DIR.'/'.$imgPath);
 
 		if (file_exists($path)) {
 			$type = pathinfo($path, PATHINFO_EXTENSION);

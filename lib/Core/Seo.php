@@ -107,6 +107,7 @@ class Seo
 		if ($infoblock->result->num_rows > 0) {
 			$this->iblockId = $infoblock->Fetch()['ID'];
 		} else {
+			\Logger::error("Инфоблок ".$iblockСode." не существует");
 			throw new \LogicException("Инфоблок ".$iblockСode." не существует");
 			exit();
 		}

@@ -32,6 +32,7 @@ trait AssetsTrait
 			Asset::getInstance()->addString($path);
 			Asset::getInstance()->addString($this->getCssTag($entry));
 		} else {
+			\Logger::error("Точка входа ".$entry." не существует");
 			throw new \LogicException("Точка входа ".$entry." не существует");
 			exit();
 		}

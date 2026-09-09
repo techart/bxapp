@@ -7,10 +7,9 @@ class Cache {
 	/**
 	 * Очищает кеш роутера
 	 *
-	 * @param string $siteId
 	 * @return void
 	 */
-	public static function clearRouter(string $siteId = ''): void
+	public static function clearRouter(): void
 	{
 		\Techart\BxApp\Cache\Router\Config::flush();
 		\Techart\BxApp\Cache\Router\Names::flush();
@@ -43,10 +42,9 @@ class Cache {
 	/**
 	 * Очищает кеш моделей
 	 *
-	 * @param string $siteId
 	 * @return void
 	 */
-	public static function clearModels(string $siteId = ''): void
+	public static function clearModels(): void
 	{
 		$models = self::collectModels(TBA_APP_MODELS_DIR);
 
@@ -80,12 +78,11 @@ class Cache {
 	/**
 	 * Очищает кеш static
 	 *
-	 * @param string $siteId
 	 * @return void
 	 */
-	public static function clearStatic(string $siteId = ''): void
+	public static function clearStatic(): void
 	{
-		Directory::deleteDirectory(TBA_APP_CACHE_STATIC_ROOT_DIR.'/'.$siteId);
+		Directory::deleteDirectory(TBA_APP_CACHE_STATIC_DIR);
 	}
 
 	/**
@@ -102,10 +99,9 @@ class Cache {
 	/**
 	 * Очищает кеш привязки моделей к роутам
 	 *
-	 * @param string $siteId
 	 * @return void
 	 */
-	public static function clearRouterModels(string $siteId = ''): void
+	public static function clearRouterModels(): void
 	{
 		$routes = json_decode(file_get_contents(TBA_APP_CACHE_MODELS_DIR . '/models.json'), true);
 		$tables = [];
@@ -142,10 +138,9 @@ class Cache {
 	/**
 	 * Очищает HTML-кеш страниц
 	 *
-	 * @param string $siteId
 	 * @return void
 	 */
-	public static function clearHtml(string $siteId = ''): void
+	public static function clearHtml(): void
 	{
 		Directory::deleteDirectory(TBA_APP_BITRIX_CACHE_DIR.\Config::get('HtmlCache.APP_HTML_CACHE_PATH'));
 	}
@@ -173,12 +168,12 @@ class Cache {
 		$cacheName = $options[0];
 
 		if ($cacheName === 'router' || $cacheName === 'all') {
-			self::clearRouter($siteId);
+			self::clearRouter();
 			\Logger::info('Cache: Очистка кеша роутера');
 		}
 
 		if ($cacheName === 'models' || $cacheName === 'all') {
-			self::clearModels($siteId);
+			self::clearModels();
 			\Logger::info('Cache: Очистка кеша моделей');
 		}
 
@@ -193,7 +188,7 @@ class Cache {
 		}
 
 		if ($cacheName === 'static' || $cacheName === 'all') {
-			self::clearStatic($siteId);
+			self::clearStatic();
 			\Logger::info('Cache: Очистка кеша статики');
 		}
 
@@ -203,7 +198,7 @@ class Cache {
 		}
 
 		if ($cacheName === 'html' || $cacheName === 'all') {
-			self::clearHtml($siteId);
+			self::clearHtml();
 		}
 
 		if ($cacheName === 'routerModels' || $cacheName === 'all') {

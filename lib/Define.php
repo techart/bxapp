@@ -30,6 +30,7 @@ class Define
 	private static function defineBasePaths(string $initPath = ''): void
 	{
 		if (empty($initPath)) {
+			Logger::error('В \Techart\BxApp\App::init() не передан $initPath!');
 			throw new \LogicException('В \Techart\BxApp\App::init() не передан $initPath!');
 			exit();
 		}

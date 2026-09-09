@@ -79,6 +79,7 @@ class BaseHighloadModel
 
 			$this->getHighloadBlock();
 		} else {
+			\Logger::error('Модель "' . get_class($this) . '" должна содержать не пустую переменную $iblockCode!');
 			throw new \LogicException('Модель "' . get_class($this) . '" должна содержать не пустую переменную $iblockCode!');
 			exit();
 		}
@@ -94,6 +95,7 @@ class BaseHighloadModel
 		$curMode = !empty($this->localizationMode) ? $this->localizationMode : \Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'code');
 
 		if (!in_array($curMode, $this->curModes)) {
+			\Logger::error('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
 			throw new \LogicException('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
 			exit();
 		}
@@ -126,6 +128,7 @@ class BaseHighloadModel
 			if($hlblock) {
 				$this->hblockData = $hlblock;
 			} else {
+				\Logger::error('Модель "'.get_class($this).'" highload-блок "'.$this->table.'" указанный в переменной $table не существует!');
 				throw new \LogicException('Модель "'.get_class($this).'" highload-блок "'.$this->table.'" указанный в переменной $table не существует!');
 				exit();
 			}

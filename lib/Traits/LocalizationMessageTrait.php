@@ -3,20 +3,20 @@ namespace Techart\BxApp\Traits;
 
 /**
  * Трейт для локализации различных сущностей BxApp
- * 
+ *
  * По умолчанию подключено в базовых классах моделей инфоблоков и хайлоадблоков.
  * Для остальных сущностей нужно подключать самостоятельно:
- * 
+ *
  * use \LocalizationMessageTrait;
  *
  * Берёт шаблоны из APP_LOCALIZATION_MESSAGES_TEMPLATES в конфиге App.php
- * 
+ *
  * Вызов локализации:
- * 
+ *
  * $this->locMessage('TITLE');
- * 
- * При вызове составляет ключ локализации по заданному шаблону 
- * и прокидывает его в метод get класса Message 
+ *
+ * При вызове составляет ключ локализации по заданному шаблону
+ * и прокидывает его в метод get класса Message
  */
 
 
@@ -24,11 +24,11 @@ trait LocalizationMessageTrait
 {
 	/**
 	 * По заданному в конфиге шаблону и переданному коду значения достаёт локализацию из папки Localization
-	 * 
+	 *
 	 * @param string $code
 	 * @return string
 	 */
-	public function locMessage(string $code = ''): string
+	public function locMessage(string $code = '', array $replace = [], int $number = 0, string $locale = ''): string
 	{
 		$trace = debug_backtrace();
 		$path = explode('/php_interface/', $trace[0]['file'])[1];
@@ -52,6 +52,6 @@ trait LocalizationMessageTrait
 			);
 		}
 
-		return \M::get($matches['namespace'].$matches['group'].$matches['key']);
+		return \M::get($matches['namespace'].$matches['group'].$matches['key'], $replace, $number, $locale);
 	}
 }

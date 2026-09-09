@@ -35,12 +35,13 @@ class Env
 				$envFile .= '_'.TBA_SITE_ID;
 			}
 
-			$envPath = TBA_PROJECT_ROOT_DIR.'/'.$envFile;
+			if (file_exists(TECHART_BXAPP_CORE_SETUP_DIR . '/.env.default')) {
+				self::$env = Dotenv::createMutable(TECHART_BXAPP_CORE_SETUP_DIR, '.env.default')->safeLoad();
+			}
 
-			if (file_exists($envPath)) {
-				self::$env = Dotenv::createImmutable([TECHART_BXAPP_CORE_SETUP_DIR, TBA_PROJECT_ROOT_DIR], [$envFile, '.env.default'], false)->load();
-			} else {
-				self::$env = Dotenv::createImmutable(TECHART_BXAPP_CORE_SETUP_DIR, '.env.default', false)->load();
+			if (file_exists(TBA_PROJECT_ROOT_DIR . '/' . $envFile)) {
+				$mainEnv = Dotenv::createMutable(TBA_PROJECT_ROOT_DIR, $envFile)->safeLoad();
+				self::$env = self::$env && is_array(self::$env) ? array_merge(self::$env, $mainEnv) : $mainEnv;
 			}
 		}
 
@@ -81,7 +82,7 @@ class Env
 				$return = $value;
 			}
 
-			switch (strtolower($value)) {
+			switch (strtolower($value ?? '')) {
 				case 'true':
 				case '(true)':
 					$return = true;

@@ -170,6 +170,7 @@ class BaseIblockModel
 
 			$this->getInfoblock();
 		} else {
+			\Logger::error('Модель "'.get_class($this).'" должна содержать не пустую переменную $table!');
 			throw new \LogicException('Модель "'.get_class($this).'" должна содержать не пустую переменную $table!');
 			exit();
 		}
@@ -185,6 +186,7 @@ class BaseIblockModel
 		$curMode = !empty($this->localizationMode) ? $this->localizationMode : \Config::get('App.APP_MODEL_LOCALIZATION_MODE', 'code');
 
 		if (!in_array($curMode, $this->curModes)) {
+			\Logger::error('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
 			throw new \LogicException('Для модели "'.get_class($this).'" указан неправильный тип локализации. Доступные значения: '.implode(', ', $this->curModes));
 			exit();
 		}
@@ -416,6 +418,7 @@ class BaseIblockModel
 			if ($res->result->num_rows > 0) {
 				$this->iblockData = $res->Fetch();
 			} else {
+				\Logger::error('Модель "'.get_class($this).'" инфоблок "'.$this->table.'" указанный в переменной $table не существует!');
 				throw new \LogicException('Модель "'.get_class($this).'" инфоблок "'.$this->table.'" указанный в переменной $table не существует!');
 				exit();
 			}
