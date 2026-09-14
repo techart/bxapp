@@ -125,6 +125,8 @@ class App
 		include_once (TBA_APP_ROOT_DIR.'/Traits/ValidatorTrait.php');
 		Glob::setSiteGlobals();
 
+		Monolog::setup();
+
 		if (\Bitrix\Main\Context::getCurrent()->getRequest()->isAdminSection()) {
 			\Techart\BxApp\Events\EventsModel::setEvents();
 		}

@@ -108,6 +108,7 @@ class DebugBar
 	{
 		if (self::checkSetup()) {
 			$loggerLog = self::getLoggerLog(\Glob::get('APP_SETUP_LOG_LEVEL_DEBUGBAR'));
+			$monologLog = Monolog::getLoggerLog();
 			echo '
 			<link rel="stylesheet" href="/local/vendor/techart/bxapp/lib/Assets/debugbar.css">
 			<div class="tba_debug_bar__collapsedOpener' . (self::$countLog === 0 ? ' no-error' : '') . '" onClick="collapseDebugBar()">'.(self::$countLog > 0 ? self::$countLog : 'D').'</div>
@@ -121,6 +122,7 @@ class DebugBar
 					<div class="tba_debug_bar__panel">
 						<div class="tba_debug_bar__tabs">
 							<div class="tba_debug_bar__tab active">Logger</div>
+							<div class="tba_debug_bar__tab">Monolog</div>
 							<div class="tba_debug_bar__tab">Timeline</div>
 							<div class="tba_debug_bar__tab">Frontend</div>
 							<div class="tba_debug_bar__tab">Components</div>
@@ -135,6 +137,7 @@ class DebugBar
 						</div>
 					</div>
 					<div class="tba_debug_bar__body-content vis">'.$loggerLog.'</div>
+					<div class="tba_debug_bar__body-content">'.$monologLog.'</div>
 					<div class="tba_debug_bar__body-content">'.self::getLog().'</div>
 					<div class="tba_debug_bar__body-content">'.self::getLog('view').'</div>
 					<div class="tba_debug_bar__body-content">'.self::getLog('component').'</div>

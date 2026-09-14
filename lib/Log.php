@@ -50,12 +50,15 @@ class Log
 	protected static $typesForFile; // с какого типа сообщений писать в файл
 	protected static $curTypeID = 999;
 	public static $types = [
+		'emergency',
+		'alert',
 		'critical',
 		'error',
 		'warning',
 		'frontendError',
-		'debug',
+		'notice',
 		'info',
+		'debug',
 	]; // порядок типов по важности - ПОРЯДОК ВАЖЕН!
 	protected static $messages = []; // массив со всеми сообщениями логера
 

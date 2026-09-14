@@ -126,6 +126,10 @@
 	gap: 16px;
 }
 
+.tba_debug_bar__body-content:has(pre) {
+	white-space: unset;
+}
+
 .vis {
 	display: flex;
 }
